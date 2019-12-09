@@ -18,7 +18,7 @@ export default {
     methods: {
         logout() {
             auth.logout();
-            this.$router.push({ name: 'home' }).catch((err)=> {});
+            this.$router.push({ name: 'login' }).catch((err)=> {});
         }
     }
 }
