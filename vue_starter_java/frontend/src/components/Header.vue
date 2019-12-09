@@ -1,19 +1,26 @@
 <template>
     <div class="header">
-      <p>Logoff</p>
+      <p @click="logout()">Logoff</p>
       <router-link to="/">Home</router-link>
     </div>
 </template>
 
 <script>
 import auth from '../auth';
+
 export default {
-    name: 'header',
-    methods: {
-        logout(){
-            
+    name: "nav-header",
+    data() {
+        return {
+            auth
         }
     },
+    methods: {
+        logout() {
+            auth.logout();
+            this.$router.push({ name: 'home' }).catch((err)=> {});
+        }
+    }
 }
 </script>
 
