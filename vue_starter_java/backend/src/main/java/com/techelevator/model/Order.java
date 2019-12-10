@@ -1,6 +1,6 @@
 package com.techelevator.model;
 
-public class Orders {
+public class Order {
 
 	private long orderId;
 	private long eventId;

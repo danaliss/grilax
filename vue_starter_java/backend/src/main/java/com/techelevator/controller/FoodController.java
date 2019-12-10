@@ -1,9 +1,16 @@
 package com.techelevator.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+
+import com.techelevator.model.Food;
+import com.techelevator.model.Order;
 
 public class FoodController extends ApiController {
 	/**
@@ -11,8 +18,8 @@ public class FoodController extends ApiController {
 	 * Roles: Attendee | Host | Chef
 	 */
     @GetMapping(path="/event/{eventid}/menu")
-    public void getFoodItems() {
-    	
+    public List<Food> getFoodItems(HttpServletResponse response) {
+    	return null;
     }
 
     /**
@@ -20,8 +27,9 @@ public class FoodController extends ApiController {
      * Roles: Host
      */
     @PostMapping(path="/event/{eventid}/menu")
-    public void createFoodItems() {
-    	
+    public Food createFoodItems(HttpServletResponse response) {
+    	response.setStatus(HttpServletResponse.SC_CREATED);
+    	return null;
     }
     
     /**
@@ -29,8 +37,8 @@ public class FoodController extends ApiController {
      * Roles: Host
      */
     @PutMapping(path="/event/{eventid}/menu/{itemid}")
-    public void updateFoodItems() {
-    	
+    public Food updateFoodItems(HttpServletResponse response) {
+    	return null;
     }
     
     /**
@@ -38,8 +46,13 @@ public class FoodController extends ApiController {
      * Roles: Host
      */
     @DeleteMapping(path="/event/{eventid}/menu/{itemid}")
-    public void deleteFoodItem() {
-    	
+    public void deleteFoodItem(HttpServletResponse response) {
+    	// successfully deleted a record
+    	response.setStatus(HttpServletResponse.SC_OK);
+    	// no record to delete
+    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    	// not authorized
+    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
     
     /**
@@ -49,8 +62,8 @@ public class FoodController extends ApiController {
      * @param all orders, completed orders, incomplete orders
      */
     @GetMapping(path="/event/{eventid}/orders")
-    public void getEventOrders() {
-    	
+    public List<Order> getEventOrders(HttpServletResponse response) {
+    	return null;
     }
     
     /**
@@ -58,8 +71,9 @@ public class FoodController extends ApiController {
      * Roles: Attendee | Host
      */
     @PostMapping(path="/event/{eventid}/order")
-    public void createOrder() {
-    	
+    public Order createOrder(HttpServletResponse response) {
+    	response.setStatus(HttpServletResponse.SC_CREATED);
+    	return null;
     }
     
     /**
@@ -67,8 +81,8 @@ public class FoodController extends ApiController {
      * Roles: Attendee | Host
      */
     @PutMapping(path="/event/{eventid}/order")
-    public void updateOrder() {
-    	
+    public Order updateOrder(HttpServletResponse response) {
+    	return null;
     }
     
     /**
@@ -76,7 +90,12 @@ public class FoodController extends ApiController {
      * Roles: Attendee | Host
      */
     @DeleteMapping(path="/event/{eventid}/order/{orderid}")
-    public void deleteOrder() {
-    	
+    public void deleteOrder(HttpServletResponse response) {
+    	// successfully deleted a record
+    	response.setStatus(HttpServletResponse.SC_OK);
+    	// no record to delete
+    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    	// not authorized
+    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
