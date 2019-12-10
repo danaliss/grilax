@@ -1,12 +1,33 @@
 <template>
   <div class="home">
-    <h1>Home</h1>
-    <p>You must be authenticated to see this</p>
+      <div class="hosting">
+        <h1>Hosting</h1>
+        <event-preview>
+        </event-preview>
+      </div>
+      <div class="attending">
+        <h1>Attending</h1>
+          <event-preview>
+          </event-preview>
+      </div>
+      <div class="invites">
+        <h1>Invites</h1>
+          <event-preview>
+          </event-preview>
+      </div>
   </div>
 </template>
 
 <script>
+import EventPreview from '../components/EventPreview.vue';
 export default {
-  name: 'home'
+  name: 'home', 
+  components: {
+    EventPreview
+  }
 }
 </script>
+
+<style>
+
+</style>

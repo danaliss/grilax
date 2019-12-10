@@ -16,22 +16,22 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Titan+One&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap');
 body {
-  background: yellow;
-  background: radial-gradient(circle, yellow 50%, orange 100%);
+  background:#ff7d49;
+  background: radial-gradient(circle,#ffdb2b 50%, #ff7d49 100%);
+  font-family: 'Baloo Bhai', cursive;
 }
 #app {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 20px;
+  
 }
 h1 {
-  grid-row: 1;
-  grid-column: 1 / 4;
   text-align:center;
-  color:#ff009d;
+  color:#ef2871;
   text-transform: uppercase;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Titan One', cursive;
+  
 }
 
 </style>
