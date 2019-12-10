@@ -2,10 +2,7 @@ package com.techelevator.model;
 
 import java.time.LocalDateTime;
 
-
-
 public class Event{
-	
 	private String name;
 	private long eventId;
 	private LocalDateTime date;
@@ -63,10 +60,4 @@ public class Event{
 	public void setMenuId(long menuId) {
 		this.menuId = menuId;
 	}
-	
-	
-	
-	
-	
-	
 }
