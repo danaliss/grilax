@@ -4,15 +4,22 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import com.techelevator.model.Event;
 import com.techelevator.model.EventAttendees;
+import com.techelevator.model.EventDao;
 
 public class EventController extends ApiController {
+	
+	@Autowired
+	private EventDao eventDao;
+	
 	/**
 	 * Gets a list of all the events for the currently logged in user.
 	 * Roles: Anonymous
@@ -21,6 +28,8 @@ public class EventController extends ApiController {
 	 */
     @GetMapping(path="/events")
     public List<Event> getEventsForUser(HttpServletResponse response) {
+    	// TODO: Get that user ID
+    	
     	return null;
     }
     
@@ -29,9 +38,9 @@ public class EventController extends ApiController {
      * Roles: Host
      */
     @PostMapping(path="/events")
-    public Event createEvent(HttpServletResponse response) {
+    public Event createEvent(Event event, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return null;
+    	return eventDao.createEvent(event);
     }
     
     /**
@@ -39,8 +48,8 @@ public class EventController extends ApiController {
      * Roles: Attendee | Host | Chef
      */
     @GetMapping(path="/event/{eventid}")
-    public Event getEventDetails(HttpServletResponse response) {
-    	return null;
+    public Event getEventDetails(@PathVariable long eventid, HttpServletResponse response) {
+    	return eventDao.getEventDetails(eventid);
     }
     
     /**
@@ -48,7 +57,9 @@ public class EventController extends ApiController {
      * Roles: Host
      */
     @DeleteMapping(path="/event/{eventid}")
-    public void deleteEvent(HttpServletResponse response) {
+    public void deleteEvent(@PathVariable long eventid, HttpServletResponse response) {
+    	eventDao.deleteEvent(eventid);
+    	
     	// successfully deleted a record
     	response.setStatus(HttpServletResponse.SC_OK);
     	// no record to delete
@@ -62,8 +73,8 @@ public class EventController extends ApiController {
      * Roles: Attendees | Host
      */
     @GetMapping(path="/event/{eventid}/attendees")
-    public List<EventAttendees> getEventAttendees(HttpServletResponse response) {
-    	return null;
+    public List<EventAttendees> getEventAttendees(@PathVariable long eventid, HttpServletResponse response) {
+    	return eventDao.getEventAttendees(eventid);
     }
     
     /**
@@ -71,9 +82,9 @@ public class EventController extends ApiController {
      * Roles: Host
      */
     @PostMapping(path="/event/{eventid}/attendees")
-    public EventAttendees addEventAttendee(HttpServletResponse response) {
+    public EventAttendees addEventAttendee(EventAttendees attendee, @PathVariable long eventid, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return null;
+    	return eventDao.addEventAttendee(eventid, attendee);
     }
     
 //    @DeleteMapping(path="/event/{eventid}/attendees/{userid}")
@@ -91,7 +102,7 @@ public class EventController extends ApiController {
      * Roles: Host
      */
     @PutMapping(path="/event/{eventid}")
-    public Event updateEvent(HttpServletResponse response) {
-    	return null;
+    public Event updateEvent(@PathVariable long eventid, HttpServletResponse response) {
+    	return eventDao.updateEvent(eventid);
     }
 }

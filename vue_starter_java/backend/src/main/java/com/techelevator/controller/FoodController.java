@@ -4,22 +4,29 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import com.techelevator.model.Food;
+import com.techelevator.model.FoodOrderDao;
 import com.techelevator.model.Order;
 
 public class FoodController extends ApiController {
+	
+	@Autowired
+	private FoodOrderDao foodOrderDao;
+	
 	/**
 	 * Views the menu for the specified event.
 	 * Roles: Attendee | Host | Chef
 	 */
     @GetMapping(path="/event/{eventid}/menu")
-    public List<Food> getFoodItems(HttpServletResponse response) {
-    	return null;
+    public List<Food> getFoodItems(@PathVariable long eventid, HttpServletResponse response) {
+    	return foodOrderDao.getFoodItems(eventid);
     }
 
     /**
@@ -27,9 +34,9 @@ public class FoodController extends ApiController {
      * Roles: Host
      */
     @PostMapping(path="/event/{eventid}/menu")
-    public Food createFoodItems(HttpServletResponse response) {
+    public Food createFoodItems(@PathVariable long eventid, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return null;
+    	return foodOrderDao.createFoodItems(eventid);
     }
     
     /**
@@ -37,8 +44,8 @@ public class FoodController extends ApiController {
      * Roles: Host
      */
     @PutMapping(path="/event/{eventid}/menu/{itemid}")
-    public Food updateFoodItems(HttpServletResponse response) {
-    	return null;
+    public Food updateFoodItems(@PathVariable long eventid, @PathVariable long itemid, HttpServletResponse response) {
+    	return foodOrderDao.updateFoodItems(eventid, itemid);
     }
     
     /**
@@ -46,7 +53,9 @@ public class FoodController extends ApiController {
      * Roles: Host
      */
     @DeleteMapping(path="/event/{eventid}/menu/{itemid}")
-    public void deleteFoodItem(HttpServletResponse response) {
+    public void deleteFoodItem(@PathVariable long eventid, @PathVariable long itemid, HttpServletResponse response) {
+    	// TODO: see if deleted
+    	
     	// successfully deleted a record
     	response.setStatus(HttpServletResponse.SC_OK);
     	// no record to delete
@@ -62,8 +71,8 @@ public class FoodController extends ApiController {
      * @param all orders, completed orders, incomplete orders
      */
     @GetMapping(path="/event/{eventid}/orders")
-    public List<Order> getEventOrders(HttpServletResponse response) {
-    	return null;
+    public List<Order> getEventOrders(@PathVariable long eventid, HttpServletResponse response) {
+    	return foodOrderDao.getEventOrders(eventid);
     }
     
     /**
@@ -71,9 +80,9 @@ public class FoodController extends ApiController {
      * Roles: Attendee | Host
      */
     @PostMapping(path="/event/{eventid}/order")
-    public Order createOrder(HttpServletResponse response) {
+    public Order createOrder(@PathVariable long eventid, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return null;
+    	return foodOrderDao.createOrder(eventid);
     }
     
     /**
@@ -81,8 +90,8 @@ public class FoodController extends ApiController {
      * Roles: Attendee | Host
      */
     @PutMapping(path="/event/{eventid}/order")
-    public Order updateOrder(HttpServletResponse response) {
-    	return null;
+    public Order updateOrder(@PathVariable long eventid, HttpServletResponse response) {
+    	return foodOrderDao.updateOrder(eventid);
     }
     
     /**
@@ -90,7 +99,9 @@ public class FoodController extends ApiController {
      * Roles: Attendee | Host
      */
     @DeleteMapping(path="/event/{eventid}/order/{orderid}")
-    public void deleteOrder(HttpServletResponse response) {
+    public void deleteOrder(@PathVariable long eventid, @PathVariable long orderid, HttpServletResponse response) {
+    	foodOrderDao.deleteOrder(eventid, orderid);
+    	
     	// successfully deleted a record
     	response.setStatus(HttpServletResponse.SC_OK);
     	// no record to delete
