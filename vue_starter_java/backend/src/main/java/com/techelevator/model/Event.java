@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class Event{
 	
 	private String name;
-	private long id;
+	private long eventId;
 	private LocalDateTime date;
 	private String time;
 	private String description;
@@ -21,11 +21,11 @@ public class Event{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public long getId() {
-		return id;
+	public long getEventId() {
+		return eventId;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setEventId(long eventId) {
+		this.eventId = eventId;
 	}
 	public LocalDateTime getDate() {
 		return date;
