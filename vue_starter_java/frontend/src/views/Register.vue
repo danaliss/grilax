@@ -15,6 +15,18 @@
         required
         autofocus
       />
+
+      <label for="email" class="sr-only">Email</label>
+      <input
+        type="text"
+        id="email"
+        class="form-control"
+        placeholder="Email"
+        v-model="user.email"
+        required
+        autofocus
+      />
+
       <label for="password" class="sr-only">Password</label>
       <input
         type="password"
@@ -51,6 +63,7 @@ export default {
         username: '',
         password: '',
         confirmPassword: '',
+        email: '',
         role: 'user',
       },
       registrationErrors: false,
