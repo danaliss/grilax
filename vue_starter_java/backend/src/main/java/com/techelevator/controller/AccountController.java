@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * AccountController
  */
 @RestController
+@RequestMapping("/api")
 public class AccountController {
     @Autowired
     private AuthProvider auth;
@@ -25,17 +26,17 @@ public class AccountController {
     @Autowired
     private JwtTokenHandler tokenHandler;
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    @PostMapping(path = "/user/login")
     public String login(@RequestBody User user, RedirectAttributes flash) throws UnauthorizedException {
         if (auth.signIn(user.getUsername(), user.getPassword())) {
             User currentUser = auth.getCurrentUser();
-            return tokenHandler.createToken(user.getUsername(), currentUser.getRole());
+            return tokenHandler.createToken(user.getUsername(), currentUser.getEmail());
         } else {
             throw new UnauthorizedException();
         }
     }
 
-    @RequestMapping(path = "/register", method = RequestMethod.POST)
+    @PostMapping(path = "/user/register")
     public String register(@Valid @RequestBody User user, BindingResult result) throws UserCreationException {
         if (result.hasErrors()) {
             String errorMessages = "";
@@ -44,8 +45,12 @@ public class AccountController {
             }
             throw new UserCreationException(errorMessages);
         }
-        auth.register(user.getUsername(), user.getPassword(), user.getRole());
+        auth.register(user.getUsername(), user.getPassword(), user.getEmail());
         return "{\"success\":true}";
     }
 
+    @PutMapping(path="/user/update")
+    public void update() {
+    	
+    }
 }

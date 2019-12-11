@@ -5,14 +5,12 @@ DROP TABLE IF EXISTS event CASCADE;
 DROP TABLE IF EXISTS event_attendees CASCADE;
 DROP TABLE IF EXISTS address CASCADE;
 DROP TABLE IF EXISTS RSVP CASCADE;
-DROP TABLE IF EXISTS menu CASCADE;
 DROP TABLE IF EXISTS food CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 
 DROP SEQUENCE IF EXISTS seq_user_id;
 DROP SEQUENCE IF EXISTS seq_event_id;
 DROP SEQUENCE IF EXISTS seq_address_id;
-DROP SEQUENCE IF EXISTS seq_menu_id;
 DROP SEQUENCE IF EXISTS seq_orders_id;
 
 CREATE SEQUENCE seq_user_id
@@ -20,10 +18,6 @@ START 1
 INCREMENT 1;
 
 CREATE SEQUENCE seq_event_id
-START 1
-INCREMENT 1;
-
-CREATE SEQUENCE seq_menu_id
 START 1
 INCREMENT 1;
 
@@ -47,7 +41,6 @@ CREATE TABLE users (
 
 CREATE TABLE event (
   event_id INTEGER DEFAULT NEXTVAL('seq_event_id') PRIMARY KEY,
-  menu_id INTEGER DEFAULT NEXTVAL('seq_menu_id') UNIQUE,
   event_name varchar(255) NOT NULL,
   event_date date NOT NULL,
   event_time varchar(10) NOT NULL,
@@ -75,13 +68,7 @@ CREATE TABLE address (
  street_address varchar(100) NOT NULL,
  city varchar(50) NOT NULL,
  state varchar(30) NOT NULL,
- zip int NOT NULL
-);
-
-CREATE TABLE menu (
- menu_id INTEGER DEFAULT NEXTVAL('seq_menu_id') PRIMARY KEY,
- event_id int NOT NULL,
- FOREIGN KEY (event_id) REFERENCES event (event_id)
+ zip varchar(10) NOT NULL
 );
 
 CREATE TABLE food (
@@ -92,8 +79,8 @@ CREATE TABLE food (
  gluten_free boolean DEFAULT false,
  nut_free boolean DEFAULT false,
  description varchar(255),
- menu_id int NOT NULL,
- FOREIGN KEY (menu_id) REFERENCES menu (menu_id)
+ event_id int NOT NULL,
+ FOREIGN KEY (event_id) REFERENCES event (event_id)
 );
 
 CREATE TABLE orders (
