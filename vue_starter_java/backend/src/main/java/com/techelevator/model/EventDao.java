@@ -9,7 +9,9 @@ public interface EventDao {
 	public void deleteEvent(long id);
 	public List<EventAttendees> getEventAttendees(long id);
 	public EventAttendees addEventAttendee(long id, EventAttendees attendees);
-	public Event updateEvent(long id);
+	public Event updateEvent(long id, Event event);
 	public Event getEventDetails(long id);
+	
+	public Address getAddress(long addressID);
 
 }

@@ -30,7 +30,7 @@ public class AccountController {
     public String login(@RequestBody User user, RedirectAttributes flash) throws UnauthorizedException {
         if (auth.signIn(user.getUsername(), user.getPassword())) {
             User currentUser = auth.getCurrentUser();
-            return tokenHandler.createToken(user.getUsername(), currentUser.getRole());
+            return tokenHandler.createToken(user.getUsername(), currentUser.getEmail());
         } else {
             throw new UnauthorizedException();
         }
@@ -45,7 +45,7 @@ public class AccountController {
             }
             throw new UserCreationException(errorMessages);
         }
-        auth.register(user.getUsername(), user.getPassword(), user.getRole());
+        auth.register(user.getUsername(), user.getPassword(), user.getEmail());
         return "{\"success\":true}";
     }
 

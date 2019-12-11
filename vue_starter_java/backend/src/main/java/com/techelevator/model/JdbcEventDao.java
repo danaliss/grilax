@@ -78,20 +78,60 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public EventAttendees addEventAttendee(long id, EventAttendees attendees) {
-		// TODO Auto-generated method stub
-		return null;
+		String sqlString = "INSERT INTO event_attendees(event_id, user_id, is_host, is_attending, first_name, last_name, adult_guests, child_guests) "
+						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		
+		jdbc.update(sqlString, id, attendees.getUserId(), attendees.isHost(), attendees.isAttending(), attendees.getFirstName(), attendees.getLastName(), attendees.getAdultGuests(), attendees.getChildGuests());
+		
+		return attendees;
 	}
 
 	@Override
-	public Event updateEvent(long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Event updateEvent(long id, Event event) {
+		String sqlString = "UPDATE event SET "
+						 + "menu_id = ?, "
+						 + "event_name = ?, "
+						 + "event_date = ?, "
+						 + "event_time = ?, "
+						 + "description = ?, "
+						 + "deadline = ?, "
+						 + "address_id = ? "
+						 + "WHERE event_id = ?";
+		
+		jdbc.update(sqlString, event.getMenuId(), event.getName(), event.getDate(), event.getTime(), event.getDescription(), event.getDeadline(), event.getDescription(), event.getAddressId(), event.getEventId());
+		
+		return event;
 	}
 
 	@Override
 	public Event getEventDetails(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		String sqlString = "SELECT event.event_id, event.menu_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id "
+						 + "FROM event WHERE event_id = ?";
+		
+		SqlRowSet results = jdbc.queryForRowSet(sqlString, id);
+		
+		Event event = null;
+		
+		if( results.next() ) {
+			event = mapRowToEvent(results);
+		}
+		
+		return event;
+	}
+	
+	@Override
+	public Address getAddress(long addressID) {
+		String sqlString = "SELECT address_id, street_address, city, state, zip FROM address WHERE address_id = ?";
+		
+		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID);
+		
+		Address address = null;
+		
+		if( results.next() ) {
+			address = mapRowToAddress(results);
+		}
+		
+		return address;
 	}
 	
 	private Event mapRowToEvent(SqlRowSet row) {
@@ -123,5 +163,15 @@ public class JdbcEventDao implements EventDao {
 		return eventAttendees;
 	}
 	
-
+	private Address mapRowToAddress(SqlRowSet row) {
+		Address address = new Address();
+		
+		address.setAddressId(row.getLong("address_id"));
+		address.setStreetAddress(row.getString("street_address"));
+		address.setCity(row.getString("city"));
+		address.setState(row.getString("state"));
+		address.setZip(row.getInt("zip"));
+		
+		return address;
+	}
 }

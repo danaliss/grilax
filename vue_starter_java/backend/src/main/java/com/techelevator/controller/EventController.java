@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import com.techelevator.model.Address;
 import com.techelevator.model.Event;
 import com.techelevator.model.EventAttendees;
 import com.techelevator.model.EventDao;
@@ -19,6 +20,14 @@ public class EventController extends ApiController {
 	
 	@Autowired
 	private EventDao eventDao;
+	
+	/**
+	 * 
+	 */
+	@GetMapping(path="/address/{addressid}")
+	public Address getAddressByID(@PathVariable long addressid) {
+		return eventDao.getAddress(addressid);
+	}
 	
 	/**
 	 * Gets a list of all the events for the currently logged in user.
@@ -102,7 +111,7 @@ public class EventController extends ApiController {
      * Roles: Host
      */
     @PutMapping(path="/event/{eventid}")
-    public Event updateEvent(@PathVariable long eventid, HttpServletResponse response) {
-    	return eventDao.updateEvent(eventid);
+    public Event updateEvent(@PathVariable long eventid, Event event, HttpServletResponse response) {
+    	return eventDao.updateEvent(eventid, event);
     }
 }

@@ -34,9 +34,9 @@ public class FoodController extends ApiController {
      * Roles: Host
      */
     @PostMapping(path="/event/{eventid}/menu")
-    public Food createFoodItems(@PathVariable long eventid, HttpServletResponse response) {
+    public Food createFoodItems(@PathVariable long eventid, Food food, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return foodOrderDao.createFoodItems(eventid);
+    	return foodOrderDao.createFoodItems(food);
     }
     
     /**
@@ -44,8 +44,8 @@ public class FoodController extends ApiController {
      * Roles: Host
      */
     @PutMapping(path="/event/{eventid}/menu/{itemid}")
-    public Food updateFoodItems(@PathVariable long eventid, @PathVariable long itemid, HttpServletResponse response) {
-    	return foodOrderDao.updateFoodItems(eventid, itemid);
+    public Food updateFoodItems(@PathVariable long eventid, @PathVariable long itemid, Food food, HttpServletResponse response) {
+    	return foodOrderDao.updateFoodItems(food);
     }
     
     /**
@@ -80,9 +80,9 @@ public class FoodController extends ApiController {
      * Roles: Attendee | Host
      */
     @PostMapping(path="/event/{eventid}/order")
-    public Order createOrder(@PathVariable long eventid, HttpServletResponse response) {
+    public Order createOrder(@PathVariable long eventid, Order order, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return foodOrderDao.createOrder(eventid);
+    	return foodOrderDao.createOrder(order);
     }
     
     /**
@@ -90,8 +90,8 @@ public class FoodController extends ApiController {
      * Roles: Attendee | Host
      */
     @PutMapping(path="/event/{eventid}/order")
-    public Order updateOrder(@PathVariable long eventid, HttpServletResponse response) {
-    	return foodOrderDao.updateOrder(eventid);
+    public Order updateOrder(@PathVariable long eventid, Order order, HttpServletResponse response) {
+    	return foodOrderDao.updateOrder(order);
     }
     
     /**
