@@ -1,16 +1,21 @@
 <template>
   <div class="home">
-      <div class="hosting">
+      
+      <div class="hosting container col-8">
+        <div>
         <h1>Hosting</h1>
         <event-preview>
         </event-preview>
+        <event-preview>
+        </event-preview>
+        </div>
       </div>
-      <div class="attending">
-        <h1>Atetending</h1>
+      <div class="attending container col-8">
+        <h1>Attending</h1>
           <event-preview>
           </event-preview>
       </div>
-      <div class="invites">
+      <div class="invites container col-8">
         <h1>Invites</h1>
         <!-- V for each over returned events -->
           <event-preview>
