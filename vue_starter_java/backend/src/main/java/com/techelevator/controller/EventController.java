@@ -2,6 +2,7 @@ package com.techelevator.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +11,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.techelevator.authentication.RequestAuthProvider;
 import com.techelevator.model.Address;
 import com.techelevator.model.Event;
 import com.techelevator.model.EventAttendees;
 import com.techelevator.model.EventDao;
+import com.techelevator.model.User;
 
-public class EventController extends ApiController {
+@RestController
+@RequestMapping("/api")
+public class EventController {
 	
 	@Autowired
 	private EventDao eventDao;
@@ -36,10 +43,10 @@ public class EventController extends ApiController {
 	 * @return List of all the events for the user
 	 */
     @GetMapping(path="/events")
-    public List<Event> getEventsForUser(HttpServletResponse response) {
-    	// TODO: Get that user ID
+    public List<Event> getEventsForUser(HttpServletRequest request, HttpServletResponse response) {
+    	User user = (User)request.getAttribute(RequestAuthProvider.USER_KEY);
     	
-    	return null;
+    	return eventDao.getEventsForUser(user.getId());
     }
     
     /**
