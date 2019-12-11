@@ -1,16 +1,18 @@
 package com.techelevator.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 public class Event{
-	private String name;
 	private long eventId;
-	private LocalDateTime date;
+	private long menuId;
+	private String name;
+	private LocalDate date;
 	private String time;
 	private String description;
-	private LocalDateTime deadline;
+	private LocalDate deadline;
 	private long addressId;
-	private long menuId;
+
 	
 	public String getName() {
 		return name;
@@ -24,10 +26,10 @@ public class Event{
 	public void setEventId(long eventId) {
 		this.eventId = eventId;
 	}
-	public LocalDateTime getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
-	public void setDate(LocalDateTime date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 	public String getTime() {
@@ -42,10 +44,10 @@ public class Event{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public LocalDateTime getDeadline() {
+	public LocalDate getDeadline() {
 		return deadline;
 	}
-	public void setDeadline(LocalDateTime deadline) {
+	public void setDeadline(LocalDate deadline) {
 		this.deadline = deadline;
 	}
 	public long getAddressId() {
