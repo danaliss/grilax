@@ -6,7 +6,7 @@
         </event-preview>
       </div>
       <div class="attending">
-        <h1>Attending</h1>
+        <h1>Atetending</h1>
           <event-preview>
           </event-preview>
       </div>
