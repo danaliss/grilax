@@ -1,11 +1,14 @@
 <template>
   <div id="register" class="text-center">
+    <div class = "container col-3 container-fluid">
     <form class="form-register" @submit.prevent="register">
       <h1 class="h3 mb-3 font-weight-normal">Create Account</h1>
       <div class="alert alert-danger" role="alert" v-if="registrationErrors">
         There were problems registering this user.
       </div>
-      <label for="username" class="sr-only">Username</label>
+      
+      <div class = "form-group">
+      <label for="username" class="sr-only ">Username</label>
       <input
         type="text"
         id="username"
@@ -15,6 +18,8 @@
         required
         autofocus
       />
+      </div>
+      <div class = "form-group">
 
       <label for="email" class="sr-only">Email</label>
       <input
@@ -26,7 +31,8 @@
         required
         autofocus
       />
-
+      </div>
+ <div class = "form-group">
       <label for="password" class="sr-only">Password</label>
       <input
         type="password"
@@ -36,6 +42,9 @@
         v-model="user.password"
         required
       />
+      </div>
+
+      <div class = "form-group">
       <input
         type="password"
         id="confirmPassword"
@@ -44,13 +53,19 @@
         v-model="user.confirmPassword"
         required
       />
-      <router-link :to="{ name: 'login' }">
-        Have an account?
-      </router-link>
+      </div>
+      <div class = "form-group">
       <button class="btn btn-lg btn-primary btn-block" type="submit">
         Create Account
       </button>
+      <small>
+        <router-link :to="{ name: 'login' }">
+            Have an account?
+        </router-link>
+      </small>
+      </div>
     </form>
+    </div>
   </div>
 </template>
 

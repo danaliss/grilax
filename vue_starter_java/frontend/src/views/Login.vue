@@ -1,5 +1,6 @@
 <template>
   <div id="login" class="text-center">
+    <div class="container col-3 container-fluid">
     <form class="form-signin" @submit.prevent="login">
       <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
       <div class="alert alert-danger" role="alert" v-if="invalidCredentials">
@@ -8,6 +9,8 @@
       <div class="alert alert-success" role="alert" v-if="this.$route.query.registration">
         Thank you for registering, please sign in.
       </div>
+     
+        <div class = "form-group">
       <label for="username" class="sr-only">Username</label>
       <input
         type="text"
@@ -18,6 +21,8 @@
         required
         autofocus
       />
+        </div>
+        <div class = "form-group ">
       <label for="password" class="sr-only">Password</label>
       <input
         type="password"
@@ -27,10 +32,18 @@
         v-model="user.password"
         required
       />
-      <router-link :to="{ name: 'register' }">Need an account?</router-link>
-      <button type="submit">Sign in</button>
+        </div>
+      <div class = "form-group ">
+        <button type="submit" class =  "btn btn-primary col-3">Sign in</button>
+      <small id="emailHelp" class="form-text text-muted"> 
+        <router-link :to="{ name: 'register' }">Need an account?</router-link>
+      </small>
+      </div>
+
     </form>
+    </div>
   </div>
+  
 </template>
 
 <script>
@@ -82,5 +95,21 @@ export default {
 </script>
 
 <style>
+
+
+button {
+  background-color: var(--gxgreen) !important;
+  border-color: var(--gxgreen) !important;
+  color: var(--gxwhite) !important;
+}
+  h1 {
+    color: var(--gxpink) !important;
+  }
+nav {
+  color: var(--gxpink) !important;
+}
+.nav-link{
+  color: var(--gxpink) !important;
+}
 
 </style>
