@@ -17,6 +17,7 @@
       </div>
       <div class="invites container col-8">
         <h1>Invites</h1>
+        <!-- V for each over returned events -->
           <event-preview>
           </event-preview>
       </div>
