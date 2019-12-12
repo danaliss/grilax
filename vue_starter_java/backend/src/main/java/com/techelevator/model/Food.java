@@ -9,7 +9,7 @@ public class Food {
 	private boolean glutenFree;
 	private boolean nutFree;
 	private String description;
-	private long menuId;
+	private long eventId;
 
 	public long getFoodId() {
 		return foodId;
@@ -67,12 +67,12 @@ public class Food {
 		this.description = description;
 	}
 
-	public long getMenuId() {
-		return menuId;
+	public long getEventId() {
+		return eventId;
 	}
 
-	public void setMenuId(long menuId) {
-		this.menuId = menuId;
+	public void setEventId(long eventId) {
+		this.eventId = eventId;
 	}
 
 }
