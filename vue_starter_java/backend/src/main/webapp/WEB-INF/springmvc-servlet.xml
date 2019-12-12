@@ -39,6 +39,7 @@
 		<mvc:mapping path="/**" allowed-methods="*" />
 		<mvc:mapping path="/api/**" allowed-methods="*" />
 		<mvc:mapping path="/api/user/**" allowed-methods="*" />
+		<mvc:mapping path="/api/events/**" allowed-methods="*" />
 	</mvc:cors>
 	
 	<!-- This view resolver contains logic for translating a logical view name
