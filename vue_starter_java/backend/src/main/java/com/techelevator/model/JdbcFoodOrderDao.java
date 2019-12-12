@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JdbcFoodOrderDao implements FoodOrderDao {
 
-	JdbcTemplate jdbc;
+	private JdbcTemplate jdbc;
 	
 	@Autowired
 	public JdbcFoodOrderDao(DataSource dataSource) {
@@ -38,10 +38,10 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 
 	@Override
 	public Food createFoodItems(Food food) {
-		String sqlString = "INSERT INTO food (food_id, food_name, vegetarian, vegan, gluten_free, nut_free, description, event_id) "
-						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		String sqlString = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, nut_free, description, event_id) "
+						 + "VALUES(?, ?, ?, ?, ?, ?, ?)";
 		
-		jdbc.update(sqlString, food.getFoodId(), food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getEventId());
+		jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getEventId());
 		
 		return food;
 	}

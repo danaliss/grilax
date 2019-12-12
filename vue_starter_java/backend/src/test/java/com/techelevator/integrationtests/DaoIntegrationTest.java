@@ -1,6 +1,8 @@
 package com.techelevator.integrationtests;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import javax.sql.DataSource;
 
@@ -10,6 +12,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
+import com.techelevator.model.Address;
+import com.techelevator.model.Event;
+import com.techelevator.model.Food;
+import com.techelevator.model.JdbcEventDao;
+import com.techelevator.model.JdbcFoodOrderDao;
+import com.techelevator.model.JdbcUserDao;
+import com.techelevator.model.Order;
+import com.techelevator.model.User;
 
 public abstract class DaoIntegrationTest {
 
@@ -19,8 +31,11 @@ public abstract class DaoIntegrationTest {
 	 * transaction
 	 */
 	private static SingleConnectionDataSource dataSource;
-
-	private JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
+	
+	protected JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
+	
+	protected JdbcFoodOrderDao foodOrderDao = new JdbcFoodOrderDao(getDataSource());
+	protected JdbcEventDao eventDao = new JdbcEventDao(getDataSource());
 	protected Long testFoodId1;
 	protected Long testFoodId2;
 	protected Long testOrderId;
@@ -59,44 +74,42 @@ public abstract class DaoIntegrationTest {
 	 */
 	@Before
 	public void setup() {
-		String sql = "INSERT INTO address (street_address, city, state, zip) "
-				   + "VALUES ('1337 Very Fake Street', 'Boston', 'MA', '02134') RETURNING address_id";
+		String sqlInsertFakeAddress = "INSERT INTO address (street_address, city, state, zip) "
+				   + "VALUES (?, ?, ?, ?) RETURNING address_id";
 
-	    testAddressId = jdbcTemplate.queryForObject(sql, Long.TYPE);
+	    testAddressId = jdbcTemplate.queryForObject(sqlInsertFakeAddress, Long.TYPE, "1337 Very Fake Street", "Boston", "MA", "02134");
 		
-		sql = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
-		    + "VALUES ('Summer Cookout 2020', '07-05-2020', '3pm', 'Partying after the 4th of July!', '06-28-2020', 1) RETURNING event_id";
+		String sqlInsertFakeEvent = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
+		    + "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
 
-		testEventId1 = jdbcTemplate.queryForObject(sql, Long.TYPE);
+		testEventId1 = jdbcTemplate.queryForObject(sqlInsertFakeEvent, Long.TYPE, "Summer Cookout 2020", LocalDate.of(2020, 07, 05), "3pm", "Partying after the 4th of July!", LocalDate.of(2020, 06, 28), testAddressId);
 
-		sql = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
-			+ "VALUES ('Fibonacci Day Party', '11-23-2020', '5pm', 'Celebrate Fibonacci Day!', '11-16-2020', 1) RETURNING event_id";
+		sqlInsertFakeEvent = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
+			+ "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
 
-		testEventId2 = jdbcTemplate.queryForObject(sql, Long.TYPE);
+		testEventId2 = jdbcTemplate.queryForObject(sqlInsertFakeEvent, Long.TYPE, "Fibonacci Day Party", LocalDate.of(2020, 11, 23), "5pm", "Celebrate Fibonacci Day!", LocalDate.of(2020, 11, 16), testAddressId);
 		
-		sql = "INSERT INTO users (username, password, salt, email, date_registered) "
-			+ "VALUES ('FakeUser', 'FakePassword', 'FAKESALT', 'Fake@Fake.com', '2019-12-11 17:26:30') RETURNING user_id";
+		String sqlInsertFakeUser = "INSERT INTO users (username, password, salt, email, date_registered) "
+			+ "VALUES (?, ?, ?, ?, ?) RETURNING user_id";
 
-		testUserId = jdbcTemplate.queryForObject(sql, Long.TYPE);
+		testUserId = jdbcTemplate.queryForObject(sqlInsertFakeUser, Long.TYPE, "FakeUser", "FakePassword", "FAKESALT", "Fake@Fake.com", Timestamp.valueOf("2019-12-11 17:26:30"));
 		
-		sql = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, " 
+		String sqlInsertFakeFood = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, " 
 		    + "nut_free, description, event_id) "
-			+ "VALUES ('Grilled Chicken', 'false', 'false', 'true', 'true', "
-			+ "'Marinated grilled chicken', 1) RETURNING food_id";
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING food_id";
 
-		testFoodId1 = jdbcTemplate.queryForObject(sql, Long.TYPE);
+		testFoodId1 = jdbcTemplate.queryForObject(sqlInsertFakeFood, Long.TYPE, "Grilled Chicken", false, false, true, true, "Marinated grilled chicken", testEventId1);
 
-		sql = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, " 
+		sqlInsertFakeFood = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, " 
 		    + "nut_free, description, event_id) "
-			+ "VALUES ('Grilled Tofu', 'true', 'true', 'true', 'true', "
-			+ "'Marinated grilled tofu', 1) RETURNING food_id";
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING food_id";
 
-		testFoodId2 = jdbcTemplate.queryForObject(sql, Long.TYPE);
+		testFoodId2 = jdbcTemplate.queryForObject(sqlInsertFakeFood, Long.TYPE, "Grilled Tofu", true, true, true, true, "Marinated grilled tofu", testEventId1);
 		
-		sql = "INSERT INTO orders (event_id, user_id, food_id, status, quantity) "
-			+ "VALUES ('1', '1', '1', 'waiting', '2') RETURNING order_id";
+		String sqlInsertFakeOrder = "INSERT INTO orders (event_id, user_id, food_id, status, quantity) "
+			+ "VALUES (?, ?, ?, ?, ?) RETURNING order_id";
 
-		testOrderId = jdbcTemplate.queryForObject(sql, Long.TYPE);
+		testOrderId = jdbcTemplate.queryForObject(sqlInsertFakeOrder, Long.TYPE, testEventId1, testUserId, testFoodId1, "done", 2);
 	}
 
 	/*
