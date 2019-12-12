@@ -35,6 +35,7 @@ CREATE TABLE users (
   username varchar(32) UNIQUE,     -- Username
   password varchar(32) NOT NULL,      -- Password
   salt varchar(256) NOT NULL,          -- Password Salt
+  role varchar(255) NOT NULL default('user'),
   email varchar(255) NOT NULL UNIQUE,
   date_registered timestamp DEFAULT Now()
 );
