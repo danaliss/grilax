@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.model.Food;
 import com.techelevator.model.FoodOrderDao;
 import com.techelevator.model.Order;
 
-public class FoodController extends ApiController {
+@RestController
+@RequestMapping("/api")
+public class FoodController {
 	
 	@Autowired
 	private FoodOrderDao foodOrderDao;

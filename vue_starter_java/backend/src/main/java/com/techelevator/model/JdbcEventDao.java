@@ -5,13 +5,17 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JdbcEventDao implements EventDao {
 	
 	private JdbcTemplate jdbc;
 	
+	@Autowired
 	public JdbcEventDao(DataSource dataSource) {
 		this.jdbc = new JdbcTemplate(dataSource);
 	}
