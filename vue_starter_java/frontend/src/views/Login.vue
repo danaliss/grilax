@@ -2,6 +2,7 @@
   <div id="login" class="text-center">
     <div class="container col-3 container-fluid">
     <form class="form-signin" @submit.prevent="login">
+      <br>
       <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
       <div class="alert alert-danger" role="alert" v-if="invalidCredentials">
         Invalid username and password!

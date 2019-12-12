@@ -43,12 +43,12 @@ export default {
   --gxorange: #ff7f68;
   --gxyellow: #ffdb2b;
   --gxpink: #ef2871;
-  --gxgreen: #71d861;
+  --gxgreen: rgb(113, 216, 97);
   --gxwhite: #effffb;
-  --gxwhitetransparent: rgba(239, 255, 251, .3)
+  --gxgreentransparent: rgb(113, 216, 97, 1)
 }
 nav {
-    background-color: var(--gxwhitetransparent);
+    background-color: var(--gxgreentransparent);
     
 }
 

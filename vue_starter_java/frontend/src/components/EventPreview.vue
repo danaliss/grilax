@@ -6,8 +6,12 @@
 </template>
 
 <script>
+import { METHODS } from 'http'
 export default {
-    name: 'event-preview'
+    name: 'event-preview',
+   
+    
+
 }
 </script>
 
