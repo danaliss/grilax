@@ -36,6 +36,7 @@ public class EventController {
 		return eventDao.getAddress(addressid);
 	}
 	
+	
 	/**
 	 * Gets a list of all the events for the currently logged in user.
 	 * Roles: Anonymous
@@ -54,9 +55,10 @@ public class EventController {
      * Roles: Host
      */
     @PostMapping(path="/events")
-    public Event createEvent(Event event, HttpServletResponse response) {
+    public Event createEvent(Event event, Address address, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return eventDao.createEvent(event);
+    	eventDao.addAddress(address);
+    	return eventDao.createEvent(event, address);
     }
     
     /**
