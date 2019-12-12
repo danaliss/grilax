@@ -170,7 +170,7 @@ public class JdbcEventDao implements EventDao {
 		address.setStreetAddress(row.getString("street_address"));
 		address.setCity(row.getString("city"));
 		address.setState(row.getString("state"));
-		address.setZip(row.getInt("zip"));
+		address.setZip(row.getString("zip"));
 		
 		return address;
 	}
