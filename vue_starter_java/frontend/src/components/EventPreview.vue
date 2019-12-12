@@ -6,13 +6,15 @@
 </template>
 
 <script>
-import { METHODS } from 'http'
+
+//import { METHODS } from 'http'
 export default {
     name: 'event-preview',
    
     
 
 }
+
 </script>
 
 <style scoped>
