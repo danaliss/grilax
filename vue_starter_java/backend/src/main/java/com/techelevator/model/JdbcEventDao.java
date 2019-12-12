@@ -39,7 +39,7 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public Event createEvent(Event event) {
+	public Event createEvent(Event event, Address address) {
 		String sqlQuery = "INSERT INTO event (event_id, menu_id, event_name, event_date, event_time, description, deadline, address_id) "
 						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		
@@ -51,7 +51,7 @@ public class JdbcEventDao implements EventDao {
 				event.getTime(),
 				event.getDescription(),
 				event.getDeadline(),
-				event.getAddressId());
+				address.getAddressId());
 		
 		return event;
 	}
@@ -138,6 +138,17 @@ public class JdbcEventDao implements EventDao {
 		return address;
 	}
 	
+	@Override
+	public void addAddress(Address address) {
+		String sqlQuery = "INSERT INTO address (street_address, city, state, zip) "
+						+ "VALUES(?, ?, ?, ?) ";
+		jdbc.update(sqlQuery,
+					address.getStreetAddress(),
+					address.getCity(),
+					address.getState(),
+					address.getZip());
+	}
+	
 	private Event mapRowToEvent(SqlRowSet row) {
 		Event event = new Event();
 		
@@ -178,4 +189,6 @@ public class JdbcEventDao implements EventDao {
 		
 		return address;
 	}
+
+
 }
