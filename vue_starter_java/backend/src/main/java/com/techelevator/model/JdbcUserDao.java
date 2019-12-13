@@ -5,13 +5,14 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.techelevator.authentication.PasswordHasher;
-
 import org.bouncycastle.util.encoders.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+
+import com.techelevator.authentication.PasswordHasher;
 
 @Component
 public class JdbcUserDao implements UserDao {
@@ -43,7 +44,7 @@ public class JdbcUserDao implements UserDao {
      * @return the new user
      */
     @Override
-    public User saveUser(String userName, String password, String role, String email) {
+    public User saveUser(String userName, String password, String role, String email) throws DuplicateKeyException {
         byte[] salt = passwordHasher.generateRandomSalt();
         String hashedPassword = passwordHasher.computeHash(password, salt);
         String saltString = new String(Base64.encode(salt));
@@ -55,6 +56,7 @@ public class JdbcUserDao implements UserDao {
         newUser.setId(newId);
         newUser.setUsername(userName);
         newUser.setEmail(email);
+        newUser.setRole(role);
 
         return newUser;
     }
@@ -125,7 +127,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User getUserByUsername(String username) {
-        String sqlSelectUserByUsername = "SELECT user_id, username, role FROM users WHERE username = ?";
+        String sqlSelectUserByUsername = "SELECT user_id, username, email, role FROM users WHERE username = ?";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sqlSelectUserByUsername, username);
 
         if (results.next()) {

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,11 +12,12 @@ import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.techelevator.model.User;
-import com.techelevator.model.UserDao;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.dao.DuplicateKeyException;
+
+import com.techelevator.model.User;
+import com.techelevator.model.UserDao;
 
 /**
  * RequestAuthProviderTest
@@ -78,9 +80,12 @@ public class RequestAuthProviderTest {
 
     @Test
     public void registerTest() {
-        sut.register("TEST", "TESTPASS", "TESTROLE", "TESTEMAIL@TEST.ORG");
-
-        verify(mockedDao).saveUser("TEST", "TESTPASS", "TESTROLE", "TESTEMAIL@TEST.ORG");
+    	try {
+        	sut.register("TEST", "TESTPASS", "TESTROLE", "TESTEMAIL@TEST.ORG");
+			verify(mockedDao).saveUser("TEST", "TESTPASS", "TESTROLE", "TESTEMAIL@TEST.ORG");
+		} catch (DuplicateKeyException e) {
+			fail("User already exists in the database.");
+		}
     }
 
     @Test
