@@ -87,10 +87,10 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 
 	@Override
 	public Order createOrder(Order order) {
-		String sqlString = "INSERT INTO orders (order_id, event_id, user_id, food_id, status, quantity)"
-						 + " VALUES(?, ?, ?, ?, ?, ?)";
+		String sqlString = "INSERT INTO orders (event_id, user_id, food_id, status, quantity)"
+						 + " VALUES(?, ?, ?, ?, ?)";
 		
-		jdbc.update(sqlString, order.getOrderId(), order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
+		jdbc.update(sqlString, order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
 		
 		return order;
 	}
@@ -98,14 +98,13 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 	@Override
 	public Order updateOrder(Order order) {
 		String sqlString = "UPDATE orders SET "
-						 + "event_id = ?, "
 						 + "user_id = ?, "
 						 + "food_id = ?, "
 						 + "status = ?, "
 						 + "quantity = ? "
 						 + "WHERE order_id = ?";
 		
-		jdbc.update(sqlString, order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity(), order.getOrderId());
+		jdbc.update(sqlString, order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity(), order.getOrderId());
 		
 		return order;
 	}

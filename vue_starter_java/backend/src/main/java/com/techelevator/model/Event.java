@@ -5,7 +5,6 @@ import java.time.LocalDate;
 
 public class Event{
 	private long eventId;
-	private long menuId;
 	private String name;
 	private LocalDate date;
 	private String time;
@@ -56,10 +55,5 @@ public class Event{
 	public void setAddressId(long addressId) {
 		this.addressId = addressId;
 	}
-	public long getMenuId() {
-		return menuId;
-	}
-	public void setMenuId(long menuId) {
-		this.menuId = menuId;
-	}
+	
 }

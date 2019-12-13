@@ -58,7 +58,7 @@ public class EventController {
     public Event createEvent(Event event, Address address, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
     	eventDao.addAddress(address);
-    	return eventDao.createEvent(event, address);
+    	return eventDao.createEvent(event);
     }
     
     /**
@@ -68,22 +68,6 @@ public class EventController {
     @GetMapping(path="/event/{eventid}")
     public Event getEventDetails(@PathVariable long eventid, HttpServletResponse response) {
     	return eventDao.getEventDetails(eventid);
-    }
-    
-    /**
-     * Deletes the specified event.
-     * Roles: Host
-     */
-    @DeleteMapping(path="/event/{eventid}")
-    public void deleteEvent(@PathVariable long eventid, HttpServletResponse response) {
-    	eventDao.deleteEvent(eventid);
-    	
-    	// successfully deleted a record
-    	response.setStatus(HttpServletResponse.SC_OK);
-    	// no record to delete
-    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-    	// not authorized
-    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
     
     /**
@@ -102,7 +86,7 @@ public class EventController {
     @PostMapping(path="/event/{eventid}/attendees")
     public EventAttendees addEventAttendee(EventAttendees attendee, @PathVariable long eventid, HttpServletResponse response) {
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return eventDao.addEventAttendee(eventid, attendee);
+    	return eventDao.addEventAttendee(attendee);
     }
     
 //    @DeleteMapping(path="/event/{eventid}/attendees/{userid}")

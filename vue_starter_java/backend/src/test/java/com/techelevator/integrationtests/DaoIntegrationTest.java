@@ -16,6 +16,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.model.Address;
 import com.techelevator.model.Event;
+import com.techelevator.model.EventAttendees;
 import com.techelevator.model.Food;
 import com.techelevator.model.JdbcEventDao;
 import com.techelevator.model.JdbcFoodOrderDao;
@@ -43,6 +44,7 @@ public abstract class DaoIntegrationTest {
 	protected Long testEventId1;
 	protected Long testEventId2;
 	protected Long testAddressId;
+	protected EventAttendees attendee;
 
 	/*
 	 * Before any tests are run, this method initializes the datasource for testing.
@@ -104,12 +106,23 @@ public abstract class DaoIntegrationTest {
 		    + "nut_free, description, event_id) "
 			+ "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING food_id";
 
-		testFoodId2 = jdbcTemplate.queryForObject(sqlInsertFakeFood, Long.TYPE, "Grilled Tofu", true, true, true, true, "Marinated grilled tofu", testEventId1);
+		testFoodId2 = jdbcTemplate.queryForObject(sqlInsertFakeFood, Long.TYPE, "Grilled Tofu", true, true, true, true, "Marinated grilled tofu", testEventId2);
 		
 		String sqlInsertFakeOrder = "INSERT INTO orders (event_id, user_id, food_id, status, quantity) "
 			+ "VALUES (?, ?, ?, ?, ?) RETURNING order_id";
 
-		testOrderId = jdbcTemplate.queryForObject(sqlInsertFakeOrder, Long.TYPE, testEventId1, testUserId, testFoodId1, "done", 2);
+		testOrderId = jdbcTemplate.queryForObject(sqlInsertFakeOrder, Long.TYPE, testEventId2, testUserId, testFoodId1, "done", 2);
+		
+		EventAttendees attendee = new EventAttendees();
+		attendee.setEventId(testEventId1);
+		attendee.setUserId(testUserId);
+		attendee.setHost(true);
+		attendee.setAttending(true);
+		attendee.setFirstName("Fake");
+		attendee.setLastName("Fakington");
+		attendee.setAdultGuests(1);
+		attendee.setChildGuests(0);
+		eventDao.addEventAttendee(attendee);
 	}
 
 	/*
