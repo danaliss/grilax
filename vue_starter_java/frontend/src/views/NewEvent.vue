@@ -122,62 +122,6 @@
 </form>
 </div>
 
-<!--
-    <form>
-        <br>
-        <div class = "attending-btn container-fluid">
-            <h3>Will you be attending?</h3>
-        <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
-        
-            <label class="btn btn-secondary">
-            <input name = "radio-attending" type="radio" value="true">Yes
-            </label>
-            <label class="btn btn-secondary">
-            <input name = "radio-attending" type="radio" value="false">No
-            </label>
-        
-        
-        
-        </div>
-        <div class = "form-group">
-        <h3>How many adult guests will you bring?</h3>
-        <input type="number">
-        </div>
-        <div class = "form-group">
-        <h3>How many children will you bring?</h3>
-        <input type="number">
-        </div>
-        </div>
-
-
-
-
-
-        <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle" data-toggle="buttons">
-             
-            <h3>Please pick one of the following</h3>
-              
-            
-                <label class="btn btn-secondary btn-lg" aria-pressed="true" type="radio">
-                <input  name ="radio-food" type="radio"  value="true">
-                    <h4>Food item title</h4>
-                    <p>Food item description that goes on and on and on about how great the food is and how it's made</p>
-                </label>
-                
-            
-          
-            
-                <label class="btn btn-secondary btn-lg btn-block" type="radio">
-                <input name ="radio-food" type="radio" value="true">
-                    <h4>Food item title</h4>
-                    <p>Food item description</p>
-                </label>
-
-           
-        </div>
-
-    </form>
-    -->
 
 </template>
 
