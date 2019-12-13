@@ -69,7 +69,7 @@ public class JdbcEventDao implements EventDao {
 		String sqlString = "INSERT INTO event_attendees(event_id, user_id, is_host, is_attending, first_name, last_name, adult_guests, child_guests) "
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
-		jdbc.update(sqlString, attendees.getUserId(), attendees.isHost(), attendees.isAttending(),
+		jdbc.update(sqlString, attendees.getEventId(), attendees.getUserId(), attendees.isHost(), attendees.isAttending(),
 				attendees.getFirstName(), attendees.getLastName(), attendees.getAdultGuests(),
 				attendees.getChildGuests());
 
@@ -78,11 +78,17 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public Event updateEvent(long id, Event event) {
-		String sqlString = "UPDATE event SET " + "event_name = ?, " + "event_date = ?, " + "event_time = ?, "
-				+ "description = ?, " + "deadline = ?, " + "address_id = ? " + "WHERE event_id = ?";
+		String sqlString = "UPDATE event SET " 
+	                     + "event_name = ?, " 
+				         + "event_date = ?, " 
+	                     + "event_time = ?, "
+				         + "description = ?, " 
+	                     + "deadline = ?, " 
+				         + "address_id = ? " 
+	                     + "WHERE event_id = ?";
 
 		jdbc.update(sqlString, event.getName(), event.getDate(), event.getTime(), event.getDescription(),
-				event.getDeadline(), event.getDescription(), event.getAddressId(), event.getEventId());
+				event.getDeadline(), event.getAddressId(), event.getEventId());
 
 		return event;
 	}
@@ -127,8 +133,6 @@ public class JdbcEventDao implements EventDao {
 		event.setTime(row.getString("event_time"));
 		event.setDescription(row.getString("description"));
 		event.setDeadline(row.getDate("deadline").toLocalDate());
-		event.setHosting(row.getBoolean("is_host"));
-		event.setAttending(row.getBoolean("is_attending"));
 
 		return event;
 	}
