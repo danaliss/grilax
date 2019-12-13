@@ -4,11 +4,12 @@ import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+
 import com.techelevator.model.User;
 import com.techelevator.model.UserDao;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * RequestAuthProvider
@@ -68,7 +69,7 @@ public class RequestAuthProvider implements AuthProvider {
     }
 
     @Override
-    public void register(String username, String password, String role, String email) {
+    public void register(String username, String password, String role, String email) throws DuplicateKeyException {
         dao.saveUser(username, password, role, email);
     }
     
