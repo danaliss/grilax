@@ -1,9 +1,9 @@
 <template>
 <div class="preview">
     <!-- make this populate from the API -->
-    <h2>{{list.name}}EVENT name</h2>  
-    <h3>{{list.date}}EVENT DATE</h3>
-    <p>{{list.description}}EVENT DESCRIPTION</p>
+    <h2>{{list.name}}</h2>  
+    <h3>{{list.time}} {{list.date.dayOfWeek}} {{list.date.month}} {{list.date.dayOfMonth}} {{list.date.year}}</h3>
+    <p>{{list.description}}</p>
 </div>
 </template>
 
@@ -13,7 +13,7 @@
 export default {
     name: 'event-preview',
     props: {
-        list: Array
+        list: Object
     }
 
 }
