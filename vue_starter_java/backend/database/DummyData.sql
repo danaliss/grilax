@@ -6,8 +6,8 @@ SELECT * FROM orders;
 SELECT * FROM event_attendees;
 
 
-INSERT INTO users (username, password, salt, email) 
-VALUES ('Shecka', 'cookout123', 'qwerty', 'Shecka826@gmail.com');
+INSERT INTO users (user_id, username, password, salt, email, role) 
+VALUES (1, 'Shecka', 'cookout123', 'qwerty', 'Shecka826@gmail.com', 'User');
 
 INSERT INTO address (street_address, city, state, zip)
 VALUES ('123 Very Fake Street', 'Pittsburgh', 'PA', '15212');
