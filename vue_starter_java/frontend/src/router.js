@@ -4,7 +4,8 @@ import auth from './auth'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Register from './views/Register.vue'
-import Rsvp from './components/Rsvp.vue'
+import Rsvp from './views/Rsvp.vue'
+import NewEvent from './views/NewEvent.vue'
 import { RSA_SSLV23_PADDING } from 'constants';
 
 Vue.use(Router)
@@ -53,7 +54,17 @@ const router = new Router({
       meta: {
         requiresAuth: false
       }
+    },
+    {
+      path: "/newevent",
+      name: "newevent",
+      component: NewEvent,
+      meta: {
+        requiresAuth: true
+      } 
     }
+
+    
   ]
 })
 
