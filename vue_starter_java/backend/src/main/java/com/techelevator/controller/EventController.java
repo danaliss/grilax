@@ -23,7 +23,7 @@ import com.techelevator.model.EventAttendees;
 import com.techelevator.model.EventDao;
 import com.techelevator.model.User;
 
-@CrossOrigin
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api")

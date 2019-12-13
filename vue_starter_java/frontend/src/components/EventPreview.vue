@@ -1,17 +1,20 @@
 <template>
 <div class="preview">
     <!-- make this populate from the API -->
-    <h2>Cook Out Name and date click link to event</h2>  
+    <h2>{{list.name}}EVENT name</h2>  
+    <h3>{{list.date}}EVENT DATE</h3>
+    <p>{{list.description}}EVENT DESCRIPTION</p>
 </div>
 </template>
 
 <script>
 
-//import { METHODS } from 'http'
+
 export default {
     name: 'event-preview',
-   
-    
+    props: {
+        list: Array
+    }
 
 }
 
