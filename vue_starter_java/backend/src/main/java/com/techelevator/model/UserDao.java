@@ -12,9 +12,10 @@ public interface UserDao {
      * @param userName the user name to give the new user
      * @param password the user's password
      * @param role the user's role
+     * @param email the user's email
      * @return the new user
      */
-    public User saveUser(String userName, String password, String email);
+    public User saveUser(String userName, String password, String role, String email);
 
     public void changePassword(User user, String newPassword);
 
