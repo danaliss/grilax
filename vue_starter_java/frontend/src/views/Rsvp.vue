@@ -77,6 +77,7 @@
 
            
         </div>
+        
         <div class = "form-group col-md-8">
 
             <button type="submit" class="btn btn-secondary btn-lg">Submit RSVP</button>
