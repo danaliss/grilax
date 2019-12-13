@@ -112,7 +112,7 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 
 	@Override
 	public void deleteOrder(long eventId, long orderId) {
-		String sqlString = "DELETE FROM orders WHERE orderId = ?";
+		String sqlString = "DELETE FROM orders WHERE order_id = ?";
 		
 		jdbc.update(sqlString, orderId);
 	}

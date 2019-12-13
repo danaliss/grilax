@@ -27,7 +27,7 @@ public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 	}
 
 	@Test
-	public void createFoodItems_makes_new_food() {
+	public void food_can_be_created_and_updated() {
 
 		Food testFood = new Food();
 		testFood.setFoodName("Test");
@@ -41,51 +41,62 @@ public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 		foodOrderDao.createFoodItems(testFood);
 
 		Assert.assertNotNull(foodOrderDao.getFoodItems(testEventId2));
-
 		Assert.assertEquals(1, foodOrderDao.getFoodItems(testEventId2).size());
 
-	}
-	
-	@Test
-	public void updateFoodItems_updates_correctly() {
-		
+		Assert.assertEquals("Test", testFood.getFoodName());
+
+		testFood.setFoodName("Also a Test");
+		foodOrderDao.updateFoodItems(testFood);
+
+		Assert.assertEquals("Also a Test", testFood.getFoodName());
+
 	}
 
 	@Test
 	public void deleteFoodItem_deletes_correctly() {
-
+		Assert.assertEquals(2, foodOrderDao.getFoodItems(testEventId1).size());
 		foodOrderDao.deleteFoodItem(testEventId1, testFoodId2);
 
 		Assert.assertEquals(1, foodOrderDao.getFoodItems(testEventId1).size());
 	}
-	
+
 	@Test
 	public void getEventOrders_returns_orders() {
-		String sql = "SELECT COUNT(*) as order_count FROM orders "
-				 + "WHERE event_id = ?";
+		String sql = "SELECT COUNT(*) as order_count FROM orders " + "WHERE event_id = ?";
 		SqlRowSet select = jdbcTemplate.queryForRowSet(sql, testEventId1);
 		select.next();
 
 		long expected = select.getLong("order_count");
 		long actual = (long) foodOrderDao.getEventOrders(testEventId1).size();
 
-		Assert.assertEquals(1, actual);
+		Assert.assertEquals(expected, actual);
 	}
-	
+
 	@Test
-	public void createOrder_makes_new_order() {
+	public void orders_can_be_created_and_updated() {
 		Order testOrder = new Order();
 		testOrder.setEventId(testEventId2);
 		testOrder.setUserId(testUserId);
 		testOrder.setFoodId(testFoodId1);
-		testOrder.setStatus("done");
+		testOrder.setStatus("waiting");
 		testOrder.setQuantity(3);
-		
-		foodOrderDao.createOrder(testOrder);
-		
-		Assert.assertNotNull(foodOrderDao.getEventOrders(testEventId2));
 
+		foodOrderDao.createOrder(testOrder);
+
+		Assert.assertNotNull(foodOrderDao.getEventOrders(testEventId2));
 		Assert.assertEquals(1, foodOrderDao.getEventOrders(testEventId2).size());
+
+		testOrder.setStatus("done");
+		foodOrderDao.updateOrder(testOrder);
+		Assert.assertEquals("done", testOrder.getStatus());
+	}
+
+	@Test
+	public void deleteOrder() {
+		Assert.assertEquals(1, foodOrderDao.getEventOrders(testEventId1).size());
+		foodOrderDao.deleteOrder(testEventId1, testOrderId);
+
+		Assert.assertEquals(0, foodOrderDao.getEventOrders(testEventId1).size());
 	}
 
 }
