@@ -53,8 +53,8 @@ export default {
             })
             .then((response)=>response.json())
             .then((data)=>{
-              this.events = data;
-              // this.hosting = data.filter(x => x.AmHost);
+              this.events = data.object;
+              
               this.hosting = data.filter((current) => {
                 return current.isHost === true
               });
