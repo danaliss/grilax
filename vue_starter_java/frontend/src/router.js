@@ -5,6 +5,7 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Register from './views/Register.vue'
 import Rsvp from './views/Rsvp.vue'
+import EventDetails from './views/EventDetails.vue'
 import NewEvent from './views/NewEvent.vue'
 import SendInvites from './views/SendInvites.vue'
 import CreateMenu from './views/CreateMenu.vue'
@@ -50,7 +51,7 @@ const router = new Router({
       }
     },
     {
-      path: "/rsvp",
+      path: "/:eventId/rsvp",
       name: "rsvp",
       component: Rsvp,
       meta: {
@@ -83,9 +84,15 @@ const router = new Router({
         requiresAuth: true
       }
        
+      },
+    {
+      path: "/:eventId/eventDetails",
+      name: "eventDetails",
+      component: EventDetails,
+      meta: {
+        requiresAuth: true
+      } 
     }
-
-    
   ]
 })
 

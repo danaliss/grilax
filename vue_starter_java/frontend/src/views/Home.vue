@@ -4,8 +4,7 @@
       <div class="hosting container col-8">
         <div>
         <h1>Hosting</h1>
-        <event-preview v-for="event in hosting" v-bind:list="event" v-bind:key="event.eventId">
-        </event-preview>
+        <event-preview v-for="event in hosting" v-bind:list="event" v-bind:key="event.eventId"/>
         </div>
       </div>
 

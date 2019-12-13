@@ -8,6 +8,7 @@
             </a>
             <p class ="nav-item nav-link" @click="logout()">Logoff</p>
             <router-link class ="nav-item nav-link" to="/">Home</router-link>
+            <router-link class ="nav-item nav-link" to="/newevent">Create New Event</router-link>
         </div>
       </nav>
 
