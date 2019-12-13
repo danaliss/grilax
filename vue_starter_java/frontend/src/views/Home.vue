@@ -4,20 +4,20 @@
       <div class="hosting container col-8">
         <div>
         <h1>Hosting</h1>
-        <event-preview v-for="event in hosting" v-bind:list="hosting" v-bind:key="event.eventId">
+        <event-preview v-for="event in hosting" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
         </div>
       </div>
 
       <div class="attending container col-8">
         <h1>Attending</h1>
-        <event-preview v-for="event in attending" v-bind:list="attending" v-bind:key="event.eventId">
+        <event-preview v-for="event in attending" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
       </div>
 
       <div class="invites container col-8">
         <h1>Invites</h1>
-        <event-preview v-for="event in invites" v-bind:list="invites" v-bind:key="event.eventId">
+        <event-preview v-for="event in invites" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
       </div>
   </div>
@@ -53,16 +53,16 @@ export default {
             })
             .then((response)=>response.json())
             .then((data)=>{
-              this.events = data;
-              // this.hosting = data.filter(x => x.AmHost);
-              this.hosting = data.filter((current) => {
-                return current.isHost === true
+              this.events = data.object;
+              
+              this.hosting = this.events.filter((current) => {
+                return current.hosting === true
               });
-              this.attending = data.filter((current) =>{
-                return current.isAttending === true
+              this.attending = this.events.filter((current) =>{
+                return current.attending === true
               });
-              this.invites = data.filter((current) =>{
-                return current.isAttending == null
+              this.invites = this.events.filter((current) =>{
+                return current.attending === false
               });
             })
     }
