@@ -1,6 +1,6 @@
 <template>
-<div class="rsvpForm">
-    <div class = "container">
+<div class="rsvp-form container">
+
     <form>
         <br>
         <div class = "attending-btn container-fluid">
@@ -19,11 +19,35 @@
         </div>
         <div class = "form-group">
         <h3>How many adult guests will you bring?</h3>
-        <input type="number">
+        <select type="number"  class="btn btn-secondary col-md-1 dropdown-toggle" data-toggle="dropdown">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
         </div>
         <div class = "form-group">
         <h3>How many children will you bring?</h3>
-        <input type="number">
+        <select type="number" class="btn btn-secondary col-md-1">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
         </div>
         </div>
 
@@ -31,12 +55,12 @@
 
 
 
-        <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle" data-toggle="buttons">
+        <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" data-toggle="buttons">
              
             <h3>Please pick one of the following</h3>
               
             
-                <label class="btn btn-secondary btn-lg" aria-pressed="true" type="radio">
+                <label class="btn btn-secondary btn-lg" type="radio">
                 <input  name ="radio-food" type="radio"  value="true">
                     <h4>Food item title</h4>
                     <p>Food item description that goes on and on and on about how great the food is and how it's made</p>
@@ -53,10 +77,15 @@
 
            
         </div>
+        <div class = "form-group col-md-8">
+
+            <button type="submit" class="btn btn-secondary btn-lg">Submit RSVP</button>
+
+        </div>
 
     </form>
 </div>
-</div>
+
 </template>
 
 <script>
@@ -99,11 +128,9 @@ export default {
     white-space: normal;
     text-align: left;
 }
-.food-btn .btn{
-    width: 40rem;
-}
+
 .attending-btn .btn{
-    width: 80px;
+
     text-align: center;
 }
 .btn.active {
@@ -116,7 +143,7 @@ h3 {
     color: var(--gxpink);
 }
 .card {
-    background-color: var(--gxwhite);
+    background-color: var(--gxwhite) !important;
 }
 
 
