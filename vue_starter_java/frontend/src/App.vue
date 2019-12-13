@@ -13,7 +13,14 @@ export default {
     NavHeader
   },
   data() {
-    return fetch(`${process.env.VUE_APP_REMOTE_API}/api/events`, {
+    return {
+      events : []
+    }
+  },
+
+  methods : {
+    fetchEvents() {
+      fetch(`${process.env.VUE_APP_REMOTE_API}/api/events`, {
                 method : "GET",
                 headers: {
                     
@@ -24,8 +31,13 @@ export default {
             })
             .then((response)=>response.json())
             .then((data)=>{
-              return data;
+              this.events = data;
             })
+    }
+  },
+
+  created(){
+    this.fetchEvents();
   }
   
 }
