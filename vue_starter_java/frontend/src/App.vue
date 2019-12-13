@@ -14,31 +14,8 @@ export default {
   },
   data() {
     return {
-      events : []
     }
   },
-
-  methods : {
-    fetchEvents() {
-      fetch(`${process.env.VUE_APP_REMOTE_API}/api/events`, {
-                method : "GET",
-                headers: {
-                    
-                    "Authorization": "Bearer "+auth.getToken(),
-                    "Content-Type" : "application/json",
-                    "Accepts" : "application/json"
-                }
-            })
-            .then((response)=>response.json())
-            .then((data)=>{
-              this.events = data;
-            })
-    }
-  },
-
-  created(){
-    this.fetchEvents();
-  }
   
 }
 </script>

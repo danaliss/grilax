@@ -1,5 +1,7 @@
 package com.techelevator.authentication;
 
+import org.springframework.dao.DuplicateKeyException;
+
 import com.techelevator.model.User;
 
 public interface AuthProvider {
@@ -40,14 +42,16 @@ public interface AuthProvider {
      * Register a new user to the system
      * @param username the new user's username
      * @param password the new user's password
+     * @param role the new user's role
      * @param email the new user's email
+     * @throws DuplicateKeyException if user already exists
      */
-    void register(String username, String password, String email);
+    void register(String username, String password, String role, String email) throws DuplicateKeyException;
 
     /**
      * Checks to see if the current user has one of the given roles
      * @param roles the roles to check for
      * @return true, if the user has one of the roles
      */
-    //boolean userHasRole(String[] roles);
+    boolean userHasRole(String[] roles);
 }

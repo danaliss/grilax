@@ -2,6 +2,8 @@ package com.techelevator.model;
 
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
+
 public interface UserDao {
 
     /**
@@ -12,9 +14,11 @@ public interface UserDao {
      * @param userName the user name to give the new user
      * @param password the user's password
      * @param role the user's role
+     * @param email the user's email
      * @return the new user
+     * @throws DuplicateKeyException 
      */
-    public User saveUser(String userName, String password, String email);
+    public User saveUser(String userName, String password, String role, String email) throws DuplicateKeyException;
 
     public void changePassword(User user, String newPassword);
 
