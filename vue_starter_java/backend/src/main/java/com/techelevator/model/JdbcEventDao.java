@@ -22,7 +22,7 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public List<Event> getEventsForUser(long userId) {
-		String sqlQuery = "SELECT event.event_id, event.menu_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id "
+		String sqlQuery = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id "
 						+ "FROM event "
 						+ "JOIN event_attendees USING (event_id) "
 						+ "WHERE event_attendees.user_id = ?";
@@ -40,12 +40,11 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public Event createEvent(Event event) {
-		String sqlQuery = "INSERT INTO event (event_id, menu_id, event_name, event_date, event_time, description, deadline, address_id) "
+		String sqlQuery = "INSERT INTO event (event_id, event_name, event_date, event_time, description, deadline, address_id) "
 						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		jdbc.update(sqlQuery,
 				event.getEventId(),
-				event.getMenuId(),
 				event.getName(),
 				event.getDate(),
 				event.getTime(),
@@ -93,7 +92,6 @@ public class JdbcEventDao implements EventDao {
 	@Override
 	public Event updateEvent(long id, Event event) {
 		String sqlString = "UPDATE event SET "
-						 + "menu_id = ?, "
 						 + "event_name = ?, "
 						 + "event_date = ?, "
 						 + "event_time = ?, "
@@ -102,14 +100,14 @@ public class JdbcEventDao implements EventDao {
 						 + "address_id = ? "
 						 + "WHERE event_id = ?";
 		
-		jdbc.update(sqlString, event.getMenuId(), event.getName(), event.getDate(), event.getTime(), event.getDescription(), event.getDeadline(), event.getDescription(), event.getAddressId(), event.getEventId());
+		jdbc.update(sqlString, event.getName(), event.getDate(), event.getTime(), event.getDescription(), event.getDeadline(), event.getDescription(), event.getAddressId(), event.getEventId());
 		
 		return event;
 	}
 
 	@Override
 	public Event getEventDetails(long id) {
-		String sqlString = "SELECT event.event_id, event.menu_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id "
+		String sqlString = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id "
 						 + "FROM event WHERE event_id = ?";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, id);
@@ -142,7 +140,6 @@ public class JdbcEventDao implements EventDao {
 		Event event = new Event();
 		
 		event.setEventId(row.getLong("event_id"));
-		event.setMenuId(row.getLong("menu_id"));
 		event.setName(row.getString("event_name"));
 		event.setDate(row.getDate("event_date").toLocalDate());
 		event.setTime(row.getString("event_time"));
