@@ -1,7 +1,7 @@
 <template>
 
 
-      <nav class="navbar navbar-expand-lg" role="navigation" aria-label="main navigation">
+      <nav class="navbar navbar-expand-sm" role="navigation" aria-label="main navigation">
         <div class="navbar-nav">
             <a class="nav-item nav-link">GRILLAX LOGO
             <img src="" width="112" height="28">
@@ -43,7 +43,8 @@ export default {
   --gxorange: #ff7f68;
   --gxyellow: #ffdb2b;
   --gxpink: #ef2871;
-  --gxgreen: rgb(113, 216, 97);
+  --gxgreen: #71d861;
+  --gxgreendark: #63bd55;
   --gxwhite: #effffb;
   --gxgreentransparent: rgb(113, 216, 97, 1)
 }
