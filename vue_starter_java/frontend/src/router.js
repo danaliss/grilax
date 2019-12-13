@@ -5,6 +5,7 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Register from './views/Register.vue'
 import Rsvp from './views/Rsvp.vue'
+import EventDetails from './views/EventDetails.vue'
 import NewEvent from './views/NewEvent.vue'
 import { RSA_SSLV23_PADDING } from 'constants';
 
@@ -48,7 +49,7 @@ const router = new Router({
       }
     },
     {
-      path: "/rsvp",
+      path: "/:eventId/rsvp",
       name: "rsvp",
       component: Rsvp,
       meta: {
@@ -62,9 +63,15 @@ const router = new Router({
       meta: {
         requiresAuth: true
       } 
+    },
+    {
+      path: "/:eventId/eventDetails",
+      name: "eventDetails",
+      component: EventDetails,
+      meta: {
+        requiresAuth: true
+      } 
     }
-
-    
   ]
 })
 
