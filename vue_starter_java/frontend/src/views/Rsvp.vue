@@ -1,39 +1,61 @@
 <template>
 <div class="rsvpForm">
+    <div class = "container">
     <form>
+        <br>
+        <div class = "attending-btn container-fluid">
+            <h3>Will you be attending?</h3>
+        <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
+        
+            <label class="btn btn-secondary">
+            <input name = "radio-attending" type="radio" value="true">Yes
+            </label>
+            <label class="btn btn-secondary">
+            <input name = "radio-attending" type="radio" value="false">No
+            </label>
+        
+        
+        
+        </div>
+        <div class = "form-group">
+        <h3>How many adult guests will you bring?</h3>
+        <input type="number">
+        </div>
+        <div class = "form-group">
+        <h3>How many children will you bring?</h3>
+        <input type="number">
+        </div>
+        </div>
 
-        <div class = "container">
-            <h4>Will you be attending?</h4>
-        <div class="form-group">
-        <div class = "form-check">
-            <input class="form-check-input" name = "radio-yes" type="radio" value="true">
-            <label class="form-check-label" for="radio-yes">Yes</label>
-        </div>
-        <div class = "form-check">
-            <input class="form-check-input" name = "radio-no" type="radio" value="false">
-            <label class="form-check-label" for="radio-no">No</label>
-        </div>
-        </div>
-        <div class = "container">
-            <h4>Please pick one of the following</h4>
-            <div class = "form-group card">
-                <input class = "form-check-input" name ="radio-1" type="radio" value="true">
-                <label class="form-check-label" for ="radio-1" type="radio">
-                    <h6>Food item title</h6>
+
+
+
+
+        <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle" data-toggle="buttons">
+             
+            <h3>Please pick one of the following</h3>
+              
+            
+                <label class="btn btn-secondary btn-lg" aria-pressed="true" type="radio">
+                <input  name ="radio-food" type="radio"  value="true">
+                    <h4>Food item title</h4>
+                    <p>Food item description that goes on and on and on about how great the food is and how it's made</p>
+                </label>
+                
+            
+          
+            
+                <label class="btn btn-secondary btn-lg btn-block" type="radio">
+                <input name ="radio-food" type="radio" value="true">
+                    <h4>Food item title</h4>
                     <p>Food item description</p>
                 </label>
-            </div>
-            <div class = "form-group card">
-                <input class = "form-check-input" name ="radio-2" type="radio" value="true">
-                <label class="form-check-label" for ="radio-2" type="radio">
-                    <h6>Food item title</h6>
-                    <p>Food item description</p>
-                </label>
-            </div>
-        </div>
+
+           
         </div>
 
     </form>
+</div>
 </div>
 </template>
 
@@ -63,11 +85,39 @@ export default {
   --gxorange: #ff7f68;
   --gxyellow: #ffdb2b;
   --gxpink: #ef2871;
-  --gxgreen: rgb(113, 216, 97);
+  --gxgreen: rgb(217, 224, 216);
+   --gxgreendark: #63bd55;
   --gxwhite: #effffb;
   --gxgreentransparent: rgb(113, 216, 97, 1)
 }
-.card{
-    background-color: var(--gxwhite)
+
+.btn {
+    background-color: var(--gxgreen) !important;
+    border-color: var(--gxgreendark) !important;
+    color: var(--gxwhite)!important;
+    word-wrap: break-word;
+    white-space: normal;
+    text-align: left;
 }
+.food-btn .btn{
+    width: 40rem;
+}
+.attending-btn .btn{
+    width: 80px;
+    text-align: center;
+}
+.btn.active {
+  color: var(--gxwhite) !important; 
+  background-color: var(--gxgreendark) !important; 
+  border-color: var(--gxgreendark) !important;
+  
+}
+h3 {
+    color: var(--gxpink);
+}
+.card {
+    background-color: var(--gxwhite);
+}
+
+
 </style>
