@@ -19,6 +19,9 @@ public class User {
     @NotBlank(message = "Password is required")
     private String password;
     private String confirmPassword;
+    
+    @NotBlank(message = "Role is required")
+    private String role;
 
     private boolean passwordMatching;
 
@@ -57,6 +60,20 @@ public class User {
      */
     public void setId(long id) {
         this.id = id;
+    }
+    
+    /**
+     * @return the role
+     */
+    public String getRole() {
+    	return role;
+    }
+    
+    /**
+     * @param role the role to set
+     */
+    public void setRole(String role) {
+    	this.role = role;
     }
 
     /**

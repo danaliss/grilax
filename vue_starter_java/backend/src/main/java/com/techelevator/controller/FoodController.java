@@ -1,10 +1,9 @@
 package com.techelevator.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +12,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.techelevator.controller.response.Response;
+import com.techelevator.controller.response.ResponseError;
 import com.techelevator.model.Food;
 import com.techelevator.model.FoodOrderDao;
 import com.techelevator.model.Order;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api")
 public class FoodController {
 	
@@ -29,8 +31,8 @@ public class FoodController {
 	 * Roles: Attendee | Host | Chef
 	 */
     @GetMapping(path="/event/{eventid}/menu")
-    public List<Food> getFoodItems(@PathVariable long eventid, HttpServletResponse response) {
-    	return foodOrderDao.getFoodItems(eventid);
+    public Response getFoodItems(@PathVariable long eventid, HttpServletResponse response) {
+    	return new Response(foodOrderDao.getFoodItems(eventid));
     }
 
     /**
@@ -38,9 +40,16 @@ public class FoodController {
      * Roles: Host
      */
     @PostMapping(path="/event/{eventid}/menu")
-    public Food createFoodItems(@PathVariable long eventid, Food food, HttpServletResponse response) {
-    	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return foodOrderDao.createFoodItems(food);
+    public Response createFoodItems(@PathVariable long eventid, Food food, HttpServletResponse response) {
+    	Food newFood = foodOrderDao.createFoodItems(food);
+    	
+    	if( newFood != null ) {
+	    	response.setStatus(HttpServletResponse.SC_CREATED);
+	    	return new Response(newFood);
+    	} else {
+    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    		return new Response(new ResponseError("Unable to create food item"));
+    	}
     }
     
     /**
@@ -48,8 +57,15 @@ public class FoodController {
      * Roles: Host
      */
     @PutMapping(path="/event/{eventid}/menu/{itemid}")
-    public Food updateFoodItems(@PathVariable long eventid, @PathVariable long itemid, Food food, HttpServletResponse response) {
-    	return foodOrderDao.updateFoodItems(food);
+    public Response updateFoodItems(@PathVariable long eventid, @PathVariable long itemid, Food food, HttpServletResponse response) {
+    	Food newFood = foodOrderDao.updateFoodItems(food);
+    	
+    	if( newFood != null ) {
+    		return new Response(newFood);
+    	} else {
+    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    		return new Response(new ResponseError("Unable to update menu item"));
+    	}
     }
     
     /**
@@ -57,15 +73,22 @@ public class FoodController {
      * Roles: Host
      */
     @DeleteMapping(path="/event/{eventid}/menu/{itemid}")
-    public void deleteFoodItem(@PathVariable long eventid, @PathVariable long itemid, HttpServletResponse response) {
-    	// TODO: see if deleted
+    public Response deleteFoodItem(@PathVariable long eventid, @PathVariable long itemid, HttpServletResponse response) {
+    	// TODO: return food object that was deleted?
+    	int deleted = foodOrderDao.deleteFoodItem(eventid, itemid);
     	
-    	// successfully deleted a record
-    	response.setStatus(HttpServletResponse.SC_OK);
-    	// no record to delete
-    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    	if( deleted > 0 ) {
+	    	// successfully deleted a record
+	    	response.setStatus(HttpServletResponse.SC_OK);
+	    	return new Response();
+    	} else {
+	    	// no record to delete
+	    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+	    	return new Response(new ResponseError("Food item not found"));
+    	}
+    	// TODO
     	// not authorized
-    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    	//response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
     
     /**
@@ -75,8 +98,8 @@ public class FoodController {
      * @param all orders, completed orders, incomplete orders
      */
     @GetMapping(path="/event/{eventid}/orders")
-    public List<Order> getEventOrders(@PathVariable long eventid, HttpServletResponse response) {
-    	return foodOrderDao.getEventOrders(eventid);
+    public Response getEventOrders(@PathVariable long eventid, HttpServletResponse response) {
+    	return new Response(foodOrderDao.getEventOrders(eventid));
     }
     
     /**
@@ -84,9 +107,16 @@ public class FoodController {
      * Roles: Attendee | Host
      */
     @PostMapping(path="/event/{eventid}/order")
-    public Order createOrder(@PathVariable long eventid, Order order, HttpServletResponse response) {
-    	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return foodOrderDao.createOrder(order);
+    public Response createOrder(@PathVariable long eventid, Order order, HttpServletResponse response) {
+    	Order newOrder = foodOrderDao.createOrder(order);
+    	
+    	if( newOrder != null ) {
+	    	response.setStatus(HttpServletResponse.SC_CREATED);
+	    	return new Response(newOrder);
+    	} else {
+    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    		return new Response(new ResponseError("Unable to create order"));
+    	}
     }
     
     /**
@@ -94,8 +124,15 @@ public class FoodController {
      * Roles: Attendee | Host
      */
     @PutMapping(path="/event/{eventid}/order")
-    public Order updateOrder(@PathVariable long eventid, Order order, HttpServletResponse response) {
-    	return foodOrderDao.updateOrder(order);
+    public Response updateOrder(@PathVariable long eventid, Order order, HttpServletResponse response) {
+    	Order newOrder = foodOrderDao.updateOrder(order);
+    	
+    	if( newOrder != null ) {
+    		return new Response();
+    	} else {
+    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    		return new Response(new ResponseError("Bad event update"));
+    	}
     }
     
     /**
@@ -103,14 +140,20 @@ public class FoodController {
      * Roles: Attendee | Host
      */
     @DeleteMapping(path="/event/{eventid}/order/{orderid}")
-    public void deleteOrder(@PathVariable long eventid, @PathVariable long orderid, HttpServletResponse response) {
-    	foodOrderDao.deleteOrder(eventid, orderid);
+    public Response deleteOrder(@PathVariable long eventid, @PathVariable long orderid, HttpServletResponse response) {
+    	int updates = foodOrderDao.deleteOrder(eventid, orderid);
     	
-    	// successfully deleted a record
-    	response.setStatus(HttpServletResponse.SC_OK);
-    	// no record to delete
-    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    	if( updates > 0 ) {
+	    	// successfully deleted a record
+	    	response.setStatus(HttpServletResponse.SC_OK);
+	    	return new Response();
+    	} else {
+	    	// no record to delete
+	    	response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+	    	return new Response(new ResponseError("Unable to delete event"));
+    	}
     	// not authorized
-    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    	// TODO
+    	//response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

@@ -11,7 +11,8 @@ public class Event{
 	private String description;
 	private LocalDate deadline;
 	private long addressId;
-
+	private boolean hosting;
+	private boolean attending;
 	
 	public String getName() {
 		return name;
@@ -55,5 +56,16 @@ public class Event{
 	public void setAddressId(long addressId) {
 		this.addressId = addressId;
 	}
-	
+	public boolean isAttending() {
+		return attending;
+	}
+	public void setAttending(boolean attending) {
+		this.attending = attending;
+	}
+	public boolean isHosting() {
+		return hosting;
+	}
+	public void setHosting(boolean hosting) {
+		this.hosting = hosting;
+	}
 }
