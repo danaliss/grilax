@@ -42,9 +42,14 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		String sqlString = "INSERT INTO food (food_id, food_name, vegetarian, vegan, gluten_free, nut_free, description, menu_id) "
 						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		
-		jdbc.update(sqlString, food.getFoodId(), food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getMenuId());
+		Food newFood = null;
+		int updates = jdbc.update(sqlString, food.getFoodId(), food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getMenuId());
 		
-		return food;
+		if( updates > 0 ) {
+			newFood = food;
+		}
+		
+		return newFood;
 	}
 
 	@Override
@@ -59,16 +64,21 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 						 + "menu_id = ? "
 						 + "WHERE food_id = ?";
 		
-		jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getMenuId(), food.getFoodId());
+		Food newFood = null;
+		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getMenuId(), food.getFoodId());
 		
-		return food;
+		if( updates > 0 ) {
+			newFood = food;
+		}
+		
+		return newFood;
 	}
 
 	@Override
-	public void deleteFoodItem(long eventId, long foodId) {
+	public int deleteFoodItem(long eventId, long foodId) {
 		String sqlString = "DELETE FROM food WHERE food_id = ?";
 		
-		jdbc.update(sqlString, foodId);
+		return jdbc.update(sqlString, foodId);
 	}
 
 	@Override
@@ -91,9 +101,14 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		String sqlString = "INSERT INTO order (order_id, event_id, user_id, food_id, status, quantity)"
 						 + " VALUES(?, ?, ?, ?, ?, ?)";
 		
-		jdbc.update(sqlString, order.getOrderId(), order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
+		Order newOrder = null;
+		int updates = jdbc.update(sqlString, order.getOrderId(), order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
 		
-		return order;
+		if( updates > 0 ) {
+			newOrder = order;
+		}
+		
+		return newOrder;
 	}
 
 	@Override
@@ -112,10 +127,10 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 	}
 
 	@Override
-	public void deleteOrder(long eventId, long orderId) {
+	public int deleteOrder(long eventId, long orderId) {
 		String sqlString = "DELETE FROM order WHERE orderId = ?";
 		
-		jdbc.update(sqlString, orderId);
+		return jdbc.update(sqlString, orderId);
 	}
 	
 	private Food mapRowToFood(SqlRowSet row) {

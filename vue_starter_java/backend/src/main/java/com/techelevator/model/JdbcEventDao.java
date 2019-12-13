@@ -6,6 +6,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public List<Event> getEventsForUser(long userId) {
-		String sqlQuery = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id "
+		String sqlQuery = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending "
 						+ "FROM event "
 						+ "JOIN event_attendees USING (event_id) "
 						+ "WHERE event_attendees.user_id = ?";
@@ -39,12 +40,11 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public Event createEvent(Event event) {
-		String sqlQuery = "INSERT INTO event (event_id, event_name, event_date, event_time, description, deadline, address_id) "
-						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	public Event createEvent(Event event) throws DataIntegrityViolationException {
+		String sqlQuery = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
+						+ "VALUES (?, ?, ?, ?, ?, ?)";
 		
 		jdbc.update(sqlQuery,
-				event.getEventId(),
 				event.getName(),
 				event.getDate(),
 				event.getTime(),
@@ -56,10 +56,10 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public void deleteEvent(long id) {
+	public int deleteEvent(long id) {
 		String sqlString = "DELETE FROM event WHERE event_id = ?";
 		
-		jdbc.update(sqlString, id);
+		return jdbc.update(sqlString, id);
 	}
 
 	@Override
@@ -145,6 +145,8 @@ public class JdbcEventDao implements EventDao {
 		event.setTime(row.getString("event_time"));
 		event.setDescription(row.getString("description"));
 		event.setDeadline(row.getDate("deadline").toLocalDate());
+		event.setHosting(row.getBoolean("is_host"));
+		event.setAttending(row.getBoolean("is_attending"));
 		
 		return event;
 	}

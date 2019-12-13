@@ -2,11 +2,13 @@ package com.techelevator.model;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 public interface EventDao {
 	
 	public List<Event> getEventsForUser(long userId);
-	public Event createEvent(Event event);
-	public void deleteEvent(long id);
+	public Event createEvent(Event event) throws DataIntegrityViolationException;
+	public int deleteEvent(long id);
 	public List<EventAttendees> getEventAttendees(long id);
 	public EventAttendees addEventAttendee(long id, EventAttendees attendees);
 	public Event updateEvent(long id, Event event);
