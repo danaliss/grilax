@@ -15,15 +15,15 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.authentication.PasswordHasher;
-import com.techelevator.model.Address;
-import com.techelevator.model.Event;
-import com.techelevator.model.EventAttendees;
-import com.techelevator.model.Food;
-import com.techelevator.model.JdbcEventDao;
-import com.techelevator.model.JdbcFoodOrderDao;
-import com.techelevator.model.JdbcUserDao;
-import com.techelevator.model.Order;
-import com.techelevator.model.User;
+import com.techelevator.model.jdbc.JdbcEventDao;
+import com.techelevator.model.jdbc.JdbcFoodOrderDao;
+import com.techelevator.model.jdbc.JdbcUserDao;
+import com.techelevator.model.pojo.Address;
+import com.techelevator.model.pojo.Event;
+import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Food;
+import com.techelevator.model.pojo.Order;
+import com.techelevator.model.pojo.User;
 
 public abstract class DaoIntegrationTest {
 
@@ -125,7 +125,7 @@ public abstract class DaoIntegrationTest {
 		attendee.setLastName("Fakington");
 		attendee.setAdultGuests(1);
 		attendee.setChildGuests(0);
-		eventDao.addEventAttendee(attendee);
+		eventDao.addEventAttendee(testEventId1, attendee);
 	}
 
 	/*

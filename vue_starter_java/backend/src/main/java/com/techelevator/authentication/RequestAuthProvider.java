@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
-import com.techelevator.model.User;
-import com.techelevator.model.UserDao;
+import com.techelevator.model.dao.UserDao;
+import com.techelevator.model.pojo.User;
 
 /**
  * RequestAuthProvider

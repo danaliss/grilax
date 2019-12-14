@@ -1,6 +1,9 @@
-package com.techelevator.model;
+package com.techelevator.model.dao;
 
 import java.util.List;
+
+import com.techelevator.model.pojo.Food;
+import com.techelevator.model.pojo.Order;
 
 public interface FoodOrderDao {
 	

@@ -2,7 +2,7 @@ package com.techelevator.authentication;
 
 import org.springframework.dao.DuplicateKeyException;
 
-import com.techelevator.model.User;
+import com.techelevator.model.pojo.User;
 
 public interface AuthProvider {
     /**
