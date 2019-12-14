@@ -7,9 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import com.techelevator.model.Address;
-import com.techelevator.model.Event;
-import com.techelevator.model.EventAttendees;
+import com.techelevator.model.pojo.Address;
+import com.techelevator.model.pojo.Event;
+import com.techelevator.model.pojo.EventAttendees;
 
 public class JdbcEventDaoIntegrationTest extends DaoIntegrationTest {
 
@@ -30,7 +30,7 @@ public class JdbcEventDaoIntegrationTest extends DaoIntegrationTest {
 	@Test
 	public void events_can_be_created_and_updated() {
 		Event testEvent = getEventById(testEventId2);
-		eventDao.createEvent(testEvent);
+		eventDao.createEvent(testEvent, testUserId);
 		Assert.assertEquals(testEvent.getName(), eventDao.getEventDetails(testEventId2).getName());
 
 		testEvent.setName("New Test Name");
@@ -51,12 +51,6 @@ public class JdbcEventDaoIntegrationTest extends DaoIntegrationTest {
 		Assert.assertEquals(expected, actual);
 	}
 
-	@Test
-	public void address_can_be_created() {
-		Address testAddress = getAddressById(testAddressId);
-		eventDao.addAddress(testAddress);
-		Assert.assertEquals("02134", eventDao.getAddress(testAddressId).getZip());
-	}
 
 	private Event getEventById(long eventId) {
 		String sqlQuery = "SELECT * FROM event WHERE event_id=?";

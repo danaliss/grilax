@@ -7,10 +7,10 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import com.techelevator.model.Address;
-import com.techelevator.model.Food;
-import com.techelevator.model.JdbcFoodOrderDao;
-import com.techelevator.model.Order;
+import com.techelevator.model.jdbc.JdbcFoodOrderDao;
+import com.techelevator.model.pojo.Address;
+import com.techelevator.model.pojo.Food;
+import com.techelevator.model.pojo.Order;
 
 public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 

@@ -6,18 +6,15 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.DatatypeConverter;
-
-import com.techelevator.model.User;
-import com.techelevator.model.UserDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techelevator.controller.response.Response;
+import com.techelevator.controller.response.ResponseError;
+import com.techelevator.model.pojo.User;
 
 /**
  * JwtAuthInterceptor
@@ -49,7 +46,13 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
 
         User authedUser = tokenHandler.getUser(request.getHeader(AUTHORIZATION_HEADER));
         if (authedUser == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
+        	ObjectMapper mapper = new ObjectMapper();
+        	
+        	response.setContentType("application/json");
+        	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            Response<ResponseError> responseJSON = new Response<>(new ResponseError("Missing or invalid Authorization header."));
+            response.getWriter().write(mapper.writeValueAsString(responseJSON));
+            
             return false;
         } else {
             request.setAttribute(RequestAuthProvider.USER_KEY, authedUser);

@@ -1,4 +1,4 @@
-package com.techelevator.model;
+package com.techelevator.model.jdbc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+
+import com.techelevator.model.dao.FoodOrderDao;
+import com.techelevator.model.pojo.Food;
+import com.techelevator.model.pojo.Order;
 
 @Component
 public class JdbcFoodOrderDao implements FoodOrderDao {

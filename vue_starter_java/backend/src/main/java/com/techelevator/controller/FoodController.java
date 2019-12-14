@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.controller.response.Response;
 import com.techelevator.controller.response.ResponseError;
-import com.techelevator.model.Food;
-import com.techelevator.model.FoodOrderDao;
-import com.techelevator.model.Order;
+import com.techelevator.model.dao.FoodOrderDao;
+import com.techelevator.model.pojo.Food;
+import com.techelevator.model.pojo.Order;
 
 @RestController
 @CrossOrigin

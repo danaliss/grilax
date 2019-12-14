@@ -16,8 +16,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DuplicateKeyException;
 
-import com.techelevator.model.User;
-import com.techelevator.model.UserDao;
+import com.techelevator.model.dao.UserDao;
+import com.techelevator.model.pojo.User;
 
 /**
  * RequestAuthProviderTest
