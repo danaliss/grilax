@@ -22,9 +22,9 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 	
 	@Override
 	public List<Food> getFoodItems(long eventId) {
-		String sqlString = "SELECT food.food_id, food.food_name, food.vegetarian, food.vegan, food.gluten_free, food.nut_free, food.description, food.menu_id "
+		String sqlString = "SELECT food.food_id, food.food_name, food.vegetarian, food.vegan, food.gluten_free, food.nut_free, food.description "
 						 + "FROM food "
-						 + "JOIN event USING(menu_id) "
+						 + "JOIN event USING(event_id) "
 						 + "WHERE event_id = ?";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventId);
@@ -39,11 +39,11 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 
 	@Override
 	public Food createFoodItems(Food food) {
-		String sqlString = "INSERT INTO food (food_id, food_name, vegetarian, vegan, gluten_free, nut_free, description, menu_id) "
-						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		String sqlString = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, nut_free, description, event_id) "
+						 + "VALUES(?, ?, ?, ?, ?, ?, ?)";
 		
 		Food newFood = null;
-		int updates = jdbc.update(sqlString, food.getFoodId(), food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getMenuId());
+		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getEventId());
 		
 		if( updates > 0 ) {
 			newFood = food;
@@ -60,12 +60,11 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 						 + "vegan = ?, "
 						 + "gluten_free = ?, "
 						 + "nut_free = ?, "
-						 + "description = ?, "
-						 + "menu_id = ? "
+						 + "description = ? "
 						 + "WHERE food_id = ?";
 		
 		Food newFood = null;
-		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getMenuId(), food.getFoodId());
+		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getFoodId());
 		
 		if( updates > 0 ) {
 			newFood = food;
@@ -98,11 +97,11 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 
 	@Override
 	public Order createOrder(Order order) {
-		String sqlString = "INSERT INTO order (order_id, event_id, user_id, food_id, status, quantity)"
-						 + " VALUES(?, ?, ?, ?, ?, ?)";
+		String sqlString = "INSERT INTO orders (event_id, user_id, food_id, status, quantity)"
+						 + " VALUES(?, ?, ?, ?, ?)";
 		
 		Order newOrder = null;
-		int updates = jdbc.update(sqlString, order.getOrderId(), order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
+		int updates = jdbc.update(sqlString, order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
 		
 		if( updates > 0 ) {
 			newOrder = order;
@@ -113,7 +112,7 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 
 	@Override
 	public Order updateOrder(Order order) {
-		String sqlString = "UPDATE order SET "
+		String sqlString = "UPDATE orders SET "
 						 + "event_id = ?, "
 						 + "user_id = ?, "
 						 + "food_id = ?, "
@@ -128,7 +127,7 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 
 	@Override
 	public int deleteOrder(long eventId, long orderId) {
-		String sqlString = "DELETE FROM order WHERE orderId = ?";
+		String sqlString = "DELETE FROM orders WHERE order_id = ?";
 		
 		return jdbc.update(sqlString, orderId);
 	}
@@ -143,7 +142,6 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		food.setGlutenFree(row.getBoolean("gluten_free"));
 		food.setNutFree(row.getBoolean("nut_free"));
 		food.setDescription(row.getString("description"));
-		food.setMenuId(row.getLong("menu_id"));
 		
 		return food;
 	}
@@ -161,3 +159,4 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		return order;
 	}
 }
+

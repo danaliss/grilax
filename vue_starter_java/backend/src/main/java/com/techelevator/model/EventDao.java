@@ -8,12 +8,11 @@ public interface EventDao {
 	
 	public List<Event> getEventsForUser(long userId);
 	public Event createEvent(Event event) throws DataIntegrityViolationException;
-	public int deleteEvent(long id);
 	public List<EventAttendees> getEventAttendees(long id);
-	public EventAttendees addEventAttendee(long id, EventAttendees attendees);
+	public EventAttendees addEventAttendee(EventAttendees attendees);
 	public Event updateEvent(long id, Event event);
 	public Event getEventDetails(long id);
-	
 	public Address getAddress(long addressID);
+	public Address addAddress(Address address);
 
 }
