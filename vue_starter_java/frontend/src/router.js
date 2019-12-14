@@ -68,7 +68,7 @@ const router = new Router({
        
     },
     {
-      path: "/sendinvites",
+      path: "/:eventId/sendinvites",
       name: "sendinvites",
       component: SendInvites,
       meta: {

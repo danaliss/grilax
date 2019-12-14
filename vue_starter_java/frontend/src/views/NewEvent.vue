@@ -14,8 +14,8 @@
   </div>
   <div class="form-group form-row" >
       <div class='col'>
-    <label for="inputAddress">Event Description</label>
-    <textarea type="text-area" class="form-control" id="inputAddress" rows="3" placeholder="Details about the event here"/>
+    <label for="description">Event Description</label>
+    <textarea type="text-area" class="form-control" id="description" rows="3" placeholder="Details about the event here"/>
   </div>
   </div>
 
@@ -132,5 +132,19 @@ export default {
 </script>
 
 <style scoped>
+
+:root {
+  --gxorange: #ff7f68;
+  --gxyellow: #ffdb2b;
+  --gxpink: #ef2871;
+  --gxgreen: rgb(217, 224, 216);
+   --gxgreendark: #63bd55;
+  --gxwhite: #effffb;
+  --gxgreentransparent: rgb(113, 216, 97, 1)
+}
+
+input {
+  background-color: var(--gxwhite) !important;
+}
 
 </style>
