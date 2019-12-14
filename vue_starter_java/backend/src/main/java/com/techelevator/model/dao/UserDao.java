@@ -1,8 +1,10 @@
-package com.techelevator.model;
+package com.techelevator.model.dao;
 
 import java.util.List;
 
 import org.springframework.dao.DuplicateKeyException;
+
+import com.techelevator.model.pojo.User;
 
 public interface UserDao {
 

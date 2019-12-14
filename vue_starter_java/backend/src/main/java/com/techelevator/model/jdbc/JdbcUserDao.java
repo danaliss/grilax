@@ -1,4 +1,4 @@
-package com.techelevator.model;
+package com.techelevator.model.jdbc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import com.techelevator.authentication.PasswordHasher;
+import com.techelevator.model.dao.UserDao;
+import com.techelevator.model.pojo.User;
 
 @Component
 public class JdbcUserDao implements UserDao {
