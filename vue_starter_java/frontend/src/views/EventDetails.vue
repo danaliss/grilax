@@ -2,10 +2,6 @@
 <div>
 <h1>{{event.name}}</h1>
 <div class="details">
-    <h2>{{event.name}}</h2>  
-    <h3>{{event.time}} {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.dayOfMonth}} {{event.date.year}}</h3>
-    <h3>RSVP By: {{event.deadline.dayOfWeek}} {{event.deadline.month}} {{event.deadline.dayOfMonth}} {{event.deadline.year}}</h3>
-
 </div>
 </div>  
 </template>

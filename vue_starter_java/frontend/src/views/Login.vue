@@ -72,15 +72,15 @@ export default {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(this.user),
-      })
-        .then((response) => {
+      }) .then((response) => {
           if (response.ok) {
-            return response.text();
+            return response.json();
           } else {
             this.invalidCredentials = true;
           }
         })
-        .then((token) => {
+        .then((json) => {
+          let token = json.token;
           if (token != undefined) {
             if (token.includes('"')) {
               token = token.replace(/"/g, '');
@@ -89,6 +89,7 @@ export default {
             this.$router.push('/');
           }
         })
+        
         .catch((err) => console.error(err));
     },
   },
