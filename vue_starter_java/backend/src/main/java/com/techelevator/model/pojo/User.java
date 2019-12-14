@@ -5,6 +5,8 @@ import javax.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * User
  */
@@ -23,8 +25,7 @@ public class User {
     @NotBlank(message = "Role is required")
     private String role;
 
-    private boolean passwordMatching;
-
+    @JsonIgnore
     @AssertTrue(message = "Passwords must match")
     public boolean isPasswordMatching() {
         if (password != null) {
