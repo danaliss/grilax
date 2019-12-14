@@ -29,14 +29,23 @@ public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 
 	@Test
 	public void food_can_be_created_and_updated() {
-
-		Food testFood = getFoodById(testFoodId1);
+		
+		Assert.assertEquals(1, foodOrderDao.getFoodItems(testEventId2).size());
+		Food testFood = new Food();
+		testFood.setFoodName("Testing");
+		testFood.setVegetarian(false);
+		testFood.setVegan(false);
+		testFood.setGlutenFree(false);
+		testFood.setNutFree(false);
+		testFood.setDescription("Testing");
+		testFood.setEventId(testEventId2);
+		testFood.setFoodCategory("Entree");
 		foodOrderDao.createFoodItems(testFood);
 
 		Assert.assertNotNull(foodOrderDao.getFoodItems(testEventId2));
-		Assert.assertEquals(1, foodOrderDao.getFoodItems(testEventId2).size());
+		Assert.assertEquals(2, foodOrderDao.getFoodItems(testEventId2).size());
 
-		Assert.assertEquals("Grilled Chicken", testFood.getFoodName());
+		Assert.assertEquals("Testing", testFood.getFoodName());
 
 		testFood.setFoodName("Test");
 		foodOrderDao.updateFoodItems(testFood);
@@ -98,6 +107,7 @@ public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 		food.setNutFree(row.getBoolean("nut_free"));
 		food.setDescription(row.getString("description"));
 		food.setEventId(row.getLong("event_id"));
+		food.setFoodCategory(row.getString("food_category"));
 
 		return food;
 	}

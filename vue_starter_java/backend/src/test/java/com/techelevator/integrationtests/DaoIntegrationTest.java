@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import com.techelevator.authentication.PasswordHasher;
 import com.techelevator.model.Address;
 import com.techelevator.model.Event;
 import com.techelevator.model.EventAttendees;
@@ -34,9 +35,11 @@ public abstract class DaoIntegrationTest {
 	private static SingleConnectionDataSource dataSource;
 	
 	protected JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
+	private PasswordHasher passwordHasher;
 	
 	protected JdbcFoodOrderDao foodOrderDao = new JdbcFoodOrderDao(getDataSource());
 	protected JdbcEventDao eventDao = new JdbcEventDao(getDataSource());
+	protected JdbcUserDao userDao = new JdbcUserDao(getDataSource(), passwordHasher);
 	protected Long testFoodId1;
 	protected Long testFoodId2;
 	protected Long testOrderId;
@@ -97,16 +100,16 @@ public abstract class DaoIntegrationTest {
 		testUserId = jdbcTemplate.queryForObject(sqlInsertFakeUser, Long.TYPE, "FakeUser", "FakePassword", "FAKESALT", "Fake@Fake.com", Timestamp.valueOf("2019-12-11 17:26:30"));
 		
 		String sqlInsertFakeFood = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, " 
-		    + "nut_free, description, event_id) "
-			+ "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING food_id";
+		    + "nut_free, description, event_id, food_category) "
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING food_id";
 
-		testFoodId1 = jdbcTemplate.queryForObject(sqlInsertFakeFood, Long.TYPE, "Grilled Chicken", false, false, true, true, "Marinated grilled chicken", testEventId1);
+		testFoodId1 = jdbcTemplate.queryForObject(sqlInsertFakeFood, Long.TYPE, "Grilled Chicken", false, false, true, true, "Marinated grilled chicken", testEventId1, "Entree");
 
 		sqlInsertFakeFood = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, " 
-		    + "nut_free, description, event_id) "
-			+ "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING food_id";
+		    + "nut_free, description, event_id, food_category) "
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING food_id";
 
-		testFoodId2 = jdbcTemplate.queryForObject(sqlInsertFakeFood, Long.TYPE, "Grilled Tofu", true, true, true, true, "Marinated grilled tofu", testEventId2);
+		testFoodId2 = jdbcTemplate.queryForObject(sqlInsertFakeFood, Long.TYPE, "Grilled Tofu", true, true, true, true, "Marinated grilled tofu", testEventId2, "Entree");
 		
 		String sqlInsertFakeOrder = "INSERT INTO orders (event_id, user_id, food_id, status, quantity) "
 			+ "VALUES (?, ?, ?, ?, ?) RETURNING order_id";
