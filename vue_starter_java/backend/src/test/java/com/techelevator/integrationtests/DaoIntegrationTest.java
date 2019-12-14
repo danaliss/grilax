@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import com.techelevator.authentication.PasswordHasher;
 import com.techelevator.model.Address;
 import com.techelevator.model.Event;
 import com.techelevator.model.EventAttendees;
@@ -34,9 +35,11 @@ public abstract class DaoIntegrationTest {
 	private static SingleConnectionDataSource dataSource;
 	
 	protected JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
+	private PasswordHasher passwordHasher;
 	
 	protected JdbcFoodOrderDao foodOrderDao = new JdbcFoodOrderDao(getDataSource());
 	protected JdbcEventDao eventDao = new JdbcEventDao(getDataSource());
+	protected JdbcUserDao userDao = new JdbcUserDao(getDataSource(), passwordHasher);
 	protected Long testFoodId1;
 	protected Long testFoodId2;
 	protected Long testOrderId;
