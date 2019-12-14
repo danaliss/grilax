@@ -1,34 +1,59 @@
 <template>
-   <div class="new-event-form container">
+   <div class="new-event-form container col-6">
+    
       <br>
-      <!--
-           name
-           date
-           time
-           description
-           deadline date
-           address
-           submit
-
-
-           -->
-<form>
   
-  <div class="form-group col-md-8 form-row col" >
+<form>
+      <h3 class="text-center">New Event</h3>
+  
+<div class="form-group form-row" >
+    <div class = "col">
+    <label for="inputAddress">Event Name</label>
+    <input type="text" class="form-control" id="inputAddress" placeholder="Exciting event name!!!"/>
+  </div>
+  </div>
+  <div class="form-group form-row" >
+      <div class='col'>
+    <label for="description">Event Description</label>
+    <textarea type="text-area" class="form-control" id="description" rows="3" placeholder="Details about the event here"/>
+  </div>
+  </div>
+
+  <div class="form-group form-row">
+
+    <div class="col">
+      <label for="inputZip">Event Date</label>
+      <input type="date" class="form-control" id="event-date">
+    </div>
+    <div class="col">
+      <label for="inputZip">Event Time</label>
+      <input type="text" class="form-control" id="event-date" placeholder="Event Time Here">
+    </div>
+    <div class="col">
+      <label for="inputCity">RSVP Deadline</label>
+      <input type="date" class="form-control" id="event-rsvp-deadline">
+    </div>
+  </div>
+  
+  
+  <br>
+  <br>
+  
+
+  <div class="form-group form-row" >
+      <div class = "col">
     <label for="inputAddress">Address</label>
     <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
   </div>
-  <div class="form-group col-md-8 form-row">
-    <label for="inputAddress2">Address 2</label>
-    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
   </div>
+
   
-  <div class="form-group form-row col-md-8">
-    <div class="col">
+  <div class="form-group form-row">
+    <div class="col-md-4">
       <label for="inputCity">City</label>
       <input type="text" class="form-control" id="inputCity">
     </div>
-    <div class="col">
+    <div class="col-md-4">
       <label for="inputState">State</label>
       <select id="inputState" class="form-control">
         <option selected>Choose...</option>
@@ -85,74 +110,18 @@
             <option value="WY">Wyoming</option>
       </select>
     </div>
-    <div class="col">
+    <div class="col-md-4">
       <label for="inputZip">Zip</label>
       <input type="text" class="form-control" id="inputZip">
     </div>
   </div>
-  <div class = "form-row form-group col-md-8">
+  <div class = "form-row form-group col-md ">
   <button type="submit" class="btn btn-primary">Submit Event</button>
  
   </div>
 </form>
 </div>
 
-<!--
-    <form>
-        <br>
-        <div class = "attending-btn container-fluid">
-            <h3>Will you be attending?</h3>
-        <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
-        
-            <label class="btn btn-secondary">
-            <input name = "radio-attending" type="radio" value="true">Yes
-            </label>
-            <label class="btn btn-secondary">
-            <input name = "radio-attending" type="radio" value="false">No
-            </label>
-        
-        
-        
-        </div>
-        <div class = "form-group">
-        <h3>How many adult guests will you bring?</h3>
-        <input type="number">
-        </div>
-        <div class = "form-group">
-        <h3>How many children will you bring?</h3>
-        <input type="number">
-        </div>
-        </div>
-
-
-
-
-
-        <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle" data-toggle="buttons">
-             
-            <h3>Please pick one of the following</h3>
-              
-            
-                <label class="btn btn-secondary btn-lg" aria-pressed="true" type="radio">
-                <input  name ="radio-food" type="radio"  value="true">
-                    <h4>Food item title</h4>
-                    <p>Food item description that goes on and on and on about how great the food is and how it's made</p>
-                </label>
-                
-            
-          
-            
-                <label class="btn btn-secondary btn-lg btn-block" type="radio">
-                <input name ="radio-food" type="radio" value="true">
-                    <h4>Food item title</h4>
-                    <p>Food item description</p>
-                </label>
-
-           
-        </div>
-
-    </form>
-    -->
 
 </template>
 
@@ -163,5 +132,19 @@ export default {
 </script>
 
 <style scoped>
+
+:root {
+  --gxorange: #ff7f68;
+  --gxyellow: #ffdb2b;
+  --gxpink: #ef2871;
+  --gxgreen: rgb(217, 224, 216);
+   --gxgreendark: #63bd55;
+  --gxwhite: #effffb;
+  --gxgreentransparent: rgb(113, 216, 97, 1)
+}
+
+input {
+  background-color: var(--gxwhite) !important;
+}
 
 </style>
