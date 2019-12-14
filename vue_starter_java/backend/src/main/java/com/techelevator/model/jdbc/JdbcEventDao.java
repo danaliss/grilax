@@ -67,8 +67,6 @@ public class JdbcEventDao implements EventDao {
 					 + "VALUES(?, ?, true, true)";
 		jdbc.update(sqlQuery, eventID, userID);
 		
-		//createAddress(address, userID);
-		
 		return event;
 	}
 
