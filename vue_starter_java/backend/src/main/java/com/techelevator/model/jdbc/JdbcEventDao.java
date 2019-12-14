@@ -120,7 +120,7 @@ public class JdbcEventDao implements EventDao {
 						 + "address_id = ? "
 						 + "WHERE event_id = ?";
 		
-		jdbc.update(sqlString, event.getName(), event.getDate(), event.getTime(), event.getDescription(), event.getDeadline(), event.getDescription(), event.getAddressId(), event.getEventId());
+		jdbc.update(sqlString, event.getName(), event.getDate(), event.getTime(), event.getDescription(), event.getDeadline(), event.getAddressId(), event.getEventId());
 		
 		return event;
 	}
