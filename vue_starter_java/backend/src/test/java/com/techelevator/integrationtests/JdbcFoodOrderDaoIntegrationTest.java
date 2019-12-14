@@ -39,6 +39,7 @@ public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 		testFood.setNutFree(false);
 		testFood.setDescription("Testing");
 		testFood.setEventId(testEventId2);
+		testFood.setFoodCategory("Entree");
 		foodOrderDao.createFoodItems(testFood);
 
 		Assert.assertNotNull(foodOrderDao.getFoodItems(testEventId2));
@@ -106,6 +107,7 @@ public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 		food.setNutFree(row.getBoolean("nut_free"));
 		food.setDescription(row.getString("description"));
 		food.setEventId(row.getLong("event_id"));
+		food.setFoodCategory(row.getString("food_category"));
 
 		return food;
 	}
