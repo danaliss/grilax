@@ -10,6 +10,7 @@ public class Food {
 	private boolean nutFree;
 	private String description;
 	private long eventId;
+	private String foodCategory;
 
 	public long getFoodId() {
 		return foodId;
@@ -73,6 +74,14 @@ public class Food {
 
 	public void setEventId(long eventId) {
 		this.eventId = eventId;
+	}
+
+	public String getFoodCategory() {
+		return foodCategory;
+	}
+
+	public void setFoodCategory(String foodCategory) {
+		this.foodCategory = foodCategory;
 	}
 
 }
