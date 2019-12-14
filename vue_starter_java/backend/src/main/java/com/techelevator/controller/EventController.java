@@ -29,7 +29,6 @@ import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
 import com.techelevator.model.pojo.User;
 
-
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
