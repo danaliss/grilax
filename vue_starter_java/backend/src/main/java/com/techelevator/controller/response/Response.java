@@ -10,9 +10,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonSerialize(using=ResponseSerializer.class)
-public class Response {
+public class Response<O> {
 	private String status;
-	private Object object;
+	private O object;
+	private String objectName = null;
 	private List<ResponseError> errors = null;
 	
 	private final String FAILED = "failed";
@@ -21,33 +22,46 @@ public class Response {
 	public Response() {
 		this.status = SUCCESS;
 	}
-	public Response(List<ResponseError> errors) {
+	public Response(List<? extends ResponseError> errors) {
 		this.status = FAILED;
-		this.errors = errors;
+		this.errors = new ArrayList<ResponseError>();
+		for( Object error : errors ) {
+			this.errors.add((ResponseError)error);
+		}
 	}
-	public Response(ResponseError error) {
+	public <E extends ResponseError> Response(E error) {
 		this.status = FAILED;
 		this.errors = new ArrayList<>();
 		errors.add(error);
 	}
-	public Response(Object object) {
+	public Response(O object) {
 		this.status = SUCCESS;
 		this.object = object;
 	}
+	public Response(String name, O object) {
+		this.status = SUCCESS;
+		this.object = object;
+		this.objectName = name;
+	}
 	
 	public String getStatus() { return status; }
-	public List<ResponseError> getErrors() { return errors; }
-	public Object getObject() { return object; }
+	public List<? extends ResponseError> getErrors() { return errors; }
+	public O getObject() { return object; }
+	public String getObjectName() { return objectName; }
 }
 
-class ResponseSerializer extends JsonSerializer<Response> {
+class ResponseSerializer extends JsonSerializer<Response<?>> {
 	@Override
-	public void serialize(Response value, JsonGenerator jgen, SerializerProvider provider)
+	public void serialize(Response<?> value, JsonGenerator jgen, SerializerProvider provider)
 			throws IOException {
 		jgen.writeStartObject();
 		jgen.writeStringField("status", value.getStatus());
 		if(value.getObject() != null ) {
-			jgen.writeObjectField("object", value.getObject());
+			String name = "object";
+			if( value.getObjectName() != null ) {
+				name = value.getObjectName();
+			}
+			jgen.writeObjectField(name, value.getObject());
 		}
 		if(value.getErrors() != null ) {
 			jgen.writeObjectField("errors", value.getErrors());

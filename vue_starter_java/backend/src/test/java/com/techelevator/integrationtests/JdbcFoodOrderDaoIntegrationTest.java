@@ -7,10 +7,10 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import com.techelevator.model.Address;
-import com.techelevator.model.Food;
-import com.techelevator.model.JdbcFoodOrderDao;
-import com.techelevator.model.Order;
+import com.techelevator.model.jdbc.JdbcFoodOrderDao;
+import com.techelevator.model.pojo.Address;
+import com.techelevator.model.pojo.Food;
+import com.techelevator.model.pojo.Order;
 
 public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 
@@ -39,6 +39,7 @@ public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 		testFood.setNutFree(false);
 		testFood.setDescription("Testing");
 		testFood.setEventId(testEventId2);
+		testFood.setFoodCategory("Entree");
 		foodOrderDao.createFoodItems(testFood);
 
 		Assert.assertNotNull(foodOrderDao.getFoodItems(testEventId2));
@@ -106,6 +107,7 @@ public class JdbcFoodOrderDaoIntegrationTest extends DaoIntegrationTest {
 		food.setNutFree(row.getBoolean("nut_free"));
 		food.setDescription(row.getString("description"));
 		food.setEventId(row.getLong("event_id"));
+		food.setFoodCategory(row.getString("food_category"));
 
 		return food;
 	}

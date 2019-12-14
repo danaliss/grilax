@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS event CASCADE;
 DROP TABLE IF EXISTS event_attendees CASCADE;
 DROP TABLE IF EXISTS address CASCADE;
-DROP TABLE IF EXISTS RSVP CASCADE;
 DROP TABLE IF EXISTS food CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 
@@ -81,6 +80,7 @@ CREATE TABLE food (
  nut_free boolean DEFAULT false,
  description varchar(255),
  event_id int NOT NULL,
+ food_category varchar(32) NOT NULL,
  FOREIGN KEY (event_id) REFERENCES event (event_id)
 );
 
