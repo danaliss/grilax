@@ -1,4 +1,4 @@
-package com.techelevator.model;
+package com.techelevator.model.jdbc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.techelevator.model.dao.EventDao;
+import com.techelevator.model.pojo.Address;
+import com.techelevator.model.pojo.Event;
+import com.techelevator.model.pojo.EventAttendees;
 
 @Component
 public class JdbcEventDao implements EventDao {
@@ -25,7 +31,7 @@ public class JdbcEventDao implements EventDao {
 	public List<Event> getEventsForUser(long userId) {
 		String sqlQuery = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending "
 						+ "FROM event "
-						+ "JOIN event_attendees USING (event_id) "
+						+ "JOIN event_attendees USING(event_id) "
 						+ "WHERE event_attendees.user_id = ?";
 		
 		SqlRowSet eventResults = jdbc.queryForRowSet(sqlQuery, userId);
@@ -40,17 +46,26 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public Event createEvent(Event event) throws DataIntegrityViolationException {
-		String sqlQuery = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
-						+ "VALUES (?, ?, ?, ?, ?, ?)";
+	@Transactional
+	public Event createEvent(Event event, long userID) throws DataIntegrityViolationException {
+		// start a transaction to rollback if needed
 		
-		jdbc.update(sqlQuery,
-				event.getName(),
-				event.getDate(),
-				event.getTime(),
-				event.getDescription(),
-				event.getDeadline(),
-				event.getAddressId());
+		String sqlQuery = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
+						+ "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
+		
+		long eventID = jdbc.queryForObject(sqlQuery, Long.class,
+						event.getName(),
+						event.getDate(),
+						event.getTime(),
+						event.getDescription(),
+						event.getDeadline(),
+						event.getAddressId());
+		
+		event.setEventId(eventID);
+		
+		sqlQuery = "INSERT INTO event_attendees (event_id, user_id, is_host, is_attending) "
+					 + "VALUES(?, ?, true, true)";
+		jdbc.update(sqlQuery, eventID, userID);
 		
 		return event;
 	}
@@ -64,7 +79,7 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public List<EventAttendees> getEventAttendees(long id) {
-		String sqlString = 	"SELECT event_id, user_id, is_host, is_attending, first_name, last_name, adult_guests, child_guests "
+		String sqlString =	"SELECT event_attendees.event_id, event_attendees.user_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.first_name, event_attendees.last_name, event_attendees.adult_guests, event_attendees.child_guests "
 							+ "FROM event_attendees "
 							+ "WHERE event_id = ?";
 		
@@ -80,13 +95,18 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public EventAttendees addEventAttendee(long id, EventAttendees attendees) {
+	public EventAttendees addEventAttendee(long id, EventAttendees attendees) throws DataIntegrityViolationException {
 		String sqlString = "INSERT INTO event_attendees(event_id, user_id, is_host, is_attending, first_name, last_name, adult_guests, child_guests) "
 						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		
-		jdbc.update(sqlString, id, attendees.getUserId(), attendees.isHost(), attendees.isAttending(), attendees.getFirstName(), attendees.getLastName(), attendees.getAdultGuests(), attendees.getChildGuests());
+		int updates = jdbc.update(sqlString, id, attendees.getUserId(), attendees.isHost(), attendees.isAttending(), attendees.getFirstName(), attendees.getLastName(), attendees.getAdultGuests(), attendees.getChildGuests());
 		
-		return attendees;
+		EventAttendees newEventAttendees = null;
+		if( updates > 0 ) {
+			newEventAttendees = attendees;
+		}
+		
+		return newEventAttendees;
 	}
 
 	@Override
@@ -107,8 +127,10 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public Event getEventDetails(long id) {
-		String sqlString = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id "
-						 + "FROM event WHERE event_id = ?";
+		String sqlString = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending "
+						 + "FROM event "
+						 + "JOIN event_attendees USING(event_id) "
+						 + "WHERE event_id = ?";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, id);
 		
@@ -147,6 +169,7 @@ public class JdbcEventDao implements EventDao {
 		event.setDeadline(row.getDate("deadline").toLocalDate());
 		event.setHosting(row.getBoolean("is_host"));
 		event.setAttending(row.getBoolean("is_attending"));
+		event.setAddressId(row.getLong("address_id"));
 		
 		return event;
 	}
