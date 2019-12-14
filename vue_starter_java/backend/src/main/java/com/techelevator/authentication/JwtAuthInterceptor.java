@@ -16,6 +16,8 @@ import com.techelevator.controller.response.Response;
 import com.techelevator.controller.response.ResponseError;
 import com.techelevator.model.pojo.User;
 
+import io.jsonwebtoken.ExpiredJwtException;
+
 /**
  * JwtAuthInterceptor
  */
@@ -43,8 +45,20 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
                 || request.getMethod().equals("OPTIONS")) {
             return true;
         }
-
-        User authedUser = tokenHandler.getUser(request.getHeader(AUTHORIZATION_HEADER));
+        
+        User authedUser = null;
+        try {
+        	authedUser = tokenHandler.getUser(request.getHeader(AUTHORIZATION_HEADER));
+        } catch( ExpiredJwtException e) {
+        	ObjectMapper mapper = new ObjectMapper();
+        	
+        	response.setContentType("application/json");
+        	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        	Response<ResponseError> responseJSON = new Response<>(new ResponseError("Expired Token"));
+        	response.getWriter().write(mapper.writeValueAsString(responseJSON));
+        	
+        	return false;
+        }
         if (authedUser == null) {
         	ObjectMapper mapper = new ObjectMapper();
         	
