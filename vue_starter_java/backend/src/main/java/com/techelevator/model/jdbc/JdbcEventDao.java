@@ -67,7 +67,7 @@ public class JdbcEventDao implements EventDao {
 					 + "VALUES(?, ?, true, true)";
 		jdbc.update(sqlQuery, eventID, userID);
 		
-		//createAddress(address, userID);
+		createAddress(address, userID);
 		
 		return event;
 	}
@@ -129,10 +129,12 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public Event getEventDetails(long id) {
-		String sqlString = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending "
-						 + "FROM event "
-						 + "JOIN event_attendees USING(event_id) "
-						 + "WHERE event_id = ?";
+		String sqlString = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, "
+				         + "event.deadline, event_attendees.is_host, event_attendees.is_attending, address.street_address, address.city, address.state, address.zip "
+				         + "FROM event " 
+				         + "JOIN event_attendees USING(event_id) "
+				         + "JOIN address USING(address_id) "
+			             + "WHERE event.event_id = ? ";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, id);
 		
@@ -160,7 +162,7 @@ public class JdbcEventDao implements EventDao {
 		return address;
 	}
 	
-	private Address createAddress(Address address, long userId) {
+	public Address createAddress(Address address, long userId) {
 		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
 				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
 		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
