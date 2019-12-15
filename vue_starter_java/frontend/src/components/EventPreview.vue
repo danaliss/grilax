@@ -1,14 +1,23 @@
 <template>
-<div class="preview">
+<router-link tag="div" class="preview" v-bind:to="{ name:'eventDetails', params:{eventId:list.eventId}}">
     <!-- make this populate from the API -->
-    <h2>Cook Out Name and date click link to event</h2>  
-</div>
+    <h2>{{list.name}}</h2>  
+    <h3>{{list.time}} {{list.date.dayOfWeek}} {{list.date.month}} {{list.date.dayOfMonth}} {{list.date.year}}</h3>
+    
+</router-link>
 </template>
 
 <script>
+
+
 export default {
-    name: 'event-preview'
+    name: 'event-preview',
+    props: {
+        list: Object
+    }
+
 }
+
 </script>
 
 <style scoped>

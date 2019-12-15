@@ -10,7 +10,7 @@
       <div class = "form-group">
       <label for="username" class="sr-only ">Username</label>
       <input
-        type="text"
+        type= "text"
         id="username"
         class="form-control"
         placeholder="Username"
