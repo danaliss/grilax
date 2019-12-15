@@ -11,7 +11,7 @@ import com.techelevator.model.pojo.EventAttendees;
 public interface EventDao {
 	
 	public List<Event> getEventsForUser(long userId);
-	public Event createEvent(Event event, long userID, Address address) throws DataIntegrityViolationException;
+	public Event createEvent(Event event, long userID) throws DataIntegrityViolationException;
 	public int deleteEvent(long id);
 	public List<EventAttendees> getEventAttendees(long id);
 	public EventAttendees addEventAttendee(long id, EventAttendees attendees) throws DataIntegrityViolationException;

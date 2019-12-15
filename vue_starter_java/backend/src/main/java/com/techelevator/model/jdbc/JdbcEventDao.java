@@ -47,7 +47,7 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	@Transactional
-	public Event createEvent(Event event, long userID, Address address) throws DataIntegrityViolationException {
+	public Event createEvent(Event event, long userID) throws DataIntegrityViolationException {
 		// start a transaction to rollback if needed
 		
 		String sqlQuery = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
