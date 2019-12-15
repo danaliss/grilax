@@ -11,6 +11,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonSerialize(using=ResponseSerializer.class)
 public class Response<O> {
+<<<<<<< HEAD
+=======
+	public static final Response<?> EMPTY_SUCCESS = new Response<>();
+	
+>>>>>>> 8d299f919648bd43abac55e4030900ac266f3783
 	private String status;
 	private O object;
 	private String objectName = null;

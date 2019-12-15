@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.techelevator.authentication.AuthProvider;
 import com.techelevator.authentication.JwtTokenHandler;
@@ -37,12 +36,14 @@ public class AccountController {
     private JwtTokenHandler tokenHandler;
 
     @PostMapping(path = "/user/login")
-    public Response<?> login(@RequestBody User user, RedirectAttributes flash) throws UnauthorizedException {
+    public Response<?> login(@RequestBody User user,
+    		HttpServletResponse response) throws UnauthorizedException {
         if (auth.signIn(user.getUsername(), user.getPassword())) {
             User currentUser = auth.getCurrentUser();
-            String token = tokenHandler.createToken(user.getUsername(), user.getRole(), currentUser.getEmail());
+            String token = tokenHandler.createToken(currentUser.getUsername(), currentUser.getRole(), currentUser.getEmail());
             return new Response<>("token", token);
         } else {
+        	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return new Response<>(new ResponseError("Invalid Login"));
         }
     }
@@ -65,7 +66,11 @@ public class AccountController {
             
             return new Response<>(ValidationError.createList(e));
         }
+<<<<<<< HEAD
         return new Response<>(); // success
+=======
+        return Response.EMPTY_SUCCESS; // success
+>>>>>>> 8d299f919648bd43abac55e4030900ac266f3783
     }
 
     @PutMapping(path="/user/update")

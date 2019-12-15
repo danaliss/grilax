@@ -1,16 +1,26 @@
 package com.techelevator.model.pojo;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
 public class Food {
 
 	private long foodId;
+	
+	@NotBlank(message="Food name needs to be provided")
+	@Length(max=50, message="Food name cannot be over 50 characters")
 	private String foodName;
+	
+	// these are all nullable in the database
 	private boolean vegetarian;
 	private boolean vegan;
 	private boolean glutenFree;
 	private boolean nutFree;
+	
+	@Length(max=255, message="Food description cannot be over 255 characters")
 	private String description;
-	private long eventId;
-	private String foodCategory;
+	
+	private Long eventId;
 
 	public long getFoodId() {
 		return foodId;
@@ -74,14 +84,6 @@ public class Food {
 
 	public void setEventId(long eventId) {
 		this.eventId = eventId;
-	}
-
-	public String getFoodCategory() {
-		return foodCategory;
-	}
-
-	public void setFoodCategory(String foodCategory) {
-		this.foodCategory = foodCategory;
 	}
 
 }

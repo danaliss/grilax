@@ -34,4 +34,8 @@ public class HttpExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		return new ResponseEntity<>(new Response<>(new ResponseError("Endpoint Not Found")), status);
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8d299f919648bd43abac55e4030900ac266f3783
