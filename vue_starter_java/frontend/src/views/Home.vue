@@ -4,7 +4,7 @@
       <div class="hosting container col-8">
         <div>
         <h1>Hosting</h1>
-        <event-preview v-for="event in hosting" v-bind:list="event" v-bind:key="event.eventId"/>
+        <event-preview v-for="event in hosting" v-bind:list="event"   />
         </div>
       </div>
 
@@ -58,7 +58,7 @@ export default {
                 return current.hosting === true
               });
               this.attending = this.events.filter((current) =>{
-                return current.attending === true && current.host === false
+                return current.attending === true && current.hosting === false
               });
               this.invites = this.events.filter((current) =>{
                 return current.attending === null

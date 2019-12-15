@@ -25,6 +25,13 @@
         <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
         </ul>
     </section>
+
+
+    <section class="rsvp">
+        <router-link tag="h1" v-bind:to="{ name:'rsvp', params:{eventId:event.eventId}}">
+            <button class="btn">RSVP</button>
+        </router-link>
+    </section>
 </div>
 </template>
 

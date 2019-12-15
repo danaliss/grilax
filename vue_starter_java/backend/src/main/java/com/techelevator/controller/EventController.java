@@ -158,15 +158,16 @@ public class EventController {
      * Roles: Attendees | Host
      */
     @GetMapping(path="/event/{eventid}/attendees")
-    public Response<?> getEventAttendees(@PathVariable long eventid, HttpServletResponse response) {
-    	List<EventAttendees> attendees = eventDao.getEventAttendees(eventid);
-    	
-    	if( attendees.size() == 0 ) {
-    		return new Response<>(new ResponseError("Event not found"));
-    	}
-    	
-    	return new Response<>(attendees);
+    public Response<?> getEventAttendees(@PathVariable long eventid, 
+                                        HttpServletRequest request, 
+                                        HttpServletResponse response) {
+        User user = (User)request.getAttribute(RequestAuthProvider.USER_KEY);
+        
+        List<EventAttendees> attendees = eventDao.getEventAttendees(eventid, user.getId());
+        
+        return new Response<>(attendees);
     }
+
     
     /**
      * Adds an attendee to the specified event.
