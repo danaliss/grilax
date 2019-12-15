@@ -68,7 +68,8 @@ CREATE TABLE address (
  street_address varchar(100) NOT NULL,
  city varchar(50) NOT NULL,
  state varchar(30) NOT NULL,
- zip varchar(10) NOT NULL
+ zip varchar(10) NOT NULL,
+ user_id int NOT NULL
 );
 
 CREATE TABLE food (
@@ -100,5 +101,10 @@ ALTER TABLE event
 ADD CONSTRAINT fk_address_id
 FOREIGN KEY (address_id) 
 REFERENCES address (address_id);
+
+ALTER TABLE address
+ADD CONSTRAINT fk_user_id
+FOREIGN KEY (user_id)
+REFERENCES users (user_id);
 
 COMMIT;

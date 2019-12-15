@@ -79,10 +79,15 @@ public abstract class DaoIntegrationTest {
 	 */
 	@Before
 	public void setup() {
-		String sqlInsertFakeAddress = "INSERT INTO address (street_address, city, state, zip) "
-				   + "VALUES (?, ?, ?, ?) RETURNING address_id";
+		String sqlInsertFakeUser = "INSERT INTO users (username, password, salt, email, date_registered) "
+				+ "VALUES (?, ?, ?, ?, ?) RETURNING user_id";
 
-	    testAddressId = jdbcTemplate.queryForObject(sqlInsertFakeAddress, Long.TYPE, "1337 Very Fake Street", "Boston", "MA", "02134");
+		testUserId = jdbcTemplate.queryForObject(sqlInsertFakeUser, Long.TYPE, "FakeUser", "FakePassword", "FAKESALT", "Fake@Fake.com", Timestamp.valueOf("2019-12-11 17:26:30"));
+		
+		String sqlInsertFakeAddress = "INSERT INTO address (street_address, city, state, zip, user_id) "
+				   + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
+
+	    testAddressId = jdbcTemplate.queryForObject(sqlInsertFakeAddress, Long.TYPE, "1337 Very Fake Street", "Boston", "MA", "02134", "1");
 		
 		String sqlInsertFakeEvent = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
 		    + "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
@@ -93,11 +98,6 @@ public abstract class DaoIntegrationTest {
 			+ "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
 
 		testEventId2 = jdbcTemplate.queryForObject(sqlInsertFakeEvent, Long.TYPE, "Fibonacci Day Party", LocalDate.of(2020, 11, 23), "5pm", "Celebrate Fibonacci Day!", LocalDate.of(2020, 11, 16), testAddressId);
-		
-		String sqlInsertFakeUser = "INSERT INTO users (username, password, salt, email, date_registered) "
-			+ "VALUES (?, ?, ?, ?, ?) RETURNING user_id";
-
-		testUserId = jdbcTemplate.queryForObject(sqlInsertFakeUser, Long.TYPE, "FakeUser", "FakePassword", "FAKESALT", "Fake@Fake.com", Timestamp.valueOf("2019-12-11 17:26:30"));
 		
 		String sqlInsertFakeFood = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, " 
 		    + "nut_free, description, event_id, food_category) "

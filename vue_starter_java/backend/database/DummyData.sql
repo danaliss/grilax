@@ -1,10 +1,10 @@
 START TRANSACTION;
 
 INSERT INTO users (username, password, salt, email, role) 
-VALUES ('Shecka', 'cookout123', 'qwerty', 'Shecka826@gmail.com', 'User');
+VALUES ('FakeUser', 'cookout123', 'qwerty', 'Fake@Fake.com', 'User');
 
-INSERT INTO address (street_address, city, state, zip)
-VALUES ('123 Very Fake Street', 'Pittsburgh', 'PA', '15212');
+INSERT INTO address (street_address, city, state, zip, user_id)
+VALUES ('123 Very Fake Street', 'Pittsburgh', 'PA', '15212', '1');
 
 INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id)
 VALUES ('Christmas Cookout', '12-20-2019', '3pm', 'A fun get together for Christmas!', '12-10-2019', '1');
