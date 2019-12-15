@@ -145,7 +145,7 @@ public class JdbcEventDao implements EventDao {
 	
 	@Override
 	public Address getAddress(long addressID) {
-		String sqlString = "SELECT address_id, street_address, city, state, zip FROM address WHERE address_id = ?";
+		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id FROM address WHERE address_id = ?";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID);
 		
@@ -197,6 +197,7 @@ public class JdbcEventDao implements EventDao {
 		address.setCity(row.getString("city"));
 		address.setState(row.getString("state"));
 		address.setZip(row.getString("zip"));
+		address.setUserId(row.getLong("user_id"));
 		
 		return address;
 	}

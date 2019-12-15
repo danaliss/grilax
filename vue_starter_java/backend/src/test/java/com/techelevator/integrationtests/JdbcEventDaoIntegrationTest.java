@@ -99,6 +99,7 @@ public class JdbcEventDaoIntegrationTest extends DaoIntegrationTest {
 		address.setCity(results.getString("city"));
 		address.setState(results.getString("state"));
 		address.setZip(results.getString("zip"));
+		address.setUserId(results.getLong("user_id"));
 
 		return address;
 	}
