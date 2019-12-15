@@ -30,21 +30,14 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 	}
 	
 	@Override
-<<<<<<< HEAD
-	public List<Food> getFoodItems(long eventId) {
-		String sqlString = "SELECT food.food_id, food.food_name, food.vegetarian, food.vegan, food.gluten_free, food.nut_free, food.description, food.food_category "
-						 + "FROM food "
-						 + "JOIN event USING(event_id) "
-=======
 	public List<Food> getFoodItems(long eventId, long userId) {
 		// make sure user is part of the event
 		Event event = eventDao.getEventDetails(eventId, userId);
 		if( event == null ) {
 			return null;
 		}
-		String sqlString = "SELECT food.food_id, food.food_name, food.vegetarian, food.vegan, food.gluten_free, food.nut_free, food.description, food.event_id "
+		String sqlString = "SELECT food.food_id, food.food_name, food.vegetarian, food.vegan, food.gluten_free, food.nut_free, food.description, food.event_id, food.food_category "
 						 + "FROM food "
->>>>>>> * Created a few helper methods and constants
 						 + "WHERE event_id = ?";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventId);
@@ -58,14 +51,6 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public Food createFoodItems(Food food) {
-		String sqlString = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, nut_free, description, event_id, food_category) "
-						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-		
-		Food newFood = null;
-		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getEventId(), food.getFoodCategory());
-=======
 	public Event createFoodItems(Food food, long eventId, long userId) {
 		// make sure user is host
 		Event event = eventDao.getEventDetails(eventId, userId);
@@ -73,11 +58,10 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 			return null;
 		}
 		
-		String sqlString = "INSERT INTO food (food_id, food_name, vegetarian, vegan, gluten_free, nut_free, description, event_id) "
+		String sqlString = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, nut_free, description, event_id, food_category) "
 						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		
-		int updates = jdbc.update(sqlString, food.getFoodId(), food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), eventId);
->>>>>>> * Created a few helper methods and constants
+		int updates = jdbc.update(sqlString, food.getFoodId(), food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), eventId, food.getFoodCategory());
 		
 		if( updates > 0 ) {
 			return event;
@@ -100,7 +84,6 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 						 + "vegan = ?, "
 						 + "gluten_free = ?, "
 						 + "nut_free = ?, "
-<<<<<<< HEAD
 						 + "description = ? "
 						 + "food_category = ?"
 						 + "WHERE food_id = ?";
@@ -108,13 +91,6 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		Food newFood = null;
 		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getFoodId(), food.getFoodCategory());
 		
-=======
-						 + "description = ?, "
-						 + "WHERE food_id = ?";
-		
-		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), itemId);
-
->>>>>>> * Created a few helper methods and constants
 		if( updates > 0 ) {
 			return event;
 		}
@@ -205,7 +181,7 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		// if user is host, able to delete
 		// if user is not host, able to delete only if they own the order
 		Event event = eventDao.getEventDetails(eventId, userId);
-		String sqlString = "DELETE FROM orders WHERE orderId = ?";
+		String sqlString = "DELETE FROM order WHERE orderId = ?";
 		if( event.isHosting() == false ) {
 			sqlString += " AND user_id = ?";
 			return jdbc.update(sqlString, orderId, userId);
