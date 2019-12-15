@@ -22,6 +22,8 @@ public class JdbcEventDao implements EventDao {
 	
 	private JdbcTemplate jdbc;
 	
+	private static final String EVENT_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id ";
+	
 	@Autowired
 	public JdbcEventDao(DataSource dataSource) {
 		this.jdbc = new JdbcTemplate(dataSource);
@@ -29,7 +31,7 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public List<Event> getEventsForUser(long userId) {
-		String sqlQuery = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending "
+		String sqlQuery = EVENT_COLUMNS
 						+ "FROM event "
 						+ "JOIN event_attendees USING(event_id) "
 						+ "WHERE event_attendees.user_id = ?";
@@ -71,35 +73,60 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public int deleteEvent(long id) {
+	public Event deleteEvent(long eventID, long userID) {
+		// make sure user is host
+		Event event = this.getEventDetails(eventID, userID);
+		
+		if( event == null || event.isHosting() == false ) {
+			return null;
+		}
 		String sqlString = "DELETE FROM event WHERE event_id = ?";
 		
-		return jdbc.update(sqlString, id);
+		int updates = jdbc.update(sqlString, eventID);
+		
+		if( updates > 0 ) {
+			return event;
+		}
+		return null;
 	}
 
 	@Override
-	public List<EventAttendees> getEventAttendees(long id) {
+	public List<EventAttendees> getEventAttendees(long eventID, long userID) {
 		String sqlString =	"SELECT event_attendees.event_id, event_attendees.user_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.first_name, event_attendees.last_name, event_attendees.adult_guests, event_attendees.child_guests "
 							+ "FROM event_attendees "
 							+ "WHERE event_id = ?";
 		
-		SqlRowSet attendeeResults = jdbc.queryForRowSet(sqlString, id);
+		SqlRowSet attendeeResults = jdbc.queryForRowSet(sqlString, eventID);
 		
 		List<EventAttendees> listOfAttendees = new ArrayList<EventAttendees>();
 		
+		boolean found = false;
 		while(attendeeResults.next()) {
-			listOfAttendees.add(mapRowToEventAttendees(attendeeResults));
+			EventAttendees attendee = mapRowToEventAttendees(attendeeResults);
+			if( attendee.getUserId() == userID ) {
+				found = true;
+			}
+			listOfAttendees.add(attendee);
+		}
+		if( !found ) {
+			return null;
 		}
 		
 		return listOfAttendees;
 	}
 
 	@Override
-	public EventAttendees addEventAttendee(long id, EventAttendees attendees) throws DataIntegrityViolationException {
+	public EventAttendees addEventAttendee(long eventID, long userID, EventAttendees attendees) throws DataIntegrityViolationException {
+		// make sure userID is the host
+		Event details = this.getEventDetails(eventID, userID);
+		if( details == null || details.isHosting() == false ) {
+			return null;
+		}
+		
 		String sqlString = "INSERT INTO event_attendees(event_id, user_id, is_host, is_attending, first_name, last_name, adult_guests, child_guests) "
 						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		
-		int updates = jdbc.update(sqlString, id, attendees.getUserId(), attendees.isHost(), attendees.isAttending(), attendees.getFirstName(), attendees.getLastName(), attendees.getAdultGuests(), attendees.getChildGuests());
+		int updates = jdbc.update(sqlString, eventID, attendees.getUserId(), attendees.isHost(), attendees.isAttending(), attendees.getFirstName(), attendees.getLastName(), attendees.getAdultGuests(), attendees.getChildGuests());
 		
 		EventAttendees newEventAttendees = null;
 		if( updates > 0 ) {
@@ -110,7 +137,13 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public Event updateEvent(long id, Event event) {
+	public Event updateEvent(long eventID, long userID, Event event) {
+		// make sure host
+		Event origEvent = this.getEventDetails(eventID, userID);
+		
+		if( origEvent == null || origEvent.isHosting() == false ) {
+			
+		}
 		String sqlString = "UPDATE event SET "
 						 + "event_name = ?, "
 						 + "event_date = ?, "
@@ -126,13 +159,14 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public Event getEventDetails(long id) {
-		String sqlString = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending "
+	public Event getEventDetails(long eventID, long userID) {
+		// only allow event details if they're part of the event (must be in event_attendees)
+		String sqlString = EVENT_COLUMNS
 						 + "FROM event "
 						 + "JOIN event_attendees USING(event_id) "
-						 + "WHERE event_id = ?";
+						 + "WHERE event_id = ? AND user_id = ?";
 		
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, id);
+		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID, userID);
 		
 		Event event = null;
 		
@@ -170,6 +204,7 @@ public class JdbcEventDao implements EventDao {
 		event.setHosting(row.getBoolean("is_host"));
 		event.setAttending(row.getBoolean("is_attending"));
 		event.setAddressId(row.getLong("address_id"));
+		event.setUserId(row.getLong("user_id"));
 		
 		return event;
 	}

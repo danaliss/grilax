@@ -56,6 +56,7 @@ public class Event{
 	@NotNull(message="Event needs to have an address")
 	private Long addressId;
 	
+	private long userId;
 	private boolean hosting=true;
 	private boolean attending=true;
 	
@@ -130,6 +131,12 @@ public class Event{
 	}
 	public void setHosting(boolean hosting) {
 		this.hosting = hosting;
+	}
+	public long getUserId() {
+		return userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 }
 
