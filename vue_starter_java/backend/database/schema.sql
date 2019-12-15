@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS event_attendees CASCADE;
 DROP TABLE IF EXISTS address CASCADE;
 DROP TABLE IF EXISTS food CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS invitees CASCADE;
 
 DROP SEQUENCE IF EXISTS seq_user_id;
 DROP SEQUENCE IF EXISTS seq_event_id;
@@ -49,18 +50,28 @@ CREATE TABLE event (
   address_id int NOT NULL
   );
   
+CREATE TABLE invitees (
+ invite_id serial PRIMARY KEY,
+ email varchar(255) NOT NULL,
+ event_id int NOT NULL,
+ role varchar(20) NOT NULL
+);
+  
 CREATE TABLE event_attendees (
  event_id int NOT NULL,
  user_id int NOT NULL,
  is_host boolean DEFAULT false,
- is_attending boolean DEFAULT false,
+ is_chef boolean DEFAULT false,
+ is_attending boolean,
  first_name varchar(25),
  last_name varchar(50),
  adult_guests int,
  child_guests int,
+ invite_id int,
  PRIMARY KEY (event_id, user_id),
  FOREIGN KEY (event_id) REFERENCES event (event_id),
- FOREIGN KEY (user_id) REFERENCES users (user_id)
+ FOREIGN KEY (user_id) REFERENCES users (user_id),
+ FOREIGN KEY (invite_id) REFERENCES invitees (invite_id)
  );
  
 CREATE TABLE address (

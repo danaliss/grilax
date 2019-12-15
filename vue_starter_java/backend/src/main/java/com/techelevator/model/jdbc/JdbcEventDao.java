@@ -67,6 +67,8 @@ public class JdbcEventDao implements EventDao {
 					 + "VALUES(?, ?, true, true)";
 		jdbc.update(sqlQuery, eventID, userID);
 		
+		//createAddress(address, userID);
+		
 		return event;
 	}
 
@@ -154,6 +156,21 @@ public class JdbcEventDao implements EventDao {
 		if( results.next() ) {
 			address = mapRowToAddress(results);
 		}
+		
+		return address;
+	}
+	
+	private Address createAddress(Address address, long userId) {
+		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
+				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
+		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
+							address.getStreetAddress(),
+							address.getCity(),
+							address.getState(),
+							address.getZip(),
+							address.getUserId());
+		
+		address.setAddressId(addressId);
 		
 		return address;
 	}
