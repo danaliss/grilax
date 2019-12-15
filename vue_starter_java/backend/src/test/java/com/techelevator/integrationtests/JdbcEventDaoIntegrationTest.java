@@ -30,7 +30,7 @@ public class JdbcEventDaoIntegrationTest extends DaoIntegrationTest {
 	@Test
 	public void events_can_be_created_and_updated() {
 		Event testEvent = getEventById(testEventId2);
-		eventDao.createEvent(testEvent, testUserId);
+		eventDao.createEvent(testEvent, testUserId, eventDao.getAddress(testAddressId));
 		Assert.assertEquals(testEvent.getName(), eventDao.getEventDetails(testEventId2).getName());
 
 		testEvent.setName("New Test Name");

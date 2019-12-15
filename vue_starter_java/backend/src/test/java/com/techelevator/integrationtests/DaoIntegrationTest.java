@@ -87,7 +87,7 @@ public abstract class DaoIntegrationTest {
 		String sqlInsertFakeAddress = "INSERT INTO address (street_address, city, state, zip, user_id) "
 				   + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
 
-	    testAddressId = jdbcTemplate.queryForObject(sqlInsertFakeAddress, Long.TYPE, "1337 Very Fake Street", "Boston", "MA", "02134", "1");
+	    testAddressId = jdbcTemplate.queryForObject(sqlInsertFakeAddress, Long.TYPE, "1337 Very Fake Street", "Boston", "MA", "02134", testUserId);
 		
 		String sqlInsertFakeEvent = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
 		    + "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
