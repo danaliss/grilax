@@ -15,9 +15,9 @@
             </div>
             <div class="form-group">
             <label for="email-area">Invitee Emails</label>
-            <textarea class="form-control" id="email-area" type="email"  placeholder="attendee1@example.com, attendee2@example.com, attendee3@example.com" multiple/>
+            <input class="form-control" id="email-area" type="email"  placeholder="attendee@example.com" />
             </div>
-            <button type="submit" class="form control btn btn-secondary">Send Invites</button>
+            <button type="submit" class="form control btn btn-secondary">Send Invite</button>
 
  
         </form>
@@ -34,6 +34,18 @@
 
 export default {
     name: "send-invites",
+    data() {
+    return {
+      eventAttendees: {
+        userId: '',
+        isHost: '',
+        isAttending : '',
+        firstName : '',
+        role: 'user',
+      },
+    }
+    }
+    
 }
 </script>
 
