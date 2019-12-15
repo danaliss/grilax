@@ -1,8 +1,22 @@
 <template>
 <div id="create-menu" class = "container-fluid">
     <form class = "offset-md-3 col-md-6">
+        <h4>Entrees</h4>
         <entree-input></entree-input>
+        <entree-input></entree-input>
+        <entree-input></entree-input>
+
+        <br><br>
+        <h4>Sides</h4>
         <side-input></side-input>
+        <side-input></side-input>
+        <side-input></side-input>
+
+        <br><br>
+
+        <h4>Beverages</h4>
+        <beverage-input></beverage-input>
+        <beverage-input></beverage-input>
         <beverage-input></beverage-input>
 
 
