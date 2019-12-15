@@ -66,7 +66,7 @@ public class AccountController {
             
             return new Response<>(ValidationError.createList(e));
         }
-        return new Response<>(); // success
+        return Response.EMPTY_SUCCESS; // success
     }
 
     @PutMapping(path="/user/update")
