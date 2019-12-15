@@ -1,13 +1,38 @@
 package com.techelevator.model.pojo;
 
-public class Order {
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
-	private long orderId;
-	private long eventId;
-	private long userId;
-	private long foodId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class Order {
+	private Long orderId;
+	
+	@NotNull(message="Event ID needs to be specified")
+	@Min(value=0, message="Event ID needs to be a positive number")
+	private Long eventId;
+	
+	// set by User object
+	private Long userId;
+	
+	@NotNull(message="Food ID needs to be specified")
+	@Min(value=0, message="Food ID needs to be a positive number")
+	private Long foodId;
+	
+	@NotNull(message="Status needs to be specified")
 	private String status;
-	private int quantity;
+	
+	@NotNull(message="Quantity needs to be specified")
+	@Min(value=0, message="Quantity needs to be a positive number")
+	private Integer quantity;
+	
+	@JsonIgnore
+	@AssertTrue(message="Status needs to be one of: WAITING, DONE")
+	public boolean isStatusValid() {
+		return status != null &&
+				(status.equalsIgnoreCase("waiting") || status.equalsIgnoreCase("done"));
+	}
 
 	public long getOrderId() {
 		return orderId;
