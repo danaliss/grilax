@@ -2,6 +2,7 @@
   <div id="login" class="text-center">
     <div class="container col-3 container-fluid">
     <form class="form-signin" @submit.prevent="login">
+      <br>
       <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
       <div class="alert alert-danger" role="alert" v-if="invalidCredentials">
         Invalid username and password!
@@ -71,15 +72,15 @@ export default {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(this.user),
-      })
-        .then((response) => {
+      }) .then((response) => {
           if (response.ok) {
-            return response.text();
+            return response.json();
           } else {
             this.invalidCredentials = true;
           }
         })
-        .then((token) => {
+        .then((json) => {
+          let token = json.token;
           if (token != undefined) {
             if (token.includes('"')) {
               token = token.replace(/"/g, '');
@@ -88,6 +89,7 @@ export default {
             this.$router.push('/');
           }
         })
+        
         .catch((err) => console.error(err));
     },
   },

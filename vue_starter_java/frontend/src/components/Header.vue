@@ -1,13 +1,14 @@
 <template>
 
 
-      <nav class="navbar navbar-expand-lg" role="navigation" aria-label="main navigation">
+      <nav class="navbar navbar-expand-sm" role="navigation" aria-label="main navigation">
         <div class="navbar-nav">
             <a class="nav-item nav-link">GRILLAX LOGO
             <img src="" width="112" height="28">
             </a>
             <p class ="nav-item nav-link" @click="logout()">Logoff</p>
             <router-link class ="nav-item nav-link" to="/">Home</router-link>
+            <router-link class ="nav-item nav-link" to="/newevent">Create New Event</router-link>
         </div>
       </nav>
 
@@ -44,11 +45,12 @@ export default {
   --gxyellow: #ffdb2b;
   --gxpink: #ef2871;
   --gxgreen: #71d861;
+  --gxgreendark: #63bd55;
   --gxwhite: #effffb;
-  --gxwhitetransparent: rgba(239, 255, 251, .3)
+  --gxgreentransparent: rgb(113, 216, 97, 1)
 }
 nav {
-    background-color: var(--gxwhitetransparent);
+    background-color: var(--gxgreentransparent);
     
 }
 

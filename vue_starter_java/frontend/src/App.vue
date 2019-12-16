@@ -7,11 +7,16 @@
 
 <script>
 import NavHeader from './components/Header.vue';
-
+import auth from './auth.js'
 export default {
   components: {
     NavHeader
-  }
+  },
+  data() {
+    return {
+    }
+  },
+  
 }
 </script>
 
@@ -20,7 +25,7 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap');
 body {
   background:#ff7d49;
-  background: radial-gradient(circle,#ffdb2b 50%, #ff7d49 100%);
+  background: radial-gradient(circle,#ffdb2b 90%, #ff7d49 100%);
   font-family: 'Baloo Bhai', cursive;
 }
 #app {
