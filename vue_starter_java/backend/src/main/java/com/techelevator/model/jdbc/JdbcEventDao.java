@@ -16,6 +16,7 @@ import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Invitee;
 
 @Component
 public class JdbcEventDao implements EventDao {
@@ -135,6 +136,23 @@ public class JdbcEventDao implements EventDao {
 		
 		return newEventAttendees;
 	}
+	
+	@Override
+	public Invitee sendInvite(long eventID, long userId, Invitee invitee) {
+		
+		
+		String sqlString = 	"INSERT INTO invitees(email, event_id, role) "
+							+ "VALUES(?, ?, ?) RETURNING invite_id";
+		
+		long inviteId = jdbc.queryForObject(sqlString, Long.class,
+											invitee.getEmail(),
+											invitee.getEventId(),
+											invitee.getRole());
+		
+		invitee.setInviteId(inviteId);
+		
+		return invitee;
+	}
 
 	@Override
 	public Event updateEvent(long eventID, long userID, Event event) {
@@ -179,7 +197,7 @@ public class JdbcEventDao implements EventDao {
 	
 	@Override
 	public Address getAddress(long addressID) {
-		String sqlString = "SELECT address_id, street_address, city, state, zip FROM address WHERE address_id = ?";
+		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id FROM address WHERE address_id = ?";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID);
 		
@@ -188,6 +206,21 @@ public class JdbcEventDao implements EventDao {
 		if( results.next() ) {
 			address = mapRowToAddress(results);
 		}
+		
+		return address;
+	}
+	
+	private Address createAddress(Address address, long userId) {
+		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
+				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
+		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
+							address.getStreetAddress(),
+							address.getCity(),
+							address.getState(),
+							address.getZip(),
+							address.getUserId());
+		
+		address.setAddressId(addressId);
 		
 		return address;
 	}
@@ -232,7 +265,9 @@ public class JdbcEventDao implements EventDao {
 		address.setCity(row.getString("city"));
 		address.setState(row.getString("state"));
 		address.setZip(row.getString("zip"));
+		address.setUserId(row.getLong("user_id"));
 		
 		return address;
 	}
+
 }

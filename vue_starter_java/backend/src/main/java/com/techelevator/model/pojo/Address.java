@@ -7,6 +7,7 @@ public class Address {
 	private String city;
 	private String state;
 	private String zip;
+	private long userId;
 
 	public long getAddressId() {
 		return addressId;
@@ -46,6 +47,14 @@ public class Address {
 
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 
 }

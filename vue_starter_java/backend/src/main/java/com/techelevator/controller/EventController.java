@@ -29,6 +29,7 @@ import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Invitee;
 import com.techelevator.model.pojo.User;
 
 @RestController
@@ -254,8 +255,8 @@ public class EventController {
 	 * 		<li><h3>HTTP 401</h3> User not logged in</li>
 	 * </ul>
      */
-    @PostMapping(path="/event/{eventid}/attendees")
-    public Response<?> inviteEventAttendee(@Valid @RequestBody EventAttendees attendee,
+    @PostMapping(path="/event/{eventid}/sendinvite")
+    public Response<?> sendInvites(@Valid @RequestBody Invitee invitee,
     									@PathVariable long eventid, 
     									BindingResult result, 
     									HttpServletRequest request,
@@ -267,19 +268,19 @@ public class EventController {
     	if( result.hasErrors() ) {
     		return badValidation(result, response);
     	}
-    	EventAttendees newEventAttendees = null;
+    	Invitee newInvitee = null;
     	try {
-    		newEventAttendees = eventDao.addEventAttendee(eventid, user.getId(), attendee);
+    		newInvitee = eventDao.sendInvite(eventid, user.getId(), invitee);
     	} catch(DataIntegrityViolationException e) {
     		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     		return new Response<>(ValidationError.createList(e));
     	}
-    	if( newEventAttendees == null ) {
+    	if( newInvitee == null ) {
     		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    		return new Response<>(new ResponseError("Failed to add new attendee"));
+    		return new Response<>(new ResponseError("Failed to add new invitee"));
     	}
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return new Response<>(newEventAttendees);
+    	return new Response<>(newInvitee);
     }
     
 //    @DeleteMapping(path="/event/{eventid}/attendees/{userid}")
