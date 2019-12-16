@@ -8,10 +8,12 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import com.techelevator.model.dao.AddressDao;
 import com.techelevator.model.pojo.Address;
 
+@Component
 public class JdbcAddressDao implements AddressDao {
 	
 	private JdbcTemplate jdbc;
