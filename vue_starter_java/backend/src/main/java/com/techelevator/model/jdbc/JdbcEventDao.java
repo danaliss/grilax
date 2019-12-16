@@ -138,9 +138,9 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public EventAttendees addEventAttendee(long eventID, long userID, EventAttendees attendees) throws DataIntegrityViolationException {
-		// make sure userID is the host
+		// make sure the user is invited and not the host
 		Event details = this.getEventDetails(eventID, userID);
-		if( details == null || details.isHosting() == false ) {
+		if( details == null || details.isHosting() == true || details.isInvitation() == false ) {
 			return null;
 		}
 		
