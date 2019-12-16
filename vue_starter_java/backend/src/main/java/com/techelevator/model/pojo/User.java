@@ -3,28 +3,33 @@ package com.techelevator.model.pojo;
 import javax.validation.constraints.AssertTrue;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * User
  */
 public class User {
     @NotBlank(message = "Username is required")
+    @Length(max=32, message="Username cannot be over 32 characters")
     private String username;
 
-    @Email(message = "Email is required")
+    @NotBlank(message="Email is required")
+    @Email(message = "Email needs to be valid")
+    @Length(max=255, message="Email cannot be over 255 characters")
     private String email;
     private long id;
 
     @NotBlank(message = "Password is required")
+    @Length(max=32, message="Password cannot be over 32 characters")
     private String password;
     private String confirmPassword;
     
-    @NotBlank(message = "Role is required")
-    private String role;
+    private String role = "user";
 
-    private boolean passwordMatching;
-
+    @JsonIgnore
     @AssertTrue(message = "Passwords must match")
     public boolean isPasswordMatching() {
         if (password != null) {

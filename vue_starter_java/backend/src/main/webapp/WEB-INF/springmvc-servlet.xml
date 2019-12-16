@@ -37,9 +37,6 @@
 	
 	<mvc:cors>
 		<mvc:mapping path="/**" allowed-methods="*" />
-		<mvc:mapping path="/api/**" allowed-methods="*" />
-		<mvc:mapping path="/api/user/**" allowed-methods="*" />
-		<mvc:mapping path="/api/events/**" allowed-methods="*" />
 	</mvc:cors>
 	
 	<!-- This view resolver contains logic for translating a logical view name
@@ -67,5 +64,13 @@
 	<tx:annotation-driven transaction-manager="txManager" />
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="email" class="com.techelevator.email.EmailConfig">
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<property name="fromAddress" value="grillax.techelevator@gmail.com"/>
+		<property name="password" value="TechElevator4"/>
+		<property name="emailTemplateDirectory" value="/../emails"/>
 	</bean>
 </beans>

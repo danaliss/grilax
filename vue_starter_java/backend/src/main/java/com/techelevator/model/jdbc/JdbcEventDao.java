@@ -16,11 +16,14 @@ import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Invitee;
 
 @Component
 public class JdbcEventDao implements EventDao {
 	
 	private JdbcTemplate jdbc;
+	
+	private static final String EVENT_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id ";
 	
 	@Autowired
 	public JdbcEventDao(DataSource dataSource) {
@@ -29,7 +32,7 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public List<Event> getEventsForUser(long userId) {
-		String sqlQuery = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending "
+		String sqlQuery = EVENT_COLUMNS
 						+ "FROM event "
 						+ "JOIN event_attendees USING(event_id) "
 						+ "WHERE event_attendees.user_id = ?";
@@ -47,7 +50,7 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	@Transactional
-	public Event createEvent(Event event, long userID, Address address) throws DataIntegrityViolationException {
+	public Event createEvent(Event event, long userID) throws DataIntegrityViolationException {
 		// start a transaction to rollback if needed
 		
 		String sqlQuery = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
@@ -66,42 +69,65 @@ public class JdbcEventDao implements EventDao {
 		sqlQuery = "INSERT INTO event_attendees (event_id, user_id, is_host, is_attending) "
 					 + "VALUES(?, ?, true, true)";
 		jdbc.update(sqlQuery, eventID, userID);
-		
-		createAddress(address, userID);
-		
+
 		return event;
 	}
 
 	@Override
-	public int deleteEvent(long id) {
+	public Event deleteEvent(long eventID, long userID) {
+		// make sure user is host
+		Event event = this.getEventDetails(eventID, userID);
+		
+		if( event == null || event.isHosting() == false ) {
+			return null;
+		}
 		String sqlString = "DELETE FROM event WHERE event_id = ?";
 		
-		return jdbc.update(sqlString, id);
+		int updates = jdbc.update(sqlString, eventID);
+		
+		if( updates > 0 ) {
+			return event;
+		}
+		return null;
 	}
 
 	@Override
-	public List<EventAttendees> getEventAttendees(long id) {
+	public List<EventAttendees> getEventAttendees(long eventID, long userID) {
 		String sqlString =	"SELECT event_attendees.event_id, event_attendees.user_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.first_name, event_attendees.last_name, event_attendees.adult_guests, event_attendees.child_guests "
 							+ "FROM event_attendees "
 							+ "WHERE event_id = ?";
 		
-		SqlRowSet attendeeResults = jdbc.queryForRowSet(sqlString, id);
+		SqlRowSet attendeeResults = jdbc.queryForRowSet(sqlString, eventID);
 		
 		List<EventAttendees> listOfAttendees = new ArrayList<EventAttendees>();
 		
+		boolean found = false;
 		while(attendeeResults.next()) {
-			listOfAttendees.add(mapRowToEventAttendees(attendeeResults));
+			EventAttendees attendee = mapRowToEventAttendees(attendeeResults);
+			if( attendee.getUserId() == userID ) {
+				found = true;
+			}
+			listOfAttendees.add(attendee);
+		}
+		if( !found ) {
+			return null;
 		}
 		
 		return listOfAttendees;
 	}
 
 	@Override
-	public EventAttendees addEventAttendee(long id, EventAttendees attendees) throws DataIntegrityViolationException {
+	public EventAttendees addEventAttendee(long eventID, long userID, EventAttendees attendees) throws DataIntegrityViolationException {
+		// make sure userID is the host
+		Event details = this.getEventDetails(eventID, userID);
+		if( details == null || details.isHosting() == false ) {
+			return null;
+		}
+		
 		String sqlString = "INSERT INTO event_attendees(event_id, user_id, is_host, is_attending, first_name, last_name, adult_guests, child_guests) "
 						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		
-		int updates = jdbc.update(sqlString, id, attendees.getUserId(), attendees.isHost(), attendees.isAttending(), attendees.getFirstName(), attendees.getLastName(), attendees.getAdultGuests(), attendees.getChildGuests());
+		int updates = jdbc.update(sqlString, eventID, attendees.getUserId(), attendees.isHost(), attendees.isAttending(), attendees.getFirstName(), attendees.getLastName(), attendees.getAdultGuests(), attendees.getChildGuests());
 		
 		EventAttendees newEventAttendees = null;
 		if( updates > 0 ) {
@@ -110,9 +136,36 @@ public class JdbcEventDao implements EventDao {
 		
 		return newEventAttendees;
 	}
+	
+	@Override
+	public Invitee sendInvite(long eventID, long userId, Invitee invitee) {
+		// make sure user is host
+		Event event = getEventDetails(eventID, userId);
+		if( event == null || !event.isHosting() ) {
+			return null;
+		}
+		
+		String sqlString = 	"INSERT INTO invitees(email, event_id, role) "
+							+ "VALUES(?, ?, ?) RETURNING invite_id";
+		
+		long inviteId = jdbc.queryForObject(sqlString, Long.class,
+											invitee.getEmail(),
+											invitee.getEventId(),
+											invitee.getRole());
+		
+		invitee.setInviteId(inviteId);
+		
+		return invitee;
+	}
 
 	@Override
-	public Event updateEvent(long id, Event event) {
+	public Event updateEvent(long eventID, long userID, Event event) {
+		// make sure host
+		Event origEvent = this.getEventDetails(eventID, userID);
+		
+		if( origEvent == null || origEvent.isHosting() == false ) {
+			
+		}
 		String sqlString = "UPDATE event SET "
 						 + "event_name = ?, "
 						 + "event_date = ?, "
@@ -128,15 +181,14 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	@Override
-	public Event getEventDetails(long id) {
-		String sqlString = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, "
-				         + "event.deadline, event_attendees.is_host, event_attendees.is_attending, address.street_address, address.city, address.state, address.zip "
-				         + "FROM event " 
-				         + "JOIN event_attendees USING(event_id) "
-				         + "JOIN address USING(address_id) "
-			             + "WHERE event.event_id = ? ";
-		
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, id);
+	public Event getEventDetails(long eventID, long userID) {
+		// only allow event details if they're part of the event (must be in event_attendees)
+		String sqlString = EVENT_COLUMNS
+						 + "FROM event "
+						 + "JOIN event_attendees USING(event_id) "
+						 + "WHERE event_id = ? AND user_id = ?";
+
+		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID, userID);
 		
 		Event event = null;
 		
@@ -147,20 +199,7 @@ public class JdbcEventDao implements EventDao {
 		return event;
 	}
 	
-	@Override
-	public Address getAddress(long addressID) {
-		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id FROM address WHERE address_id = ?";
-		
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID);
-		
-		Address address = null;
-		
-		if( results.next() ) {
-			address = mapRowToAddress(results);
-		}
-		
-		return address;
-	}
+	
 	
 	public Address createAddress(Address address, long userId) {
 		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
@@ -176,7 +215,7 @@ public class JdbcEventDao implements EventDao {
 		
 		return address;
 	}
-	
+
 	private Event mapRowToEvent(SqlRowSet row) {
 		Event event = new Event();
 		
@@ -189,6 +228,7 @@ public class JdbcEventDao implements EventDao {
 		event.setHosting(row.getBoolean("is_host"));
 		event.setAttending(row.getBoolean("is_attending"));
 		event.setAddressId(row.getLong("address_id"));
+		event.setUserId(row.getLong("user_id"));
 		
 		return event;
 	}
@@ -207,17 +247,5 @@ public class JdbcEventDao implements EventDao {
 		
 		return eventAttendees;
 	}
-	
-	private Address mapRowToAddress(SqlRowSet row) {
-		Address address = new Address();
-		
-		address.setAddressId(row.getLong("address_id"));
-		address.setStreetAddress(row.getString("street_address"));
-		address.setCity(row.getString("city"));
-		address.setState(row.getString("state"));
-		address.setZip(row.getString("zip"));
-		address.setUserId(row.getLong("user_id"));
-		
-		return address;
-	}
+
 }

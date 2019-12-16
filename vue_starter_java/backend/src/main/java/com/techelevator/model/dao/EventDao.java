@@ -4,20 +4,20 @@ import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Invitee;
 
 public interface EventDao {
 	
 	public List<Event> getEventsForUser(long userId);
-	public Event createEvent(Event event, long userID, Address address) throws DataIntegrityViolationException;
-	public int deleteEvent(long id);
-	public List<EventAttendees> getEventAttendees(long id);
-	public EventAttendees addEventAttendee(long id, EventAttendees attendees) throws DataIntegrityViolationException;
-	public Event updateEvent(long id, Event event);
-	public Event getEventDetails(long id);
+	public Event createEvent(Event event, long userID) throws DataIntegrityViolationException;
+	public Event deleteEvent(long eventID, long userID);
+	public List<EventAttendees> getEventAttendees(long eventID, long userID);
+	public EventAttendees addEventAttendee(long eventID, long userID, EventAttendees attendees) throws DataIntegrityViolationException;
+	public Event updateEvent(long eventID, long userID, Event event);
+	public Event getEventDetails(long eventID, long userID);
 	
-	public Address getAddress(long addressID);
+	public Invitee sendInvite(long eventID, long userID, Invitee invitee);
 
 }
