@@ -1,5 +1,6 @@
 <template>
-<div >
+<div>
+    <div v-if="event">
     <h1>{{event.name}}</h1>
     <section class="details">
         <h2>{{event.time}} {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}} {{event.date.year}}</h2>
@@ -31,6 +32,10 @@
             <button class="btn">RSVP</button>
         </router-link>
     </section>
+    </div>
+    <div v-if="event === null">
+        <h1>Loading event...please stand by</h1>
+    </div>
 </div>
 </template>
 
@@ -40,7 +45,7 @@ export default {
     data(){
         return{
             
-            event: Object,
+            event: null,
             address: Object,
             attendees: [],
             notAttending: [],
@@ -61,15 +66,23 @@ export default {
             })
             .then((response) => response.json())
             .then((data)=>{
-                this.event = data.object;
-                this.fetchAddress();
-                this.fetchAttendees();
+                const tempEvent = data.object;
+                //setting the promises returned by the defined fetsches
+                const promises = [
+                    this.fetchAddress(tempEvent.addressId),
+                   this.fetchAttendees(tempEvent.eventId)
+                ];
+                //mega promise over an iterible set
+                Promise.all(promises)
+                .then(()=>{
+                    this.event = tempEvent;
+                });
                 
             
             })
         },
-        fetchAddress(){
-            fetch(`${process.env.VUE_APP_REMOTE_API}/api/address/${this.event.addressId}`,{
+        fetchAddress(addressId){
+            return fetch(`${process.env.VUE_APP_REMOTE_API}/api/address/${addressId}`,{
                  method : "GET",
                     headers: {
                     "Authorization": "Bearer "+ auth.getToken(),
@@ -80,10 +93,10 @@ export default {
                 .then((response)=> response.json())
                 .then((data) => {
                     this.address = data.object
-                })
+                });
         },
-        fetchAttendees(){
-            fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${this.event.eventId}/attendees`,{
+        fetchAttendees(eventId){
+            return fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${eventId}/attendees`,{
                  method : "GET",
                     headers: {
                     "Authorization": "Bearer "+ auth.getToken(),
@@ -95,7 +108,7 @@ export default {
                 .then((data) => {
                     this.attendees = data.object
                     this.generateGuestList();
-                })
+                });
         },
         generateGuestList(){
             this.attendees = this.attendees.filter((current) => {
