@@ -140,7 +140,7 @@ public class JdbcEventDao implements EventDao {
 	public EventAttendees addEventAttendee(long eventID, long userID, EventAttendees attendees) throws DataIntegrityViolationException {
 		// make sure the user is invited and not the host
 		Event details = this.getEventDetails(eventID, userID);
-		if( details == null || details.isHosting() == true || details.isInvitation() == false ) {
+		if( details == null || details.isHosting() == true || details.isInvited() == false ) {
 			return null;
 		}
 		
@@ -269,7 +269,7 @@ public class JdbcEventDao implements EventDao {
 		event.setAddressId(row.getLong("address_id"));
 		event.setUserId(row.getLong("user_id"));
 		
-		event.setIsInvitation( row.getString("email")!=null );
+		event.setInvited( row.getString("email")!=null );
 		
 		return event;
 	}
