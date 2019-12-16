@@ -11,7 +11,7 @@
     <section class="guest-list">
         <h5>Guests</h5>
         <ul>
-        <li v-for = "guest in attendees" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
+        <li v-for = "guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
         </ul>
     </section>
     </section>
@@ -27,7 +27,7 @@
         </ul>
     </section>
 
-    <section class="rsvp">
+    <section class="rsvp" >
         <router-link tag="h1" v-bind:to="{ name:'rsvp', params:{eventId:event.eventId}}">
             <button class="btn">RSVP</button>
         </router-link>
@@ -48,6 +48,7 @@ export default {
             event: null,
             address: Object,
             attendees: [],
+            yesAttending: [],
             notAttending: [],
             notRsvp: []
         
@@ -111,14 +112,14 @@ export default {
                 });
         },
         generateGuestList(){
-            this.attendees = this.attendees.filter((current) => {
+            this.yesAttending = this.attendees.filter((current) => {
                 return current.attending === true && current.host ===false;
             })
             this.notAttending = this.attendees.filter((current) => {
-                return current.attending === false && current.host ===false;
+                return current.attending === false && current.hasRsvped && current.host ===false;
             })
             this.notRsvp = this.attendees.filter((current) => {
-                return current.attending === null && current.host ===false;
+                return !current.hasRsvped && current.host ===false;
             })
         },
     

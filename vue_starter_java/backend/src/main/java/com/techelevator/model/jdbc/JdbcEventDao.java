@@ -284,10 +284,14 @@ public class JdbcEventDao implements EventDao {
 		eventAttendees.setUserId(row.getLong("user_id"));
 		eventAttendees.setHost(row.getBoolean("is_host"));
 		eventAttendees.setAttending(row.getBoolean("is_attending"));
+		// If the is_attending column was null, the user has not RSVP'd
+		// if it is NOT null they have already RSVPed
+		eventAttendees.setHasRsvped(!row.wasNull());
 		eventAttendees.setFirstName(row.getString("first_name"));
 		eventAttendees.setLastName(row.getString("last_name"));
 		eventAttendees.setAdultGuests(row.getInt("adult_guests"));
 		eventAttendees.setChildGuests(row.getInt("child_guests"));
+
 		
 		return eventAttendees;
 	}
