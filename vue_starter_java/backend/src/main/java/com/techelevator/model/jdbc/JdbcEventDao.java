@@ -22,7 +22,7 @@ public class JdbcEventDao implements EventDao {
 	
 	private JdbcTemplate jdbc;
 	
-	private static final String EVENT_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id ";
+	private static final String EVENT_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id, invitees.email ";
 	
 	@Autowired
 	public JdbcEventDao(DataSource dataSource) {
@@ -34,14 +34,17 @@ public class JdbcEventDao implements EventDao {
 		String sqlQuery = EVENT_COLUMNS
 						+ "FROM event "
 						+ "JOIN event_attendees USING(event_id) "
-						+ "WHERE event_attendees.user_id = ?";
+						+ "LEFT JOIN invitees USING(event_id) "
+						+ "LEFT JOIN users USING(email, user_id) "
+						+ "WHERE user_id = ?";
 		
 		SqlRowSet eventResults = jdbc.queryForRowSet(sqlQuery, userId);
 		
 		List<Event> eventListForUser = new ArrayList<Event>();
 		
 		while(eventResults.next()) {
-			eventListForUser.add(mapRowToEvent(eventResults));
+			Event event = mapRowToEvent(eventResults);
+			eventListForUser.add(event);
 		}
 		
 		return eventListForUser;
@@ -80,7 +83,24 @@ public class JdbcEventDao implements EventDao {
 		if( event == null || event.isHosting() == false ) {
 			return null;
 		}
-		String sqlString = "DELETE FROM event WHERE event_id = ?";
+		
+		// MANUAL CASCADE: delete from invitees
+		String sqlString = "DELETE FROM invitees WHERE event_id = ?";
+		jdbc.update(sqlString, eventID);
+		
+		// MANUAL CASCADE: delete from event_attendees
+		sqlString = "DELETE FROM event_attendees WHERE event_id = ?";
+		jdbc.update(sqlString, eventID);
+		
+		// MANUAL CASCADE: delete from orders
+		sqlString = "DELETE FROM orders WHERE event_id = ?";
+		jdbc.update(sqlString, eventID);
+		
+		// MANUAL CASCADE: delete from food
+		sqlString = "DELETE FROM food WHERE event_id = ?";
+		jdbc.update(sqlString, eventID);
+		
+		sqlString = "DELETE FROM event WHERE event_id = ?";
 		
 		int updates = jdbc.update(sqlString, eventID);
 		
@@ -163,7 +183,7 @@ public class JdbcEventDao implements EventDao {
 		Event origEvent = this.getEventDetails(eventID, userID);
 		
 		if( origEvent == null || origEvent.isHosting() == false ) {
-			
+			return null;
 		}
 		String sqlString = "UPDATE event SET "
 						 + "event_name = ?, "
@@ -185,6 +205,8 @@ public class JdbcEventDao implements EventDao {
 		String sqlString = EVENT_COLUMNS
 						 + "FROM event "
 						 + "JOIN event_attendees USING(event_id) "
+						 + "LEFT JOIN invitees USING(event_id) "
+						 + "LEFT JOIN users USING(email, user_id) "
 						 + "WHERE event_id = ? AND user_id = ?";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID, userID);
@@ -207,10 +229,29 @@ public class JdbcEventDao implements EventDao {
 		event.setTime(row.getString("event_time"));
 		event.setDescription(row.getString("description"));
 		event.setDeadline(row.getDate("deadline").toLocalDate());
-		event.setHosting(row.getBoolean("is_host"));
-		event.setAttending(row.getBoolean("is_attending"));
+		
+		String booleanString = row.getString("is_host");
+		Boolean booleanValue = null;
+		if( booleanString != null && booleanString.equalsIgnoreCase("true") ) {
+			booleanValue = true;
+		} else if( booleanString != null && booleanString.equalsIgnoreCase("false") ) {
+			booleanValue = false;
+		}
+		event.setHosting(booleanValue);
+		
+		booleanString = row.getString("is_attending");
+		booleanValue = null;
+		if( booleanString != null && booleanString.equalsIgnoreCase("true") ) {
+			booleanValue = true;
+		} else if( booleanString != null && booleanString.equalsIgnoreCase("false") ) {
+			booleanValue = false;
+		}
+		event.setAttending(booleanValue);
+		
 		event.setAddressId(row.getLong("address_id"));
 		event.setUserId(row.getLong("user_id"));
+		
+		event.setIsInvitation( row.getString("email")!=null );
 		
 		return event;
 	}
