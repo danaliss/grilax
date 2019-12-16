@@ -12,6 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techelevator.controller.EventController;
 import com.techelevator.controller.response.Response;
 import com.techelevator.controller.response.ResponseError;
 import com.techelevator.model.pojo.User;
@@ -40,7 +41,6 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException, ServletException {
-
         if (excludedUrls.contains(request.getRequestURI().replaceFirst(request.getContextPath(), ""))
                 || request.getMethod().equals("OPTIONS")) {
             return true;

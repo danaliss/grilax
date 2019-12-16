@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.techelevator.model.dao.EventDao;
-import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Invitee;
 
 @Component
 public class JdbcEventDao implements EventDao {
@@ -135,6 +135,27 @@ public class JdbcEventDao implements EventDao {
 		
 		return newEventAttendees;
 	}
+	
+	@Override
+	public Invitee sendInvite(long eventID, long userId, Invitee invitee) {
+		// make sure user is host
+		Event event = getEventDetails(eventID, userId);
+		if( event == null || !event.isHosting() ) {
+			return null;
+		}
+		
+		String sqlString = 	"INSERT INTO invitees(email, event_id, role) "
+							+ "VALUES(?, ?, ?) RETURNING invite_id";
+		
+		long inviteId = jdbc.queryForObject(sqlString, Long.class,
+											invitee.getEmail(),
+											invitee.getEventId(),
+											invitee.getRole());
+		
+		invitee.setInviteId(inviteId);
+		
+		return invitee;
+	}
 
 	@Override
 	public Event updateEvent(long eventID, long userID, Event event) {
@@ -177,21 +198,6 @@ public class JdbcEventDao implements EventDao {
 		return event;
 	}
 	
-	@Override
-	public Address getAddress(long addressID) {
-		String sqlString = "SELECT address_id, street_address, city, state, zip FROM address WHERE address_id = ?";
-		
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID);
-		
-		Address address = null;
-		
-		if( results.next() ) {
-			address = mapRowToAddress(results);
-		}
-		
-		return address;
-	}
-	
 	private Event mapRowToEvent(SqlRowSet row) {
 		Event event = new Event();
 		
@@ -223,16 +229,5 @@ public class JdbcEventDao implements EventDao {
 		
 		return eventAttendees;
 	}
-	
-	private Address mapRowToAddress(SqlRowSet row) {
-		Address address = new Address();
-		
-		address.setAddressId(row.getLong("address_id"));
-		address.setStreetAddress(row.getString("street_address"));
-		address.setCity(row.getString("city"));
-		address.setState(row.getString("state"));
-		address.setZip(row.getString("zip"));
-		
-		return address;
-	}
+
 }

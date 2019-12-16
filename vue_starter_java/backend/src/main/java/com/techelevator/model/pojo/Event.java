@@ -63,18 +63,21 @@ public class Event{
 	@JsonIgnore
 	@AssertTrue(message="RSVP needs to be before the event date")
 	public boolean isRsvpBeforeDate() {
+		if( deadline == null ) return false;
 		return deadline.compareTo(date) < 0;
 	}
 
 	@JsonIgnore
 	@AssertTrue(message="Event's RSVP needs to be a future date") // @Future doesn't support LocalDate
 	public boolean isRsvpInFuture() {
+		if( deadline == null ) return false;
 		return deadline.isAfter(LocalDate.now());
 	}
 
 	@JsonIgnore
 	@AssertTrue(message="Event needs to take place on a future date") // @Future doesn't support LocalDate
 	public boolean isDateInFuture() {
+		if( date == null ) return false;
 		return date.isAfter(LocalDate.now());
 	}
 	

@@ -24,10 +24,13 @@ import com.techelevator.controller.response.Response;
 import com.techelevator.controller.response.ResponseError;
 import com.techelevator.controller.response.ResponseMap;
 import com.techelevator.controller.response.ValidationError;
+import com.techelevator.email.EmailReplacementMap;
+import com.techelevator.email.SendMail;
 import com.techelevator.model.dao.EventDao;
-import com.techelevator.model.pojo.Address;
+import com.techelevator.model.dao.UserDao;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Invitee;
 import com.techelevator.model.pojo.User;
 
 @RestController
@@ -38,32 +41,18 @@ public class EventController {
 	@Autowired
 	private EventDao eventDao;
 	
+	@Autowired
+	private UserDao userDao;
+	
+	@Autowired
+	private SendMail email;
+	
 	private static final Response<?> UNKNOWN_USER_RESPONSE = new Response<>(new ResponseError("Unknown User"));
 	private static final Response<?> UNKNOWN_EVENT_RESPONSE = new Response<>(new ResponseError("Event not found"));
-	
-	/**
-	 * Gets the address by the ID
-	 * 
-	 * @param addressid the ID of the address
-	 * @return 
-	 * 	<ul>
-	 * 		<li><h3>HTTP 200</h3> Address object</li>
-	 * 		<li><h3>HTTP 400</h3> Address doesn't exist or user does not have access to address</li>
-	 * 		<li><h3>HTTP 401</h3> User not logged in</li>
-	 * </ul>
-	 */
-	@GetMapping(path="/address/{addressid}")
-	public Response<?> getAddressByID(@PathVariable long addressid,
-									  HttpServletResponse response) {
-		Address address = eventDao.getAddress(addressid);
-		
-		if( address != null ) {
-			return new Response<>(address);
-		} else {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return new Response<>(new ResponseError("Invalid address"));
-		}
-	}
+
+	private static final String EMAIL_SUBJECT = "New invitation to event!";
+	private static final String EMAIL_USEREXISTS_FILE = "invitation_alreadyUser.html";
+	private static final String EMAIL_NEWUSER_FILE = "invitation_notAUser.html";
 	
 	/**
 	 * Gets a list of all the events for the currently logged in user.
@@ -250,12 +239,12 @@ public class EventController {
 	 * 		<li><h3>HTTP 401</h3> User not logged in</li>
 	 * </ul>
      */
-    @PostMapping(path="/event/{eventid}/attendees")
-    public Response<?> inviteEventAttendee(@Valid @RequestBody EventAttendees attendee,
-    									@PathVariable long eventid, 
-    									BindingResult result, 
-    									HttpServletRequest request,
-    									HttpServletResponse response) {
+    @PostMapping(path="/event/{eventid}/invite")
+    public Response<?> sendInvites(@Valid @RequestBody Invitee invitee,
+    								@PathVariable long eventid, 
+    								BindingResult result, 
+    								HttpServletRequest request,
+    								HttpServletResponse response) {
     	User user = getUser(request);
     	if( user == null ) {
     		return badUser(response);
@@ -263,19 +252,33 @@ public class EventController {
     	if( result.hasErrors() ) {
     		return badValidation(result, response);
     	}
-    	EventAttendees newEventAttendees = null;
+    	// override invitee object
+    	invitee.setEventId(eventid);
+    	
+    	Invitee newInvitee = null;
     	try {
-    		newEventAttendees = eventDao.addEventAttendee(eventid, user.getId(), attendee);
+    		newInvitee = eventDao.sendInvite(eventid, user.getId(), invitee);
     	} catch(DataIntegrityViolationException e) {
     		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     		return new Response<>(ValidationError.createList(e));
     	}
-    	if( newEventAttendees == null ) {
+    	if( newInvitee == null ) {
     		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    		return new Response<>(new ResponseError("Failed to add new attendee"));
+    		return new Response<>(new ResponseError("Failed to add new invitee"));
     	}
+    	// everything worked, send the correct email
+    	//// see if they're a user
+    	String template = userDao.emailExists(invitee.getEmail()) ? EMAIL_USEREXISTS_FILE : EMAIL_NEWUSER_FILE;
+    	Event event = eventDao.getEventDetails(eventid, user.getId());
+    	email.send(invitee.getEmail(), EMAIL_SUBJECT,
+    			email.getEmailFile(template), 
+    			new EmailReplacementMap()
+    				.put("{{username}}", user.getUsername())
+    				.put("{{eventname}}", event.getName())
+    				.build()
+    	);
     	response.setStatus(HttpServletResponse.SC_CREATED);
-    	return new Response<>(newEventAttendees);
+    	return new Response<>(newInvitee);
     }
     
 //    @DeleteMapping(path="/event/{eventid}/attendees/{userid}")
@@ -317,6 +320,9 @@ public class EventController {
     	if( result.hasErrors() ) {
     		return badValidation(result, response);
     	}
+    	// override Event object
+    	event.setEventId(eventid);
+    	event.setUserId(user.getId());
     	
     	Event oldEvent = eventDao.updateEvent(eventid, user.getId(), event);
     	

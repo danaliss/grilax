@@ -65,4 +65,12 @@
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	
+	<bean id="email" class="com.techelevator.email.EmailConfig">
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<property name="fromAddress" value="grillax.techelevator@gmail.com"/>
+		<property name="password" value="TechElevator4"/>
+		<property name="emailTemplateDirectory" value="/../emails"/>
+	</bean>
 </beans>

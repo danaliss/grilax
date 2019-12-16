@@ -36,7 +36,7 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		if( event == null ) {
 			return null;
 		}
-		String sqlString = "SELECT food.food_id, food.food_name, food.vegetarian, food.vegan, food.gluten_free, food.nut_free, food.description, food.event_id "
+		String sqlString = "SELECT food.food_id, food.food_name, food.vegetarian, food.vegan, food.gluten_free, food.nut_free, food.description, food.event_id, food.food_category "
 						 + "FROM food "
 						 + "WHERE event_id = ?";
 		
@@ -58,10 +58,10 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 			return null;
 		}
 		
-		String sqlString = "INSERT INTO food (food_id, food_name, vegetarian, vegan, gluten_free, nut_free, description, event_id) "
+		String sqlString = "INSERT INTO food (food_name, vegetarian, vegan, gluten_free, nut_free, description, event_id, food_category) "
 						 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		
-		int updates = jdbc.update(sqlString, food.getFoodId(), food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), eventId);
+		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), eventId, food.getFoodCategory());
 		
 		if( updates > 0 ) {
 			return event;
@@ -130,7 +130,7 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		if( event == null ) {
 			return null;
 		}
-		String sqlString = "INSERT INTO order (order_id, event_id, user_id, food_id, status, quantity)"
+		String sqlString = "INSERT INTO orders (order_id, event_id, user_id, food_id, status, quantity)"
 						 + " VALUES(?, ?, ?, ?, ?, ?)";
 		
 		int updates = jdbc.update(sqlString, order.getOrderId(), order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
@@ -149,7 +149,7 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		if( event == null ) {
 			return null;
 		}
-		String sqlString = "UPDATE order SET "
+		String sqlString = "UPDATE orders SET "
 						 + "event_id = ?, "
 						 + "user_id = ?, "
 						 + "food_id = ?, "
