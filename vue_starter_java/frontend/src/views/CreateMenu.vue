@@ -1,6 +1,7 @@
 <template>
 <div id="create-menu" class = "container-fluid">
     <form class = "offset-md-3 col-md-6">
+        <br><br>
         <h4>Entrees</h4>
         <entree-input></entree-input>
         <entree-input></entree-input>
