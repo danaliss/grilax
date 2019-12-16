@@ -84,13 +84,11 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 						 + "vegan = ?, "
 						 + "gluten_free = ?, "
 						 + "nut_free = ?, "
-						 + "description = ? "
-						 + "food_category = ?"
+						 + "description = ?, "
 						 + "WHERE food_id = ?";
 		
-		Food newFood = null;
-		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), food.getFoodId(), food.getFoodCategory());
-		
+		int updates = jdbc.update(sqlString, food.getFoodName(), food.isVegetarian(), food.isVegan(), food.isGlutenFree(), food.isNutFree(), food.getDescription(), itemId);
+
 		if( updates > 0 ) {
 			return event;
 		}
@@ -200,7 +198,6 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		food.setNutFree(row.getBoolean("nut_free"));
 		food.setDescription(row.getString("description"));
 		food.setEventId(row.getLong("event_id"));
-		food.setFoodCategory(row.getString("food_category"));
 		
 		return food;
 	}

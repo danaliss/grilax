@@ -19,8 +19,8 @@ public class Food {
 	
 	@Length(max=255, message="Food description cannot be over 255 characters")
 	private String description;
-	private long eventId;
-	private String foodCategory;
+	
+	private Long eventId;
 
 	public long getFoodId() {
 		return foodId;
@@ -84,14 +84,6 @@ public class Food {
 
 	public void setEventId(long eventId) {
 		this.eventId = eventId;
-	}
-
-	public String getFoodCategory() {
-		return foodCategory;
-	}
-
-	public void setFoodCategory(String foodCategory) {
-		this.foodCategory = foodCategory;
 	}
 
 }
