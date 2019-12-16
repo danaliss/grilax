@@ -24,6 +24,7 @@ import com.techelevator.controller.response.Response;
 import com.techelevator.controller.response.ResponseError;
 import com.techelevator.controller.response.ResponseMap;
 import com.techelevator.controller.response.ValidationError;
+import com.techelevator.email.SendMail;
 import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
@@ -37,6 +38,9 @@ public class EventController {
 	
 	@Autowired
 	private EventDao eventDao;
+	
+	@Autowired
+	private SendMail email;
 	
 	private static final Response<?> UNKNOWN_USER_RESPONSE = new Response<>(new ResponseError("Unknown User"));
 	private static final Response<?> UNKNOWN_EVENT_RESPONSE = new Response<>(new ResponseError("Event not found"));
