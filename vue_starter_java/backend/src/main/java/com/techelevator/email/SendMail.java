@@ -1,6 +1,10 @@
 package com.techelevator.email;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -19,6 +23,7 @@ public class SendMail {
 	private String fromAddress;
 	private String password;
 	private Session session;
+	private String emailTemplateDirectory;
 	
 	@Autowired
 	public SendMail(EmailConfig config) {
@@ -26,10 +31,44 @@ public class SendMail {
 		this.port = config.getPort();
 		this.fromAddress = config.getFromAddress();
 		this.password = config.getPassword();
+		this.emailTemplateDirectory = config.getEmailTemplateDirectory();
+		if( !this.emailTemplateDirectory.endsWith("/") ) {
+			this.emailTemplateDirectory += "/";
+		}
 		
 		setup();
 	}
 	
+	public File getEmailFile(String name) {
+		File file = new File(SendMail.class.getResource(emailTemplateDirectory+name).getFile());
+		if( !file.exists() ) {
+			return null;
+		}
+		return file;
+	}
+	
+	public boolean send(String toAddress, String subject, File template, Map<String,String> replacements) {
+		// make sure template exists
+		if( template == null || !template.exists() ) {
+			return false;
+		}
+		// read entire contents of file
+		try(Scanner scanner = new Scanner(template)) {
+			StringBuilder messageBuilder = new StringBuilder();
+			while( scanner.hasNext() ) {
+				messageBuilder.append(scanner.nextLine());
+				messageBuilder.append("\n");
+			}
+			String message = messageBuilder.toString();
+			// parse replacements
+			for( Map.Entry<String,String> entry : replacements.entrySet() ) {
+				message = message.replace(entry.getKey(), entry.getValue());
+			}
+			return send(toAddress, subject, message);
+		} catch (FileNotFoundException e) {
+			return false;
+		}
+	}
 	public boolean send(String toAddress, String subject, String message) {
 		try {
 			MimeMessage email = new MimeMessage(session);

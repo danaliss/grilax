@@ -9,7 +9,7 @@ public class Invitee {
 	@NotNull(message="Email must be provided")
 	private String email;
 	
-	private int eventId;
+	private long eventId;
 	
 	@NotNull(message="Role must be assigned")
 	private String role;
@@ -26,10 +26,10 @@ public class Invitee {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public int getEventId() {
+	public long getEventId() {
 		return eventId;
 	}
-	public void setEventId(int eventId) {
+	public void setEventId(long eventId) {
 		this.eventId = eventId;
 	}
 	public String getRole() {
