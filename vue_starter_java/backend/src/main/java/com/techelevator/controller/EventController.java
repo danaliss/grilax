@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.xml.ws.BindingType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -279,6 +280,40 @@ public class EventController {
     	);
     	response.setStatus(HttpServletResponse.SC_CREATED);
     	return new Response<>(newInvitee);
+    }
+    
+    /**
+     * Adds event attendees to the specified event once they have RSVPd
+     */
+    
+    @PostMapping(path="/event/{eventid}/rsvp")
+    public Response<?> addEventAttendee(@PathVariable long eventid, 
+    									@Valid @RequestBody EventAttendees eventAttendee,
+    									BindingResult result,
+    									HttpServletRequest request, 
+    									HttpServletResponse response){
+    	User user = getUser(request);
+    	if( user == null ) {
+    		return badUser(response);
+    	}
+    	if( result.hasErrors() ) {
+    		return badValidation(result, response);
+    	}
+    	
+    	try {
+    		eventAttendee.setUserId(user.getId());
+    		eventAttendee.setEventId(eventid);
+    		EventAttendees eventAttendees = eventDao.addEventAttendee(eventid, user.getId(), eventAttendee);
+    		if(eventAttendees == null) {
+    			return badEvent(response);
+    		}
+    		return new Response<>(eventAttendees);
+    	} catch (DataIntegrityViolationException e) {
+			return new Response<>(ValidationError.createList(e));
+		}
+    	
+    
+    	
     }
     
 //    @DeleteMapping(path="/event/{eventid}/attendees/{userid}")
