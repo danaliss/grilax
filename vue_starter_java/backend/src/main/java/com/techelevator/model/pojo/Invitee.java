@@ -1,10 +1,17 @@
 package com.techelevator.model.pojo;
 
+import javax.validation.constraints.NotNull;
+
 public class Invitee {
 
 	private long inviteId;
+	
+	@NotNull(message="Email must be provided")
 	private String email;
+	
 	private int eventId;
+	
+	@NotNull(message="Role must be assigned")
 	private String role;
 	
 	public long getInviteId() {

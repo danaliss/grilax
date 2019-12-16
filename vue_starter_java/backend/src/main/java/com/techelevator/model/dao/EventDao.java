@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Invitee;
 
 public interface EventDao {
 	
@@ -18,6 +19,7 @@ public interface EventDao {
 	public Event updateEvent(long eventID, long userID, Event event);
 	public Event getEventDetails(long eventID, long userID);
 	
+	public Invitee sendInvite(long eventID, long userID, Invitee invitee);
 	public Address getAddress(long addressID);
 
 }

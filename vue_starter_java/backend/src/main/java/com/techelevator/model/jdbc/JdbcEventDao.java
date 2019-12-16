@@ -16,6 +16,7 @@ import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Invitee;
 
 @Component
 public class JdbcEventDao implements EventDao {
@@ -135,6 +136,23 @@ public class JdbcEventDao implements EventDao {
 		
 		return newEventAttendees;
 	}
+	
+	@Override
+	public Invitee sendInvite(long eventID, long userId, Invitee invitee) {
+		
+		
+		String sqlString = 	"INSERT INTO invitees(email, event_id, role) "
+							+ "VALUES(?, ?, ?) RETURNING invite_id";
+		
+		long inviteId = jdbc.queryForObject(sqlString, Long.class,
+											invitee.getEmail(),
+											invitee.getEventId(),
+											invitee.getRole());
+		
+		invitee.setInviteId(inviteId);
+		
+		return invitee;
+	}
 
 	@Override
 	public Event updateEvent(long eventID, long userID, Event event) {
@@ -251,4 +269,5 @@ public class JdbcEventDao implements EventDao {
 		
 		return address;
 	}
+
 }
