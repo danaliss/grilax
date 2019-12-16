@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
 import com.techelevator.model.pojo.Invitee;
@@ -20,7 +19,5 @@ public interface EventDao {
 	public Event getEventDetails(long eventID, long userID);
 	
 	public Invitee sendInvite(long eventID, long userID, Invitee invitee);
-	public Address getAddress(long addressID, long userID);
-	public Address createAddress(Address address);
 
 }

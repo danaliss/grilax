@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.techelevator.model.dao.EventDao;
-import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
 import com.techelevator.model.pojo.Invitee;
@@ -199,39 +198,6 @@ public class JdbcEventDao implements EventDao {
 		return event;
 	}
 	
-	@Override
-	public Address getAddress(long addressID, long userID) {
-		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id "
-						+ "FROM address "
-						+ "WHERE address_id = ?"
-						+ "AND user_id = ?";
-		
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID, userID);
-		
-		Address address = null;
-		
-		if( results.next() ) {
-			address = mapRowToAddress(results);
-		}
-		
-		return address;
-	}
-	
-	public Address createAddress(Address address) {
-		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
-				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
-		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
-							address.getStreetAddress(),
-							address.getCity(),
-							address.getState(),
-							address.getZip(),
-							address.getUserId());
-		
-		address.setAddressId(addressId);
-		
-		return address;
-	}
-	
 	private Event mapRowToEvent(SqlRowSet row) {
 		Event event = new Event();
 		
@@ -262,19 +228,6 @@ public class JdbcEventDao implements EventDao {
 		eventAttendees.setChildGuests(row.getInt("child_guests"));
 		
 		return eventAttendees;
-	}
-	
-	private Address mapRowToAddress(SqlRowSet row) {
-		Address address = new Address();
-		
-		address.setAddressId(row.getLong("address_id"));
-		address.setStreetAddress(row.getString("street_address"));
-		address.setCity(row.getString("city"));
-		address.setState(row.getString("state"));
-		address.setZip(row.getString("zip"));
-		address.setUserId(row.getLong("user_id"));
-		
-		return address;
 	}
 
 }

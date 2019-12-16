@@ -71,5 +71,6 @@
 		<property name="port" value="587"/>
 		<property name="fromAddress" value="grillax.techelevator@gmail.com"/>
 		<property name="password" value="TechElevator4"/>
+		<property name="emailTemplateDirectory" value="/../emails"/>
 	</bean>
 </beans>

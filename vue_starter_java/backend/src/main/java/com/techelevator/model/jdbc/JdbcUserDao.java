@@ -139,4 +139,11 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
+    @Override
+    public boolean emailExists(String email) {
+    	String sqlString = "SELECT COUNT(*) FROM users WHERE email = ?";
+    	long count = jdbcTemplate.queryForObject(sqlString, Long.class, email);
+    	
+    	return count > 0;
+    }
 }
