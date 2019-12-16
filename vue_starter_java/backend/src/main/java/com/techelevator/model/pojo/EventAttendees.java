@@ -8,8 +8,6 @@ import org.hibernate.validator.constraints.Length.List;
 
 public class EventAttendees {
 	private long eventId;
-	
-	@NotNull(message="Invalid user ID")
 	private Long userId;
 	
 	@NotNull(message="Host value needs to be true or false")

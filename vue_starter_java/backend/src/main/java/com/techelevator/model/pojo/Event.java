@@ -56,24 +56,28 @@ public class Event{
 	@NotNull(message="Event needs to have an address")
 	private Long addressId;
 	
+	private long userId;
 	private boolean hosting=true;
 	private boolean attending=true;
 	
 	@JsonIgnore
 	@AssertTrue(message="RSVP needs to be before the event date")
 	public boolean isRsvpBeforeDate() {
+		if( deadline == null ) return false;
 		return deadline.compareTo(date) < 0;
 	}
 
 	@JsonIgnore
 	@AssertTrue(message="Event's RSVP needs to be a future date") // @Future doesn't support LocalDate
 	public boolean isRsvpInFuture() {
+		if( deadline == null ) return false;
 		return deadline.isAfter(LocalDate.now());
 	}
 
 	@JsonIgnore
 	@AssertTrue(message="Event needs to take place on a future date") // @Future doesn't support LocalDate
 	public boolean isDateInFuture() {
+		if( date == null ) return false;
 		return date.isAfter(LocalDate.now());
 	}
 	
@@ -130,6 +134,12 @@ public class Event{
 	}
 	public void setHosting(boolean hosting) {
 		this.hosting = hosting;
+	}
+	public long getUserId() {
+		return userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 }
 

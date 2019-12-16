@@ -6,15 +6,17 @@ import java.util.Date;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
-import com.techelevator.model.dao.UserDao;
-import com.techelevator.model.pojo.User;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.techelevator.model.dao.UserDao;
+import com.techelevator.model.pojo.User;
+
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.IOException;
 
@@ -51,15 +53,20 @@ public class JwtTokenHandler {
         return builder.compact();
     }
 
-    public User getUser(String jwtString) throws IOException {
+    public User getUser(String jwtString) throws IOException, ExpiredJwtException {
         if (jwtString == null || !jwtString.startsWith(BEARER_PREFIX)) {
             return null;
         }
 
         final String token = jwtString.substring(BEARER_PREFIX.length());
 
-        Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
+        Claims claims = null;
+        try {
+        	claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
                 .parseClaimsJws(token).getBody();
+        } catch( MalformedJwtException e) {
+        	return null;
+        }
         User authedUser = dao.getUserByUsername(claims.getSubject());
         return authedUser;
     }
