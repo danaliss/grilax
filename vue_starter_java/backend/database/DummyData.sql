@@ -47,7 +47,7 @@ VALUES ('User2@Fake.com', '2', 'Chef');
 INSERT INTO event_attendees (event_id, user_id, is_host, is_chef, is_attending, first_name, last_name, adult_guests, child_guests)
 VALUES ('1', '1', 'true', 'false', 'true', 'First', 'Last', '1', '0');
 INSERT INTO event_attendees (event_id, user_id, is_host, is_chef, is_attending, first_name, last_name, adult_guests, child_guests, invite_id)
-VALUES ('1', '2', 'false', 'false', 'true', 'Fake', 'Fakington', '0', '1', '1');
+VALUES ('1', '2', 'false', 'false', null, 'Fake', 'Fakington', '0', '1', '1');
 INSERT INTO event_attendees (event_id, user_id, is_host, is_chef, is_attending, first_name, last_name, adult_guests, child_guests, invite_id)
 VALUES ('2', '1', 'false', 'false', 'false', 'First', 'Last', '0', '0', '2');
 INSERT INTO event_attendees (event_id, user_id, is_host, is_chef, is_attending, first_name, last_name, adult_guests, child_guests)
@@ -58,5 +58,4 @@ INSERT INTO event_attendees (event_id, user_id, is_host, is_chef, is_attending, 
 VALUES ('2', '4', 'false', 'true', 'true', 'Notareal', 'Person', '0', '0', '4');
 
 COMMIT;
-
 

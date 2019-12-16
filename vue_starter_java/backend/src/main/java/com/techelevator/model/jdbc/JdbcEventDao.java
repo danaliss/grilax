@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.techelevator.model.dao.EventDao;
+import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
 import com.techelevator.model.pojo.Invitee;
@@ -68,7 +69,7 @@ public class JdbcEventDao implements EventDao {
 		sqlQuery = "INSERT INTO event_attendees (event_id, user_id, is_host, is_attending) "
 					 + "VALUES(?, ?, true, true)";
 		jdbc.update(sqlQuery, eventID, userID);
-		
+
 		return event;
 	}
 
@@ -174,7 +175,7 @@ public class JdbcEventDao implements EventDao {
 						 + "address_id = ? "
 						 + "WHERE event_id = ?";
 		
-		jdbc.update(sqlString, event.getName(), event.getDate(), event.getTime(), event.getDescription(), event.getDeadline(), event.getDescription(), event.getAddressId(), event.getEventId());
+		jdbc.update(sqlString, event.getName(), event.getDate(), event.getTime(), event.getDescription(), event.getDeadline(), event.getAddressId(), event.getEventId());
 		
 		return event;
 	}
@@ -186,7 +187,7 @@ public class JdbcEventDao implements EventDao {
 						 + "FROM event "
 						 + "JOIN event_attendees USING(event_id) "
 						 + "WHERE event_id = ? AND user_id = ?";
-		
+
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID, userID);
 		
 		Event event = null;
@@ -198,6 +199,23 @@ public class JdbcEventDao implements EventDao {
 		return event;
 	}
 	
+	
+	
+	public Address createAddress(Address address, long userId) {
+		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
+				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
+		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
+							address.getStreetAddress(),
+							address.getCity(),
+							address.getState(),
+							address.getZip(),
+							address.getUserId());
+		
+		address.setAddressId(addressId);
+		
+		return address;
+	}
+
 	private Event mapRowToEvent(SqlRowSet row) {
 		Event event = new Event();
 		
