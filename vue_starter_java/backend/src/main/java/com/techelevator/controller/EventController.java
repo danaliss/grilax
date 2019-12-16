@@ -87,7 +87,7 @@ public class EventController {
     @PostMapping(path="/events")
     public Response<?> createEvent(@Valid @RequestBody Event event, BindingResult result, HttpServletRequest request, HttpServletResponse response) {
     	User user = (User)request.getAttribute(RequestAuthProvider.USER_KEY);
-    	
+    	System.out.println("made it to controller");
     	if( user == null ) {
     		return new Response<>(new ResponseError("Unknown User"));
     	}

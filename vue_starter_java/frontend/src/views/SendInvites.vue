@@ -1,7 +1,7 @@
 <template>
     <div id= "send-invites container-fluid">
         <br>
-        <form class = "offset-md-3 col-md-6">
+        <form class = "offset-md-3 col-md-6" @submit.prevent="sendInvite">
             <br>
             <h4>Invite Others to This Event</h4>
             <div class = "form-group">
@@ -36,14 +36,33 @@ export default {
     name: "send-invites",
     data() {
     return {
-      eventAttendees: {
-        userId: '',
-        isHost: '',
-        isAttending : '',
-        firstName : '',
-        role: 'user',
+      invitee: {
+        email: '',
+        role: '',
+        eventId : '',
+
       },
+      invitationErrors: false,
     }
+    },
+    methods : {
+        sendInvite() {
+            fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${this.event.eventid}/sendinvite`, {
+                method: 'POST',
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                },
+        body: JSON.stringify(this.invitee),
+      })
+      .then((response) =>{
+          if(response.ok){
+              this.$router.push({ path: `/${this.invitee.eventId}/sendinvite`, query: {invitation: 'success'}});
+          } else{
+              this.invitationErrors = true;
+          }
+      })
+        }
     }
     
 }
