@@ -7,7 +7,7 @@ import Register from './views/Register.vue'
 import Rsvp from './views/Rsvp.vue'
 import EventDetails from './views/EventDetails.vue'
 import NewEvent from './views/NewEvent.vue'
-import SendInvites from './views/SendInvites.vue'
+import SendInvite from './views/SendInvite.vue'
 import CreateMenu from './views/CreateMenu.vue'
 import { RSA_SSLV23_PADDING } from 'constants';
 
@@ -68,9 +68,9 @@ const router = new Router({
        
     },
     {
-      path: "/:eventId/sendinvites",
-      name: "sendinvites",
-      component: SendInvites,
+      path: "/:eventId/sendinvite",
+      name: "sendinvite",
+      component: SendInvite,
       meta: {
         requiresAuth: true
       }
