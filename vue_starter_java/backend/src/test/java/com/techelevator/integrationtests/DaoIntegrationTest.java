@@ -79,10 +79,11 @@ public abstract class DaoIntegrationTest {
 	 */
 	@Before
 	public void setup() {
+		//password is "fakepassword"
 		String sqlInsertFakeUser = "INSERT INTO users (username, password, salt, email, date_registered) "
 				+ "VALUES (?, ?, ?, ?, ?) RETURNING user_id";
 
-		testUserId = jdbcTemplate.queryForObject(sqlInsertFakeUser, Long.TYPE, "FakeUser", "FakePassword", "FAKESALT", "Fake@Fake.com", Timestamp.valueOf("2019-12-11 17:26:30"));
+		testUserId = jdbcTemplate.queryForObject(sqlInsertFakeUser, Long.TYPE, "FakeUser2", "Pn74iOeZYhkH9F8JfExrWA==", "8U4SVwd0wFj7Un21FRdX9LxmKRdBcUr9yGbr19aU5ZlsTlQG6CEOEO4b8avJUVw0RMUkniiGRS8VNMqWHZpcExhlCsK06jgnVxSIMBElr2rEpqTzi3uiTvmhM6wyGXVlHHoshMMgtx6I/lAQYKpK3Hv2z0aiP99MI1URiY983p8=", "Fake2@Fake.com", Timestamp.valueOf("2019-12-11 17:26:30"));
 		
 		String sqlInsertFakeAddress = "INSERT INTO address (street_address, city, state, zip, user_id) "
 				   + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
