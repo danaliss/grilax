@@ -55,7 +55,6 @@ public class JdbcEventDao implements EventDao {
 	@Transactional
 	public Event createEvent(Event event, long userID) throws DataIntegrityViolationException {
 		// start a transaction to rollback if needed
-		System.out.println("creating event");
 		String sqlQuery = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
 						+ "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
 		
@@ -140,7 +139,7 @@ public class JdbcEventDao implements EventDao {
 	public EventAttendees addEventAttendee(long eventID, long userID, EventAttendees attendees) throws DataIntegrityViolationException {
 		// make sure the user is invited and not the host
 		Event details = this.getEventDetails(eventID, userID);
-		if( details == null || details.isHosting() == true || details.isInvitation() == false ) {
+		if( details == null || details.isHosting() == true || details.isInvited() == false ) {
 			return null;
 		}
 		
@@ -207,7 +206,7 @@ public class JdbcEventDao implements EventDao {
 						 + "FROM event "
 						 + "JOIN event_attendees USING(event_id) "
 						 + "LEFT JOIN invitees USING(event_id) "
-						 + "LEFT JOIN users USING(email, user_id) "
+						 + "LEFT JOIN users USING(email) "
 						 + "WHERE event_id = ? AND user_id = ?";
 
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID, userID);
@@ -269,7 +268,7 @@ public class JdbcEventDao implements EventDao {
 		event.setAddressId(row.getLong("address_id"));
 		event.setUserId(row.getLong("user_id"));
 		
-		event.setIsInvitation( row.getString("email")!=null );
+		event.setInvited( row.getString("email")!=null );
 		
 		return event;
 	}

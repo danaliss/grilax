@@ -59,7 +59,7 @@ public class Event{
 	private long userId;
 	private Boolean hosting=true;
 	private Boolean attending=true;
-	private boolean isInvitation=false;
+	private boolean isInvited=false;
 	
 	@JsonIgnore
 	@AssertTrue(message="RSVP needs to be before the event date")
@@ -142,11 +142,11 @@ public class Event{
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
-	public boolean isInvitation() {
-		return this.isInvitation;
+	public boolean isInvited() {
+		return this.isInvited;
 	}
-	public void setIsInvitation(boolean isInvitation) {
-		this.isInvitation = isInvitation;
+	public void setInvited(boolean isInvited) {
+		this.isInvited = isInvited;
 	}
 }
 
