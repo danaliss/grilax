@@ -231,6 +231,10 @@ public class FoodController {
     	if( result.hasErrors() ) {
     		return badValidation(result, response);
     	}
+    	// override Order object
+    	order.setEventId(eventid);
+    	order.setUserId(user.getId());
+    	
     	Event event = foodOrderDao.createOrder(eventid, user.getId(), order);
     	
     	if( event != null ) {
@@ -274,6 +278,11 @@ public class FoodController {
     	if( result.hasErrors() ) {
     		return badValidation(result, response);
     	}
+    	// override Order object
+    	order.setOrderId(orderid);
+    	order.setEventId(eventid);
+    	order.setUserId(user.getId());
+    	
     	Event event = foodOrderDao.updateOrder(eventid, orderid, user.getId(), order);
     	
     	if( event != null ) {

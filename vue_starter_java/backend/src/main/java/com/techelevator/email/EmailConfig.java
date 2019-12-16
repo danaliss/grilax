@@ -5,6 +5,7 @@ public class EmailConfig {
 	private String host;
 	private String port;
 	private String password;
+	private String emailTemplateDirectory;
 	
 	public String getFromAddress() {
 		return fromAddress;
@@ -29,5 +30,11 @@ public class EmailConfig {
 	}
 	public void setPort(String port) {
 		this.port = port;
+	}
+	public String getEmailTemplateDirectory() {
+		return emailTemplateDirectory;
+	}
+	public void setEmailTemplateDirectory(String emailTemplateDirectory) {
+		this.emailTemplateDirectory = emailTemplateDirectory;
 	}
 }
