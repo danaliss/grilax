@@ -228,7 +228,6 @@ public class EventController {
     	
     	return new Response<>(attendees);
     }
-
     
     /**
      * Adds an attendee to the specified event.

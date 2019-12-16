@@ -90,30 +90,6 @@ public class JdbcEventDao implements EventDao {
 		return null;
 	}
 
-	 @Override
-	    public List<EventAttendees> getEventAttendees(long eventID, long userID) {
-	        String sqlString =  "SELECT event_attendees.event_id, event_attendees.user_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.first_name, event_attendees.last_name, event_attendees.adult_guests, event_attendees.child_guests "
-	                            + "FROM event_attendees "
-	                            + "WHERE event_id = ?";
-	        
-	        SqlRowSet attendeeResults = jdbc.queryForRowSet(sqlString, eventID);
-	        
-	        List<EventAttendees> listOfAttendees = new ArrayList<EventAttendees>();
-	        
-	        boolean found = false;
-	        while(attendeeResults.next()) {
-	            EventAttendees attendee = mapRowToEventAttendees(attendeeResults);
-	            if( attendee.getUserId() == userID ) {
-	                found = true;
-	            }
-	            listOfAttendees.add(attendee);
-	        }
-	        if( !found ) {
-	            return null;
-	        }
-	        
-	        return listOfAttendees;
-	    }
 	@Override
 	public List<EventAttendees> getEventAttendees(long eventID, long userID) {
 		String sqlString =	"SELECT event_attendees.event_id, event_attendees.user_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.first_name, event_attendees.last_name, event_attendees.adult_guests, event_attendees.child_guests "
@@ -203,7 +179,7 @@ public class JdbcEventDao implements EventDao {
 	
 	@Override
 	public Address getAddress(long addressID) {
-		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id FROM address WHERE address_id = ?";
+		String sqlString = "SELECT address_id, street_address, city, state, zip FROM address WHERE address_id = ?";
 		
 		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID);
 		
@@ -212,21 +188,6 @@ public class JdbcEventDao implements EventDao {
 		if( results.next() ) {
 			address = mapRowToAddress(results);
 		}
-		
-		return address;
-	}
-	
-	private Address createAddress(Address address, long userId) {
-		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
-				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
-		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
-							address.getStreetAddress(),
-							address.getCity(),
-							address.getState(),
-							address.getZip(),
-							address.getUserId());
-		
-		address.setAddressId(addressId);
 		
 		return address;
 	}
@@ -271,7 +232,6 @@ public class JdbcEventDao implements EventDao {
 		address.setCity(row.getString("city"));
 		address.setState(row.getString("state"));
 		address.setZip(row.getString("zip"));
-		address.setUserId(row.getLong("user_id"));
 		
 		return address;
 	}

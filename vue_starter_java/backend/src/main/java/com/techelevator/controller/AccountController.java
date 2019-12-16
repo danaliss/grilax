@@ -66,11 +66,7 @@ public class AccountController {
             
             return new Response<>(ValidationError.createList(e));
         }
-<<<<<<< HEAD
-        return new Response<>(); // success
-=======
         return Response.EMPTY_SUCCESS; // success
->>>>>>> 8d299f919648bd43abac55e4030900ac266f3783
     }
 
     @PutMapping(path="/user/update")
