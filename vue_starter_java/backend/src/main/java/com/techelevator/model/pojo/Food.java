@@ -19,13 +19,8 @@ public class Food {
 	
 	@Length(max=255, message="Food description cannot be over 255 characters")
 	private String description;
-<<<<<<< HEAD
 	private long eventId;
 	private String foodCategory;
-=======
-	
-	private Long eventId;
->>>>>>> * Created a few helper methods and constants
 
 	public long getFoodId() {
 		return foodId;
