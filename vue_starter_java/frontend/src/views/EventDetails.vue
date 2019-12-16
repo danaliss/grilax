@@ -26,7 +26,6 @@
         </ul>
     </section>
 
-
     <section class="rsvp">
         <router-link tag="h1" v-bind:to="{ name:'rsvp', params:{eventId:event.eventId}}">
             <button class="btn">RSVP</button>
