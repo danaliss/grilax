@@ -103,7 +103,6 @@ public class EventController {
     								HttpServletRequest request,
     								HttpServletResponse response) {
     	User user = (User)request.getAttribute(RequestAuthProvider.USER_KEY);
-    	System.out.println("made it to controller");
     	if( user == null ) {
     		return badUser(response);
     	}
