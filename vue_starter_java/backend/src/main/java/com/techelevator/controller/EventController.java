@@ -48,6 +48,7 @@ public class EventController {
 	
 	/**
 	 * Gets the address by the ID
+	 * Roles: Anonymous (must have created the address)
 	 * 
 	 * @param addressid the ID of the address
 	 * @return 
@@ -59,8 +60,13 @@ public class EventController {
 	 */
 	@GetMapping(path="/address/{addressid}")
 	public Response<?> getAddressByID(@PathVariable long addressid,
+									  HttpServletRequest request,
 									  HttpServletResponse response) {
-		Address address = eventDao.getAddress(addressid);
+		User user = getUser(request);
+		if( user == null ) {
+			return badUser(response);
+		}
+		Address address = eventDao.getAddress(addressid, user.getId());
 		
 		if( address != null ) {
 			return new Response<>(address);
@@ -68,6 +74,40 @@ public class EventController {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return new Response<>(new ResponseError("Invalid address"));
 		}
+	}
+
+	/**
+	 * Adds a new address
+	 * Roles: Anonymous
+	 * 
+	 * @param address Address object to add
+	 * @param result Validation results of creating the Address object
+	 * @param request Request made by the user
+	 * @param response Response to send to the user
+	 * @return 
+	 * 	<ul>
+	 * 		<li><h3>HTTP 201</h3> Address object</li>
+	 * 		<li><h3>HTTP 400</h3> Bad validation</li>
+	 * 		<li><h3>HTTP 401</h3> User not logged in</li>
+	 * </ul>
+	 */
+	@PostMapping("/address")
+	public Response<?> addAddress(@Valid @RequestBody Address address,
+								   BindingResult result,
+								   HttpServletRequest request,
+								   HttpServletResponse response) {
+		User user = getUser(request);
+		if( user == null ) {
+			return badUser(response);
+		}
+		if( result.hasErrors() ) {
+			return badValidation(result, response);
+		}
+		address.setUserId(user.getId());
+		address = eventDao.createAddress(address);
+		
+		response.setStatus(HttpServletResponse.SC_CREATED);
+		return new Response<>(address);
 	}
 	
 	/**
@@ -257,10 +297,10 @@ public class EventController {
      */
     @PostMapping(path="/event/{eventid}/sendinvite")
     public Response<?> sendInvites(@Valid @RequestBody Invitee invitee,
-    									@PathVariable long eventid, 
-    									BindingResult result, 
-    									HttpServletRequest request,
-    									HttpServletResponse response) {
+    								@PathVariable long eventid, 
+    								BindingResult result, 
+    								HttpServletRequest request,
+    								HttpServletResponse response) {
     	User user = getUser(request);
     	if( user == null ) {
     		return badUser(response);

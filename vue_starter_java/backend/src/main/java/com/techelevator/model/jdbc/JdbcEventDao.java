@@ -139,7 +139,11 @@ public class JdbcEventDao implements EventDao {
 	
 	@Override
 	public Invitee sendInvite(long eventID, long userId, Invitee invitee) {
-		
+		// make sure user is host
+		Event event = getEventDetails(eventID, userId);
+		if( event == null || !event.isHosting() ) {
+			return null;
+		}
 		
 		String sqlString = 	"INSERT INTO invitees(email, event_id, role) "
 							+ "VALUES(?, ?, ?) RETURNING invite_id";
@@ -196,10 +200,13 @@ public class JdbcEventDao implements EventDao {
 	}
 	
 	@Override
-	public Address getAddress(long addressID) {
-		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id FROM address WHERE address_id = ?";
+	public Address getAddress(long addressID, long userID) {
+		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id "
+						+ "FROM address "
+						+ "WHERE address_id = ?"
+						+ "AND user_id = ?";
 		
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID);
+		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID, userID);
 		
 		Address address = null;
 		
@@ -210,7 +217,7 @@ public class JdbcEventDao implements EventDao {
 		return address;
 	}
 	
-	private Address createAddress(Address address, long userId) {
+	public Address createAddress(Address address) {
 		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
 				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
 		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
