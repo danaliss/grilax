@@ -1,21 +1,32 @@
 <template>
-   <div class="new-event-form container col-6">
+   <div class="container col-6" id="new-event-form">
     
       <br>
   
-<form>
+<form @submit.prevent="createEvent">
       <h3 class="text-center">New Event</h3>
   
 <div class="form-group form-row" >
     <div class = "col">
     <label for="inputAddress">Event Name</label>
-    <input type="text" class="form-control" id="inputAddress" placeholder="Exciting event name!!!"/>
+    <input 
+    type="text" 
+    class="form-control" 
+    id="inputAddress" 
+    v-model="event.name" 
+    required placeholder="Exciting event name!!!"/>
   </div>
   </div>
   <div class="form-group form-row" >
       <div class='col'>
     <label for="description">Event Description</label>
-    <textarea type="text-area" class="form-control" id="description" rows="3" placeholder="Details about the event here"/>
+    <textarea 
+    type="text-area" 
+    class="form-control" 
+    id="description" 
+    rows="3" 
+    v-model="event.description"
+    placeholder="Details about the event here"/>
   </div>
   </div>
 
@@ -23,15 +34,28 @@
 
     <div class="col">
       <label for="inputZip">Event Date</label>
-      <input type="date" class="form-control" id="event-date">
+      <input 
+      type="date" 
+      class="form-control" 
+      id="event-date"
+      v-model="event.date">
     </div>
     <div class="col">
-      <label for="inputZip">Event Time</label>
-      <input type="text" class="form-control" id="event-date" placeholder="Event Time Here">
+      <label for="event-date">Event Time</label>
+      <input 
+      type="text" 
+      class="form-control" 
+      id="event-date" 
+      v-model="event.time"
+      placeholder="Event Time Here">
     </div>
     <div class="col">
-      <label for="inputCity">RSVP Deadline</label>
-      <input type="date" class="form-control" id="event-rsvp-deadline">
+      <label for="event-rsvp-deadline">RSVP Deadline</label>
+      <input 
+      type="date" 
+      class="form-control" 
+      id="event-rsvp-deadline"
+      v-model="event.deadline">
     </div>
   </div>
   
@@ -43,24 +67,100 @@
   <div class="form-group form-row" >
       <div class = "col">
     <label for="inputAddress">Address</label>
-    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+    <input type="text" 
+    class="form-control" 
+    id="inputAddress" 
+    placeholder="1234 Main St">
   </div>
+    <!-- v-model="address.streetAddress" -->
   </div>
 
   
   <div class="form-group form-row">
     <div class="col-md-4">
       <label for="inputCity">City</label>
-      <input type="text" class="form-control" id="inputCity">
+      <input 
+      type="text" 
+      class="form-control" 
+      id="inputCity"
+      >
+      <!-- v-model="address.city"-->
     </div>
     <div class="col-md-4">
       <label for="inputState">State</label>
-      <state-options></state-options>
+      <!--
+      
+      <state-options
+        :value='address.state'  
+        @input="(newAddress)=>{address = newAddress}"
+      />-->
+      <select id="inputState" 
+      class="form-control">
+      <!-- v-model="address.state"  -->
+          
+        <option selected>Choose...</option>
+        <option value="AL">Alabama</option>
+            <option value="AK">Alaska</option>
+            <option value="AZ">Arizona</option>
+            <option value="AR">Arkansas</option>
+            <option value="CA">California</option>
+            <option value="CO">Colorado</option>
+            <option value="CT">Connecticut</option>
+            <option value="DE">Delaware</option>
+            <option value="DC">District Of Columbia</option>
+            <option value="FL">Florida</option>
+            <option value="GA">Georgia</option>
+            <option value="HI">Hawaii</option>
+            <option value="ID">Idaho</option>
+            <option value="IL">Illinois</option>
+            <option value="IN">Indiana</option>
+            <option value="IA">Iowa</option>
+            <option value="KS">Kansas</option>
+            <option value="KY">Kentucky</option>
+            <option value="LA">Louisiana</option>
+            <option value="ME">Maine</option>
+            <option value="MD">Maryland</option>
+            <option value="MA">Massachusetts</option>
+            <option value="MI">Michigan</option>
+            <option value="MN">Minnesota</option>
+            <option value="MS">Mississippi</option>
+            <option value="MO">Missouri</option>
+            <option value="MT">Montana</option>
+            <option value="NE">Nebraska</option>
+            <option value="NV">Nevada</option>
+            <option value="NH">New Hampshire</option>
+            <option value="NJ">New Jersey</option>
+            <option value="NM">New Mexico</option>
+            <option value="NY">New York</option>
+            <option value="NC">North Carolina</option>
+            <option value="ND">North Dakota</option>
+            <option value="OH">Ohio</option>
+            <option value="OK">Oklahoma</option>
+            <option value="OR">Oregon</option>
+            <option value="PA">Pennsylvania</option>
+            <option value="RI">Rhode Island</option>
+            <option value="SC">South Carolina</option>
+            <option value="SD">South Dakota</option>
+            <option value="TN">Tennessee</option>
+            <option value="TX">Texas</option>
+            <option value="UT">Utah</option>
+            <option value="VT">Vermont</option>
+            <option value="VA">Virginia</option>
+            <option value="WA">Washington</option>
+            <option value="WV">West Virginia</option>
+            <option value="WI">Wisconsin</option>
+            <option value="WY">Wyoming</option>
+            
+      </select>
     </div>
     <div class="col-md-4">
       <label for="inputZip">Zip</label>
-      <input type="text" class="form-control" id="inputZip">
+      <input 
+      type="text" 
+      class="form-control"
+      id="inputZip">
     </div>
+      <!-- v-model="address.zip"  -->
   </div>
   <div class = "form-row form-group col-md ">
   <button type="submit" class="btn btn-primary">Submit Event</button>
@@ -73,23 +173,25 @@
 </template>
 
 <script>
-import StateOptions from '../components/StateOptions'
+//import StateOptions from '../components/StateOptions'
+import auth from '../auth'
 export default {
     name : "new-event",
     components : {
-      StateOptions
+      //StateOptions
     },
     data() {
       return {
         event: {
           name : '',
-          description : '',
           date : '',
           time : '',
+          description : '',
           deadline : '',
+          addressId : 1,
+          hosting : true,
+          attending :  true,
           userId : '',
-          hosting : '',
-          attending :  ''
 
         },
         address : {
@@ -102,7 +204,37 @@ export default {
         }
 
       }
-    }
+    },
+    createEventStatus : false,
+     methods: {
+    createEvent() {
+      fetch(`${process.env.VUE_APP_REMOTE_API}/api/events`, {
+        method: 'POST',
+        headers: {
+          "Authorization": "Bearer "+ auth.getToken(),
+          "Accept": 'application/json',
+          'Content-Type': 'application/json',
+
+        },
+        body: JSON.stringify(this.event),
+      })
+        .then((response) => {
+          if (response.ok) {
+            this.$router.push({ path: `/${this.event.eventId}/eventdetails`, query: { createEventStatus: 'success' } });
+          } else {
+            this.registrationErrors = true;
+          }
+        })
+
+        .then((err) => console.error(err));
+    },
+  },
+  //computed: {
+  //   stateAddress: {
+  //     get() {return this.value},
+  //     set(localAddress) {this.$emit('input', localAddress)}
+  //   }
+  // }
 
 }
 </script>
@@ -119,7 +251,7 @@ export default {
   --gxgreentransparent: rgb(113, 216, 97, 1)
 }
 
-input {
+input, textarea, select {
   background-color: var(--gxwhite) !important;
 }
 
