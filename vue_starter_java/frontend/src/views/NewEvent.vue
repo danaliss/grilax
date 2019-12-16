@@ -220,7 +220,7 @@ export default {
       })
         .then((response) => {
           if (response.ok) {
-            this.$router.push({ path: `/${this.event.eventId}/eventdetails`, query: { createEventStatus: 'success' } });
+            this.$router.push({ path: `/${this.$route.params.eventId}/eventdetails`, query: { createEventStatus: 'success' } });
           } else {
             this.registrationErrors = true;
           }
