@@ -6,7 +6,7 @@
             <h4>Invite Others to This Event</h4>
             <div class = "form-group">
             <label for = "invitee-role"></label>
-            <select id = "invitee-role" class="custom-select form-control">
+            <select id = "invitee-role" v-model="invitee.role" class="custom-select form-control">
 
                 <option value="attendee">Attendee</option>
                 <option value="chef">Chef</option>
@@ -15,9 +15,9 @@
             </div>
             <div class="form-group">
             <label for="email-area">Invitee Emails</label>
-            <input class="form-control" id="email-area" type="email"  placeholder="attendee@example.com" />
+            <input v-model="invitee.email" class="form-control" id="email-area" type="email"  placeholder="attendee@example.com" />
             </div>
-            <button type="submit" class="form control btn btn-secondary">Send Invite</button>
+            <button type="submit"  class="form control btn btn-secondary">Send Invite</button>
 
  
         </form>
@@ -32,24 +32,27 @@
 
 <script>
 
+    import auth from '../auth'
 export default {
-    name: "send-invites",
+    name: "send-invite",
     data() {
     return {
-      invitee: {
-        email: '',
-        role: '',
-        eventId : '',
+            invitee: {
+                email: '',
+                role: '',
+                eventId : 0,
+                inviteId : 0,
 
-      },
-      invitationErrors: false,
-    }
+            },
+            invitationErrors: false,
+            }
     },
     methods : {
         sendInvite() {
-            fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${this.event.eventid}/sendinvite`, {
+            fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${this.$route.params.eventId}/invite`, {
                 method: 'POST',
                 headers: {
+                "Authorization": "Bearer "+ auth.getToken(),
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 },
@@ -57,7 +60,7 @@ export default {
       })
       .then((response) =>{
           if(response.ok){
-              this.$router.push({ path: `/${this.invitee.eventId}/sendinvite`, query: {invitation: 'success'}});
+              this.$router.push({ path: `/${this.$route.params.eventId}/sendinvite`, query: {invitation: 'success'}});
           } else{
               this.invitationErrors = true;
           }
