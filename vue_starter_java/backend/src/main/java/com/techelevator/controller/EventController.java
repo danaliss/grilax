@@ -339,9 +339,11 @@ public class EventController {
     }
     
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handle(Exception e) {
-    System.out.println(e.getMessage());
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Response<?> handle(Exception e) {
+    	System.out.println(e.getMessage());
+    	e.printStackTrace();
+    	return new Response<>(new ResponseError("Server error"));
     }
     
     private User getUser(HttpServletRequest request) {

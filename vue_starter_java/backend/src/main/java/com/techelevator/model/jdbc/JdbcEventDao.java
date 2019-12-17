@@ -218,15 +218,25 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public Event getEventDetails(long eventID, long userID) {
-		// only allow event details if they're part of the event (must be in event_attendees)
+		// only allow event details if they're part of the event (attendees or invite)
+		List<Event> events = this.getEventsForUser(userID);
+		boolean found = false;
+		for( Event event : events ) {
+			if( event.getEventId() == eventID ) {
+				found = true;
+				break;
+			}
+		}
+		if( !found ) return null;
+		
 		String sqlString = EVENT_COLUMNS
 						 + "FROM event "
 						 + "JOIN event_attendees USING(event_id) "
 						 + "LEFT JOIN invitees USING(event_id) "
 						 + "LEFT JOIN users USING(email) "
-						 + "WHERE event_id = ? AND user_id = ?";
+						 + "WHERE event_id = ?";
 
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID, userID);
+		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID);
 		
 		Event event = null;
 		
