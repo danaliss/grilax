@@ -1,25 +1,23 @@
 package com.techelevator.controller;
 
 import java.util.List;
-import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.xml.ws.BindingType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.authentication.RequestAuthProvider;
@@ -29,8 +27,10 @@ import com.techelevator.controller.response.ResponseMap;
 import com.techelevator.controller.response.ValidationError;
 import com.techelevator.email.EmailReplacementMap;
 import com.techelevator.email.SendMail;
+import com.techelevator.model.dao.AddressDao;
 import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.dao.UserDao;
+import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
 import com.techelevator.model.pojo.Invitee;
@@ -44,6 +44,9 @@ public class EventController {
 	
 	@Autowired
 	private EventDao eventDao;
+
+	@Autowired
+	private AddressDao addressDao;
 	
 	@Autowired
 	private UserDao userDao;
@@ -98,12 +101,11 @@ public class EventController {
 	 * </ul>
      */
     @PostMapping(path="/events")
-    public Response<?> createEvent(@Valid @RequestBody Event event, 
+    public Response<?> createEvent(@Valid @RequestBody Event event,
     								BindingResult result,
     								HttpServletRequest request,
     								HttpServletResponse response) {
     	User user = (User)request.getAttribute(RequestAuthProvider.USER_KEY);
-    	System.out.println("made it to controller");
     	if( user == null ) {
     		return badUser(response);
     	}
@@ -113,14 +115,28 @@ public class EventController {
             return badValidation(result, response);
     	}
     	
-		try {
-			Event newEvent = eventDao.createEvent(event, user.getId());
-			response.setStatus(HttpServletResponse.SC_CREATED);
-        	return new Response<>(newEvent);
+    	try {
+    	Address tempAddress = event.getAddress();
+    	tempAddress.setUserId(user.getId());
+    	System.out.println("set user id for address");
+    	event.setAddress(addressDao.createAddress(tempAddress));
+    	event.setAddressId(event.getAddress().getAddressId());
+    	System.out.println(event.getAddressId());
+    	
+    	System.out.println("address id set and put on event");
+    	Event newEvent = eventDao.createEvent(event, user.getId());
+    	System.out.println("event made");
+    	
+		response.setStatus(HttpServletResponse.SC_CREATED);
+
+			return new Response<>(newEvent);
 		} catch (DataIntegrityViolationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    		return new Response<>(ValidationError.createList(e));
+			return new Response<>(ValidationError.createList(e));
 		}
+		
+    	
+    	
     }
     
     /**
@@ -207,6 +223,7 @@ public class EventController {
     public Response<?> getEventAttendees(@PathVariable long eventid, 
     									HttpServletRequest request, 
     									HttpServletResponse response) {
+    	
     	User user = getUser(request);
     	
     	if( user == null ) {
@@ -244,8 +261,8 @@ public class EventController {
 	 * </ul>
      */
     @PostMapping(path="/event/{eventid}/invite")
-    public Response<?> sendInvites(@Valid @RequestBody Invitee invitee,
-    								@PathVariable long eventid, 
+    public Response<?> sendInvites(@PathVariable long eventid,
+    							   @Valid @RequestBody Invitee invitee,
     								BindingResult result, 
     								HttpServletRequest request,
     								HttpServletResponse response) {
@@ -283,6 +300,68 @@ public class EventController {
     	);
     	response.setStatus(HttpServletResponse.SC_CREATED);
     	return new Response<>(newInvitee);
+    }
+    
+    /**
+     * Adds event attendees to the specified event once they have RSVPd
+     */
+    
+    @PostMapping(path="/event/{eventid}/rsvp/accept")
+    public Response<?> addEventAttendee(@PathVariable long eventid, 
+    									@Valid @RequestBody EventAttendees eventAttendee,
+    									BindingResult result,
+    									HttpServletRequest request, 
+    									HttpServletResponse response){
+    	User user = getUser(request);
+    	if( user == null ) {
+    		return badUser(response);
+    	}
+    	if( result.hasErrors() ) {
+    		return badValidation(result, response);
+    	}
+    	
+    	try {
+    		eventAttendee.setUserId(user.getId());
+    		eventAttendee.setEventId(eventid);
+    		EventAttendees eventAttendees = eventDao.addEventAttendee(eventid, user.getId(), eventAttendee);
+    		if(eventAttendees == null) {
+    			return badEvent(response);
+    		}
+    		return new Response<>(eventAttendees);
+    	} catch (DataIntegrityViolationException e) {
+			return new Response<>(ValidationError.createList(e));
+		}
+    	
+    
+    	
+    }
+    
+    @PostMapping(path="/event/{eventid}/rsvp/decline")
+    public Response<?> rsvpDecline(@PathVariable long eventid,
+    									HttpServletRequest request, 
+    									HttpServletResponse response){
+    	User user = getUser(request);
+    	if( user == null ) {
+    		return badUser(response);
+    	}
+		
+    	EventAttendees decliningAttendees = new EventAttendees();
+
+    	decliningAttendees.setAttending(false);
+    	
+    	try {
+    		decliningAttendees.setUserId(user.getId());
+    		decliningAttendees.setEventId(eventid);
+    		EventAttendees eventAttendees = eventDao.addEventAttendee(eventid, user.getId(), decliningAttendees);
+    		if(eventAttendees == null) {
+    			return badEvent(response);
+    		}
+    		return new Response<>(eventAttendees);
+    	} catch (DataIntegrityViolationException e) {
+			return new Response<>(ValidationError.createList(e));
+		}
+    	
+
     }
     
 //    @DeleteMapping(path="/event/{eventid}/attendees/{userid}")
@@ -337,12 +416,6 @@ public class EventController {
     			new ResponseMap().put("old", oldEvent).put("new", event).build()
     		);
     	}
-    }
-    
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handle(Exception e) {
-    System.out.println(e.getMessage());
     }
     
     private User getUser(HttpServletRequest request) {

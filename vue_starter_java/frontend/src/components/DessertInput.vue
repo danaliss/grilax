@@ -1,18 +1,14 @@
 <template>
-    <div class = "side-div">
-        <div class="form-group">
-            <label for="side-name">Side Name</label>
-            <input v-model="value.foodName" type="text" id="side-name" placeholder = "Salacious sound for your side" class= "form-control">
+    <div id="dessert-div">
+                <div class="form-group">
+            <label for="dessert-name">Dessert Name</label>
+            <input v-model="value.foodName"  type="text" id="dessert-name" placeholder = "Dessert Name" class= "form-control">
         </div>
         <div class = "form-group">
-            <label for="side-description">Side Description</label>
-            <textarea v-model="value.description" type="text-area" class="form-control" id="side-description" placeholder="Specifics sketching out your sustenance "/>
+            <label for="dessert-description">Dessert Description</label>
+            <textarea v-model="value.description" type="text-area" class="form-control" id="dessert-description" placeholder="Dessert Description"/>
         </div>
-
-        <div class="form-check form-check-inline">
-                <input v-model="value.vegetarian"  class="form-check-input" type="checkbox" id="checkbox-vegetarian" value="true">
-                <label class="form-check-label" for="checkbox-vegetarian">Vegetarian</label>
-        </div>
+      
         <div class="form-check form-check-inline">
                 <input v-model="value.vegan" class="form-check-input" type="checkbox" id="checkbox-vegan" value="true">
                 <label class="form-check-label" for="checkbox-vegan">Vegan</label>
@@ -30,7 +26,7 @@
 </template>
 <script>
 export default {
-    name: 'side-input',
+    name : 'dessert-input',
     props: {
             value: {
                 type: Object,
@@ -42,6 +38,7 @@ export default {
                 this.$emit('input', this.value);
             }
         }
+    
 }
 </script>
 <style scoped>

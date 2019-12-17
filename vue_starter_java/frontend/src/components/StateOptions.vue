@@ -1,5 +1,5 @@
 <template>
-<select id="inputState" v-model="value.state" class="form-control">
+<select id="inputState" v-model="value" class="form-control">
           
         <option selected>Choose...</option>
         <option value="AL">Alabama</option>
@@ -60,10 +60,7 @@
 export default {
     name: 'state-options',
     props: {
-            value: {
-                type: String,
-                required: true
-            }
+            value: String
         },
         watch: {
             value() {

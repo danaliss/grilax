@@ -23,7 +23,7 @@ public class JdbcEventDao implements EventDao {
 	
 	private JdbcTemplate jdbc;
 	
-	private static final String EVENT_COLUMNS = " SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id, invitees.email ";
+	private static final String EVENT_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id, invitees.email ";
 	
 	@Autowired
 	public JdbcEventDao(DataSource dataSource) {
@@ -31,16 +31,15 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	
-	private static final String EVENT_FOR_USERS_COLUMNS = "event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, users.user_id, users.email";
+	private static final String EVENT_FOR_USERS_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id ";
 	
 	@Override
 	public List<Event> getEventsForUser(long userId) {
 		String sqlQuery = 
-				"SELECT " + EVENT_FOR_USERS_COLUMNS + " "
+				EVENT_FOR_USERS_COLUMNS
 				+"FROM event_attendees "
 				+"JOIN event USING(event_id) "
-				+"JOIN users USING(user_id) "
-				+"WHERE user_id = ?;";
+				+"WHERE user_id = ?";
 		
 		SqlRowSet eventResults = jdbc.queryForRowSet(sqlQuery, userId);
 		
@@ -48,6 +47,35 @@ public class JdbcEventDao implements EventDao {
 		
 		while(eventResults.next()) {
 			Event event = mapRowToEvent(eventResults);
+			event.setInvited(false);
+			eventListForUser.add(event);
+		}
+
+		// get invitations
+		sqlQuery = "SELECT event_id, event_name, event_date, event_time, description, deadline, address_id, email, false as is_host, null as is_attending, user_id "
+						+ "FROM invitees "
+						+ "JOIN users USING(email) "
+						+ "JOIN event USING(event_id) "
+						+ "WHERE user_id = ?";
+		
+		eventResults = jdbc.queryForRowSet(sqlQuery, userId);
+		
+		while( eventResults.next()) {
+			Event event = mapRowToEvent(eventResults);
+			
+			// see if already in the list
+			boolean found = false;
+			for( Event eventListElement : eventListForUser ) {
+				if( eventListElement.getEventId() == event.getEventId() ) {
+					found = true;
+					break;
+				}
+			}
+			if( found ) {
+				continue;
+			}
+			
+			event.setInvited(true);
 			eventListForUser.add(event);
 		}
 		
@@ -58,10 +86,9 @@ public class JdbcEventDao implements EventDao {
 	@Transactional
 	public Event createEvent(Event event, long userID) throws DataIntegrityViolationException {
 		// start a transaction to rollback if needed
-		System.out.println("creating event");
 		String sqlQuery = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
 						+ "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
-		
+		System.out.println(event.getName());
 		long eventID = jdbc.queryForObject(sqlQuery, Long.class,
 						event.getName(),
 						event.getDate(),
@@ -116,6 +143,18 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public List<EventAttendees> getEventAttendees(long eventID, long userID) {
+		// see if invited or attendee
+		List<Event> events = this.getEventsForUser(userID);
+		boolean found = false;
+		for( Event event : events ) {
+			if( event.getEventId() == eventID ) {
+				found = true;
+				break;
+			}
+		}
+		if( !found ) {
+			return null;
+		}
 		String sqlString =	"SELECT event_attendees.event_id, event_attendees.user_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.first_name, event_attendees.last_name, event_attendees.adult_guests, event_attendees.child_guests "
 							+ "FROM event_attendees "
 							+ "WHERE event_id = ?";
@@ -124,16 +163,9 @@ public class JdbcEventDao implements EventDao {
 		
 		List<EventAttendees> listOfAttendees = new ArrayList<EventAttendees>();
 		
-		boolean found = false;
 		while(attendeeResults.next()) {
 			EventAttendees attendee = mapRowToEventAttendees(attendeeResults);
-			if( attendee.getUserId() == userID ) {
-				found = true;
-			}
 			listOfAttendees.add(attendee);
-		}
-		if( !found ) {
-			return null;
 		}
 		
 		return listOfAttendees;
@@ -141,9 +173,9 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public EventAttendees addEventAttendee(long eventID, long userID, EventAttendees attendees) throws DataIntegrityViolationException {
-		// make sure userID is the host
+		// make sure the user is invited and not the host
 		Event details = this.getEventDetails(eventID, userID);
-		if( details == null || details.isHosting() == false ) {
+		if( details == null || (details.isHosting() != null && details.isHosting() == true) || details.isInvited() == false ) {
 			return null;
 		}
 		
@@ -205,23 +237,17 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public Event getEventDetails(long eventID, long userID) {
-		// only allow event details if they're part of the event (must be in event_attendees)
-		String sqlString = EVENT_COLUMNS
-						 + "FROM event "
-						 + "JOIN event_attendees USING(event_id) "
-						 + "LEFT JOIN invitees USING(event_id) "
-						 + "LEFT JOIN users USING(email, user_id) "
-						 + "WHERE event_id = ? AND user_id = ?";
-
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID, userID);
-		
-		Event event = null;
-		
-		if( results.next() ) {
-			event = mapRowToEvent(results);
+		// only allow event details if they're part of the event (attendees or invite)
+		List<Event> events = this.getEventsForUser(userID);
+		Event returnEvent = null;
+		for( Event event : events ) {
+			if( event.getEventId() == eventID ) {
+				returnEvent = event;
+				break;
+			}
 		}
 		
-		return event;
+		return returnEvent;
 	}
 	
 	
@@ -272,8 +298,6 @@ public class JdbcEventDao implements EventDao {
 		event.setAddressId(row.getLong("address_id"));
 		event.setUserId(row.getLong("user_id"));
 		
-		event.setIsInvitation( row.getString("email")!=null );
-		
 		return event;
 	}
 	
@@ -291,7 +315,6 @@ public class JdbcEventDao implements EventDao {
 		eventAttendees.setLastName(row.getString("last_name"));
 		eventAttendees.setAdultGuests(row.getInt("adult_guests"));
 		eventAttendees.setChildGuests(row.getInt("child_guests"));
-
 		
 		return eventAttendees;
 	}

@@ -1,5 +1,6 @@
 package com.techelevator.model.jdbc;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,20 +12,38 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import com.techelevator.model.dao.AddressDao;
+import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.pojo.Address;
+import com.techelevator.model.pojo.Event;
 
 @Component
 public class JdbcAddressDao implements AddressDao {
 	
 	private JdbcTemplate jdbc;
+	
+	private EventDao eventDao;
 
 	@Autowired
 	public JdbcAddressDao(DataSource dataSource) {
 		this.jdbc = new JdbcTemplate(dataSource);
+		eventDao = new JdbcEventDao(dataSource);
 	}
 	
 	@Override
 	public Address getAddress(long addressID, long userID) {
+		// make sure the user has access to the address
+		List<Event> events = eventDao.getEventsForUser(userID);
+		boolean found = false;
+		for( Event event : events ) {
+			if( event.getAddressId() == addressID ) {
+				found = true;
+				break;
+			}
+		}
+		if( !found ) {
+			return null;
+		}
+		
 		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id "
 						+ "FROM address "
 						+ "WHERE address_id = ?";
@@ -43,14 +62,16 @@ public class JdbcAddressDao implements AddressDao {
 	public Address createAddress(Address address) {
 		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
 				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
+		System.out.println(address.getCity() + address.getZip());
 		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
 							address.getStreetAddress(),
 							address.getCity(),
 							address.getState(),
 							address.getZip(),
 							address.getUserId());
-		
+		System.out.println("query made");
 		address.setAddressId(addressId);
+		System.out.println(addressId);
 		
 		return address;
 	}

@@ -5,10 +5,13 @@
   
 <form @submit.prevent="createEvent">
       <h3 class="text-center">New Event</h3>
+      <div class="alert alert-danger" role="alert" v-if="newEventError">
+        There were problems creating this event (all fields are required)
+      </div>
   
 <div class="form-group form-row" >
     <div class = "col">
-    <label for="inputAddress">Event Name</label>
+    <label >Event Name</label>
     <input 
     type="text" 
     class="form-control" 
@@ -68,6 +71,7 @@
       <div class = "col">
     <label for="inputAddress">Address</label>
     <input type="text" 
+    v-model="event.address.streetAdress"
     class="form-control" 
     id="inputAddress" 
     placeholder="1234 Main St">
@@ -80,6 +84,7 @@
     <div class="col-md-4">
       <label for="inputCity">City</label>
       <input 
+      v-model="event.address.city"
       type="text" 
       class="form-control" 
       id="inputCity"
@@ -95,6 +100,7 @@
         @input="(newAddress)=>{address = newAddress}"
       />-->
       <select id="inputState" 
+      v-model="event.address.state"
       class="form-control">
       <!-- v-model="address.state"  -->
           
@@ -156,6 +162,7 @@
     <div class="col-md-4">
       <label for="inputZip">Zip</label>
       <input 
+      v-model="event.address.zip"
       type="text" 
       class="form-control"
       id="inputZip">
@@ -188,24 +195,22 @@ export default {
           time : '',
           description : '',
           deadline : '',
-          addressId : 1,
+          addressId : '',
           hosting : true,
           attending :  true,
           userId : '',
-
+          address : {
+            addressId : '',
+            streetAddress : '',
+            city : '',
+            state : '',
+            zip : '',
+            userId : ''
+          },
         },
-        address : {
-          addressId : '',
-          streetAddress : '',
-          city : '',
-          state : '',
-          zip : '',
-          userId : ''
-        }
-
+        newEventError : false,
       }
     },
-    createEventStatus : false,
      methods: {
     createEvent() {
       fetch(`${process.env.VUE_APP_REMOTE_API}/api/events`, {
@@ -220,21 +225,16 @@ export default {
       })
         .then((response) => {
           if (response.ok) {
-            this.$router.push({ path: `/${this.event.eventId}/eventdetails`, query: { createEventStatus: 'success' } });
+            this.$router.push({ path: `/`, query: { createEventStatus: 'success' } });
           } else {
-            this.registrationErrors = true;
+            this.newEventError = true;
           }
         })
 
         .then((err) => console.error(err));
     },
   },
-  //computed: {
-  //   stateAddress: {
-  //     get() {return this.value},
-  //     set(localAddress) {this.$emit('input', localAddress)}
-  //   }
-  // }
+
 
 }
 </script>

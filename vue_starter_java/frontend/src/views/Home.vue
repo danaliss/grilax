@@ -17,6 +17,7 @@
         <h1>Invites</h1>
         <event-preview v-for="event in invites" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
+        
       </div>
   </div>
 </template>
@@ -57,10 +58,10 @@ export default {
                 return current.hosting === true
               });
               this.attending = this.events.filter((current) =>{
-                return current.attending === true && current.hosting === false
+                return current.attending === true && current.hosting !== true
               });
               this.invites = this.events.filter((current) =>{
-                return current.attending === null
+                return current.attending === null && current.invited === true
               });
             })
     }
