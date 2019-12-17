@@ -8,20 +8,22 @@
         <h4>{{address.streetAddress}} {{address.city}} {{address.state}}</h4>
         <p>{{event.description}}</p>
 
-    <section class="guest-list">
-        <h5>Guests</h5>
-        <ul>
-        <li v-for = "guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
-        </ul>
-    </section>
+        <router-link tag="button" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+
+        <section class="guest-list">
+            <h5>Guest List:</h5>
+            <ul>
+                <li v-for = "guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
+            </ul>
+        </section>
     </section>
     
     <section class="not-attending" v-if="event.hosting">
-        <h5 class="no">Not Attending</h5>
+        <h5 class="no">Declined Invitation:</h5>
         <ul>
         <li v-for = "guest in notAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
         </ul>
-        <h5 class="noRsvp">Not RSVP</h5>
+        <h5 class="noRsvp">Awaiting RSVP:</h5>
         <ul>
         <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
         </ul>
