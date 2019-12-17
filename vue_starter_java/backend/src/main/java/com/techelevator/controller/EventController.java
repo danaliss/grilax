@@ -27,8 +27,10 @@ import com.techelevator.controller.response.ResponseMap;
 import com.techelevator.controller.response.ValidationError;
 import com.techelevator.email.EmailReplacementMap;
 import com.techelevator.email.SendMail;
+import com.techelevator.model.dao.AddressDao;
 import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.dao.UserDao;
+import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
 import com.techelevator.model.pojo.Invitee;
@@ -42,6 +44,9 @@ public class EventController {
 	
 	@Autowired
 	private EventDao eventDao;
+
+	@Autowired
+	private AddressDao addressDao;
 	
 	@Autowired
 	private UserDao userDao;
@@ -96,7 +101,7 @@ public class EventController {
 	 * </ul>
      */
     @PostMapping(path="/events")
-    public Response<?> createEvent(@Valid @RequestBody Event event, 
+    public Response<?> createEvent(@Valid @RequestBody Event event,
     								BindingResult result,
     								HttpServletRequest request,
     								HttpServletResponse response) {
@@ -110,14 +115,28 @@ public class EventController {
             return badValidation(result, response);
     	}
     	
-		try {
-			Event newEvent = eventDao.createEvent(event, user.getId());
-			response.setStatus(HttpServletResponse.SC_CREATED);
-        	return new Response<>(newEvent);
+    	try {
+    	Address tempAddress = event.getAddress();
+    	tempAddress.setUserId(user.getId());
+    	System.out.println("set user id for address");
+    	event.setAddress(addressDao.createAddress(tempAddress));
+    	event.setAddressId(event.getAddress().getAddressId());
+    	System.out.println(event.getAddressId());
+    	
+    	System.out.println("address id set and put on event");
+    	Event newEvent = eventDao.createEvent(event, user.getId());
+    	System.out.println("event made");
+    	
+		response.setStatus(HttpServletResponse.SC_CREATED);
+
+			return new Response<>(newEvent);
 		} catch (DataIntegrityViolationException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    		return new Response<>(ValidationError.createList(e));
+			return new Response<>(ValidationError.createList(e));
 		}
+		
+    	
+    	
     }
     
     /**
@@ -204,6 +223,7 @@ public class EventController {
     public Response<?> getEventAttendees(@PathVariable long eventid, 
     									HttpServletRequest request, 
     									HttpServletResponse response) {
+    	
     	User user = getUser(request);
     	
     	if( user == null ) {
