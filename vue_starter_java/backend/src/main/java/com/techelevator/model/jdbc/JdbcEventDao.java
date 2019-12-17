@@ -61,7 +61,7 @@ public class JdbcEventDao implements EventDao {
 		System.out.println("creating event");
 		String sqlQuery = "INSERT INTO event (event_name, event_date, event_time, description, deadline, address_id) "
 						+ "VALUES (?, ?, ?, ?, ?, ?) RETURNING event_id";
-		
+		System.out.println(event.getName());
 		long eventID = jdbc.queryForObject(sqlQuery, Long.class,
 						event.getName(),
 						event.getDate(),

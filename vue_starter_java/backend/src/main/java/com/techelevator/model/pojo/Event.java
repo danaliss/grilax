@@ -60,6 +60,7 @@ public class Event{
 	private Boolean hosting=true;
 	private Boolean attending=true;
 	private boolean isInvitation=false;
+	private Address address;
 	
 	@JsonIgnore
 	@AssertTrue(message="RSVP needs to be before the event date")
@@ -147,6 +148,12 @@ public class Event{
 	}
 	public void setIsInvitation(boolean isInvitation) {
 		this.isInvitation = isInvitation;
+	}
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 }
 
