@@ -286,7 +286,7 @@ public class EventController {
      * Adds event attendees to the specified event once they have RSVPd
      */
     
-    @PostMapping(path="/event/{eventid}/rsvp")
+    @PostMapping(path="/event/{eventid}/rsvp/accept")
     public Response<?> addEventAttendee(@PathVariable long eventid, 
     									@Valid @RequestBody EventAttendees eventAttendee,
     									BindingResult result,
@@ -314,6 +314,34 @@ public class EventController {
     	
     
     	
+    }
+    
+    @PostMapping(path="/event/{eventid}/rsvp/decline")
+    public Response<?> rsvpDecline(@PathVariable long eventid,
+    									HttpServletRequest request, 
+    									HttpServletResponse response){
+    	User user = getUser(request);
+    	if( user == null ) {
+    		return badUser(response);
+    	}
+		
+    	EventAttendees decliningAttendees = new EventAttendees();
+
+    	decliningAttendees.setAttending(false);
+    	
+    	try {
+    		decliningAttendees.setUserId(user.getId());
+    		decliningAttendees.setEventId(eventid);
+    		EventAttendees eventAttendees = eventDao.addEventAttendee(eventid, user.getId(), decliningAttendees);
+    		if(eventAttendees == null) {
+    			return badEvent(response);
+    		}
+    		return new Response<>(eventAttendees);
+    	} catch (DataIntegrityViolationException e) {
+			return new Response<>(ValidationError.createList(e));
+		}
+    	
+
     }
     
 //    @DeleteMapping(path="/event/{eventid}/attendees/{userid}")
