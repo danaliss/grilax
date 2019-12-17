@@ -1,7 +1,6 @@
 package com.techelevator.controller;
 
 import java.util.List;
-import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,14 +11,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.authentication.RequestAuthProvider;
@@ -103,7 +100,6 @@ public class EventController {
     								HttpServletRequest request,
     								HttpServletResponse response) {
     	User user = (User)request.getAttribute(RequestAuthProvider.USER_KEY);
-    	System.out.println("made it to controller");
     	if( user == null ) {
     		return badUser(response);
     	}
@@ -244,8 +240,8 @@ public class EventController {
 	 * </ul>
      */
     @PostMapping(path="/event/{eventid}/invite")
-    public Response<?> sendInvites(@Valid @RequestBody Invitee invitee,
-    								@PathVariable long eventid, 
+    public Response<?> sendInvites(@PathVariable long eventid,
+    							   @Valid @RequestBody Invitee invitee,
     								BindingResult result, 
     								HttpServletRequest request,
     								HttpServletResponse response) {
@@ -337,12 +333,6 @@ public class EventController {
     			new ResponseMap().put("old", oldEvent).put("new", event).build()
     		);
     	}
-    }
-    
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handle(Exception e) {
-    System.out.println(e.getMessage());
     }
     
     private User getUser(HttpServletRequest request) {
