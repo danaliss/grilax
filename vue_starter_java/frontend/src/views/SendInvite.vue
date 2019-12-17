@@ -17,15 +17,9 @@
             <label for="email-area">Invitee Emails</label>
             <input v-model="invitee.email" class="form-control" id="email-area" type="email"  placeholder="attendee@example.com" />
             </div>
-            <button type="submit"  class="form control btn btn-secondary">Send Invite</button>
+            <button type="submit"  class="form control btn btn-secondary" :disabled="formSending">Send Invite</button>
 
- 
         </form>
-
-
-
-
-
     </div>
 </template>
 
@@ -36,7 +30,7 @@
 export default {
     name: "send-invite",
     data() {
-    return {
+        return {
             invitee: {
                 email: '',
                 role: '',
@@ -45,10 +39,12 @@ export default {
 
             },
             invitationErrors: false,
-            }
+            formSending: false,
+        }
     },
     methods : {
         sendInvite() {
+            this.formSending = true;
             fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${this.$route.params.eventId}/invite`, {
                 method: 'POST',
                 headers: {
@@ -60,7 +56,8 @@ export default {
       })
       .then((response) =>{
           if(response.ok){
-              this.$router.push({ path: `/${this.$route.params.eventId}/sendinvite`, query: {invitation: 'success'}});
+              //this.$router.push({ path: `/${this.$route.params.eventId}/sendinvite`, query: {invitation: 'success'}});
+              this.$router.push({ name: "eventDetails", params: { eventId: this.$route.params.eventId }, query: { rsvpSuccess: true } });
           } else{
               this.invitationErrors = true;
           }
