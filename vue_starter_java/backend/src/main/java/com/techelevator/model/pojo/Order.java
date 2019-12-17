@@ -5,10 +5,12 @@ public class Order {
 	private long eventId;
 	private long userId;
 	
+	// set by the database
 	private long orderId;
+	
 	private long foodId;
-	private String status;
 	private int quantity;
+	private String status;
 
 	public long getOrderId() {
 		return orderId;

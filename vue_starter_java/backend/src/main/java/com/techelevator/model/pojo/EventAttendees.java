@@ -10,7 +10,6 @@ public class EventAttendees {
 	private long eventId;
 	private Long userId;
 	
-	@NotNull(message="Host value needs to be true or false")
 	private Boolean isHost;
 	
 	@NotNull(message="Attending value needs to be true or false")
@@ -56,7 +55,7 @@ public class EventAttendees {
 		this.userId = userId;
 	}
 
-	public boolean isHost() {
+	public Boolean isHost() {
 		return isHost;
 	}
 
@@ -64,7 +63,7 @@ public class EventAttendees {
 		this.isHost = isHost;
 	}
 
-	public boolean isAttending() {
+	public Boolean isAttending() {
 		return isAttending;
 	}
 
@@ -88,7 +87,7 @@ public class EventAttendees {
 		this.lastName = lastName;
 	}
 
-	public int getAdultGuests() {
+	public Integer getAdultGuests() {
 		return adultGuests;
 	}
 
@@ -96,7 +95,7 @@ public class EventAttendees {
 		this.adultGuests = adultGuests;
 	}
 
-	public int getChildGuests() {
+	public Integer getChildGuests() {
 		return childGuests;
 	}
 

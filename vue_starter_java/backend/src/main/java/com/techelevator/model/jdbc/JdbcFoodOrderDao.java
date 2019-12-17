@@ -133,10 +133,10 @@ public class JdbcFoodOrderDao implements FoodOrderDao {
 		if( event == null ) {
 			return null;
 		}
-		String sqlString = "INSERT INTO orders (order_id, event_id, user_id, food_id, status, quantity)"
-						 + " VALUES(?, ?, ?, ?, ?, ?)";
+		String sqlString = "INSERT INTO orders (event_id, user_id, food_id, status, quantity)"
+						 + " VALUES(?, ?, ?, ?, ?)";
 		
-		int updates = jdbc.update(sqlString, order.getOrderId(), order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
+		int updates = jdbc.update(sqlString, order.getEventId(), order.getUserId(), order.getFoodId(), order.getStatus(), order.getQuantity());
 		
 		if( updates > 0 ) {
 			return event;

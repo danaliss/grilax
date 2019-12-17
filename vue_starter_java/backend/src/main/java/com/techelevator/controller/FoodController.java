@@ -234,6 +234,7 @@ public class FoodController {
     	// override Order object
     	order.setEventId(eventid);
     	order.setUserId(user.getId());
+    	order.setStatus("waiting");
     	
     	Event event = foodOrderDao.createOrder(eventid, user.getId(), order);
     	

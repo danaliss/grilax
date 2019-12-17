@@ -58,7 +58,7 @@ export default {
                 return current.hosting === true
               });
               this.attending = this.events.filter((current) =>{
-                return current.attending === true && current.hosting === false
+                return current.attending === true && current.hosting !== true
               });
               this.invites = this.events.filter((current) =>{
                 return current.attending === null && current.invited === true
