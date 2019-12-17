@@ -191,7 +191,7 @@ h3 {
     background-color: var(--gxwhite) ;
 }
 .selected {
-    background-color: var(--gxgreendark) ;
+    background-color: var(--gxgreendark) !important ;
 }
 
 
