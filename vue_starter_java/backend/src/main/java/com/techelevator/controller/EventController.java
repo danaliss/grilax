@@ -240,8 +240,8 @@ public class EventController {
 	 * </ul>
      */
     @PostMapping(path="/event/{eventid}/invite")
-    public Response<?> sendInvites(@Valid @RequestBody Invitee invitee,
-    								@PathVariable long eventid, 
+    public Response<?> sendInvites(@PathVariable long eventid,
+    							   @Valid @RequestBody Invitee invitee,
     								BindingResult result, 
     								HttpServletRequest request,
     								HttpServletResponse response) {
