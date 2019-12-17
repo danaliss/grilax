@@ -50,6 +50,20 @@ public class JdbcEventDao implements EventDao {
 			Event event = mapRowToEvent(eventResults);
 			eventListForUser.add(event);
 		}
+
+		// get invitations
+		sqlQuery = "SELECT event_id, event_name, event_date, event_time, description, deadline, address_id, email "
+						+ "FROM invitess "
+						+ "JOIN users USING(email) "
+						+ "JOIN event USING(event_id) "
+						+ "WHERE user_id = ?";
+		
+		eventResults = jdbc.queryForRowSet(sqlQuery, userId);
+		
+		while( eventResults.next()) {
+			Event event = mapRowToEvent(eventResults);
+			eventListForUser.add(event);
+		}
 		
 		return eventListForUser;
 	}
