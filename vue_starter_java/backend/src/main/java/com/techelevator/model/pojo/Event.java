@@ -59,7 +59,7 @@ public class Event{
 	private long userId;
 	private Boolean hosting=true;
 	private Boolean attending=true;
-	private boolean isInvitation=false;
+	private boolean isInvited=false;
 	private Address address;
 	
 	@JsonIgnore
