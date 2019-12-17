@@ -61,7 +61,7 @@ export default {
                 return current.attending === true && current.hosting === false
               });
               this.invites = this.events.filter((current) =>{
-                return current.attending === null
+                return current.attending === null && current.invited === true
               });
             })
     }

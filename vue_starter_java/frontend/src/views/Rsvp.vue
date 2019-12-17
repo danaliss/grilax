@@ -8,15 +8,15 @@
         <div class="form-group btn-group btn-group-toggle">
             
         
-            <label class="btn btn-secondary">
+            <label class="btn btn-secondary" v-bind:class="{ active: rsvp.attending==='true' }">
             <input 
             name = "attending" 
             type="radio" 
             v-model="rsvp.attending"
-            value="true"/>Yes
+            value="true" />Yes
             </label>
 
-            <label class="btn btn-secondary">
+            <label class="btn btn-secondary" v-bind:class="{ active: rsvp.attending==='false' }">
             <input 
             name = "attending" 
             type="radio"
@@ -207,9 +207,9 @@ export default {
     text-align: center;
 }
 .btn.active {
-  color: var(--gxwhite) ; 
-  background-color: var(--gxgreendark) ; 
-  border-color: var(--gxgreendark) ;
+  color: var(--gxwhite) !important; 
+  background-color: var(--gxgreendark) !important; 
+  border-color: var(--gxgreendark) !important;
   
 }
 h3 {
