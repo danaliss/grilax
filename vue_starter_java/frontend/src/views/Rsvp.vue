@@ -131,7 +131,6 @@ export default {
               }
             },
             menu: [],
-            entree: [],
             side: [],
             beverage: [],
             dessert:[]
@@ -151,32 +150,37 @@ export default {
             })
             .then((response) => response.json())
             .then((data) => {
-                this.menu = data.object
-                this.filterMenu();
-            
+                this.menu = data.object;
             })
         },
         fetchAttendeeInfo(){
 
-        },
-        filterMenu(){
-            this.entree = this.menu.filter((current)=>{
-                return current.foodCategory === "Entree"
-            })
-             this.side = this.menu.filter((current)=>{
-                return current.foodCategory === "Side"
-            })
-             this.dessert = this.menu.filter((current)=>{
-                return current.foodCategory === "Dessert"
-            })
-             this.beverage = this.menu.filter((current)=>{
-                return current.foodCategory === "Beverage"
-            })
         }
+    },
+    created(){
+        this.fetchEventMenu();
+    },
+    computed: {
+        entree: function() {
+            return this.menu.filter((current)=>{
+                return current.foodCategory === "Entree"
+            });
         },
-        
-        created(){
-            this.fetchEventMenu();
+        side: function() {
+            return this.menu.filter((current)=>{
+                return current.foodCategory === "Side"
+            });
+        },
+        dessert: function() {
+            return this.menu.filter((current)=>{
+                return current.foodCategory === "Dessert"
+            });
+        },
+        beverage: function() {
+            return this.beverage = this.menu.filter((current)=>{
+                return current.foodCategory === "Beverage"
+            });
+        }
     }
 }
 </script>
