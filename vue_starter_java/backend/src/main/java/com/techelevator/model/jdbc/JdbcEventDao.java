@@ -23,7 +23,7 @@ public class JdbcEventDao implements EventDao {
 	
 	private JdbcTemplate jdbc;
 	
-	private static final String EVENT_COLUMNS = " SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id, invitees.email ";
+	private static final String EVENT_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id, invitees.email ";
 	
 	@Autowired
 	public JdbcEventDao(DataSource dataSource) {
@@ -31,16 +31,16 @@ public class JdbcEventDao implements EventDao {
 	}
 
 	
-	private static final String EVENT_FOR_USERS_COLUMNS = "event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, users.user_id, users.email";
+	private static final String EVENT_FOR_USERS_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, users.user_id, users.email ";
 	
 	@Override
 	public List<Event> getEventsForUser(long userId) {
 		String sqlQuery = 
-				"SELECT " + EVENT_FOR_USERS_COLUMNS + " "
+				EVENT_FOR_USERS_COLUMNS
 				+"FROM event_attendees "
 				+"JOIN event USING(event_id) "
 				+"JOIN users USING(user_id) "
-				+"WHERE user_id = ?;";
+				+"WHERE user_id = ?";
 		
 		SqlRowSet eventResults = jdbc.queryForRowSet(sqlQuery, userId);
 		
