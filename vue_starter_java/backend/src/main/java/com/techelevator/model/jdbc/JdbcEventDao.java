@@ -23,21 +23,24 @@ public class JdbcEventDao implements EventDao {
 	
 	private JdbcTemplate jdbc;
 	
-	private static final String EVENT_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id, invitees.email ";
+	private static final String EVENT_COLUMNS = " SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, event_attendees.user_id, invitees.email ";
 	
 	@Autowired
 	public JdbcEventDao(DataSource dataSource) {
 		this.jdbc = new JdbcTemplate(dataSource);
 	}
 
+	
+	private static final String EVENT_FOR_USERS_COLUMNS = "event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, users.user_id, users.email";
+	
 	@Override
 	public List<Event> getEventsForUser(long userId) {
-		String sqlQuery = EVENT_COLUMNS
-						+ "FROM event "
-						+ "JOIN event_attendees USING(event_id) "
-						+ "LEFT JOIN invitees USING(event_id) "
-						+ "LEFT JOIN users USING(email, user_id) "
-						+ "WHERE user_id = ?";
+		String sqlQuery = 
+				"SELECT " + EVENT_FOR_USERS_COLUMNS + " "
+				+"FROM event_attendees "
+				+"JOIN event USING(event_id) "
+				+"JOIN users USING(user_id) "
+				+"WHERE user_id = ?;";
 		
 		SqlRowSet eventResults = jdbc.queryForRowSet(sqlQuery, userId);
 		
@@ -281,10 +284,14 @@ public class JdbcEventDao implements EventDao {
 		eventAttendees.setUserId(row.getLong("user_id"));
 		eventAttendees.setHost(row.getBoolean("is_host"));
 		eventAttendees.setAttending(row.getBoolean("is_attending"));
+		// If the is_attending column was null, the user has not RSVP'd
+		// if it is NOT null they have already RSVPed
+		eventAttendees.setHasRsvped(!row.wasNull());
 		eventAttendees.setFirstName(row.getString("first_name"));
 		eventAttendees.setLastName(row.getString("last_name"));
 		eventAttendees.setAdultGuests(row.getInt("adult_guests"));
 		eventAttendees.setChildGuests(row.getInt("child_guests"));
+
 		
 		return eventAttendees;
 	}

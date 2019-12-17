@@ -131,6 +131,9 @@ export default {
             
             })
         },
+        fetchAttendeeInfo(){
+
+        },
         filterMenu(){
             this.entree = this.menu.filter((current)=>{
                 return current.foodCategory === "Entree"
