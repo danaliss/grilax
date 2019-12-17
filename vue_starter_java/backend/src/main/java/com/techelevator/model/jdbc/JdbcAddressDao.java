@@ -27,10 +27,9 @@ public class JdbcAddressDao implements AddressDao {
 	public Address getAddress(long addressID, long userID) {
 		String sqlString = "SELECT address_id, street_address, city, state, zip, user_id "
 						+ "FROM address "
-						+ "WHERE address_id = ?"
-						+ "AND user_id = ?";
+						+ "WHERE address_id = ?";
 		
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID, userID);
+		SqlRowSet results = jdbc.queryForRowSet(sqlString, addressID);
 		
 		Address address = null;
 		
