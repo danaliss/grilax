@@ -1,10 +1,11 @@
 package com.techelevator.model.pojo;
 
 public class Order {
-
-	private long orderId;
+	// these are set by the path/request
 	private long eventId;
 	private long userId;
+	
+	private long orderId;
 	private long foodId;
 	private String status;
 	private int quantity;
