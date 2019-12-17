@@ -77,7 +77,7 @@ const router = new Router({
        
     },
     {
-      path: "/createmenu",
+      path: "/:eventId/createmenu",
       name: "createmenu",
       component: CreateMenu,
       meta: {
