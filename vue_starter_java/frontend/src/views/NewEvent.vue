@@ -5,6 +5,9 @@
   
 <form @submit.prevent="createEvent">
       <h3 class="text-center">New Event</h3>
+      <div class="alert alert-danger" role="alert" v-if="newEventError">
+        There were problems creating this event (all fields are required)
+      </div>
   
 <div class="form-group form-row" >
     <div class = "col">
@@ -201,11 +204,11 @@ export default {
           state : '',
           zip : '',
           userId : ''
-        }
+        },
 
+        newEventError : false,
       }
     },
-    createEventStatus : false,
      methods: {
     createEvent() {
       fetch(`${process.env.VUE_APP_REMOTE_API}/api/events`, {
@@ -220,21 +223,16 @@ export default {
       })
         .then((response) => {
           if (response.ok) {
-            this.$router.push({ path: `/${this.event.eventId}/eventdetails`, query: { createEventStatus: 'success' } });
+            this.$router.push({ path: `/`, query: { createEventStatus: 'success' } });
           } else {
-            this.registrationErrors = true;
+            this.newEventError = true;
           }
         })
 
         .then((err) => console.error(err));
     },
   },
-  //computed: {
-  //   stateAddress: {
-  //     get() {return this.value},
-  //     set(localAddress) {this.$emit('input', localAddress)}
-  //   }
-  // }
+
 
 }
 </script>
