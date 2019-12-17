@@ -52,8 +52,8 @@ public class JdbcEventDao implements EventDao {
 		}
 
 		// get invitations
-		sqlQuery = "SELECT event_id, event_name, event_date, event_time, description, deadline, address_id, email "
-						+ "FROM invitess "
+		sqlQuery = "SELECT event_id, event_name, event_date, event_time, description, deadline, address_id, email, false as is_host, null as is_attending, user_id "
+						+ "FROM invitees "
 						+ "JOIN users USING(email) "
 						+ "JOIN event USING(event_id) "
 						+ "WHERE user_id = ?";
@@ -304,7 +304,6 @@ public class JdbcEventDao implements EventDao {
 		eventAttendees.setLastName(row.getString("last_name"));
 		eventAttendees.setAdultGuests(row.getInt("adult_guests"));
 		eventAttendees.setChildGuests(row.getInt("child_guests"));
-
 		
 		return eventAttendees;
 	}
