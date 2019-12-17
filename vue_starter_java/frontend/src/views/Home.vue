@@ -17,6 +17,7 @@
         <h1>Invites</h1>
         <event-preview v-for="event in invites" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
+        
       </div>
   </div>
 </template>

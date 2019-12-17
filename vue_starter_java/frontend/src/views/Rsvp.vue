@@ -6,6 +6,7 @@
         <div class = "attending-btn container-fluid">
             <h3>Will you be attending?</h3>
         <div class="form-group btn-group btn-group-toggle">
+            
         
             <label class="btn btn-secondary">
             <input 
@@ -22,10 +23,27 @@
             v-model="rsvp.attending" 
             value="false" />No
             </label>
-        
-        
-        
         </div>
+
+        <div class="form-group">
+            <h3>First Name</h3>
+            <label for="firstName">
+            <input
+              type="text"
+              placeholder="First Name"
+              v-model="rsvp.firstName"
+            >
+            </label>
+             <h3>Last Name</h3>
+            <label for="firstName">
+            <input
+              type="text"
+              placeholder="Last Name"
+              v-model="rsvp.lastName"
+            >
+            </label>
+          </div>
+
         <div class = "form-group">
         <h3>How many adult guests will you bring?</h3>
         <select type="number"  class="btn btn-secondary col-md-1" v-model="rsvp.adultGuest">
@@ -60,30 +78,25 @@
         </div>
         </div>
 
+        <div class="rsvp-menu">
+        <h3>Please pick one of the following entrees</h3>
+        <rsvp-menu v-for="food in entree" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu>
+        
+        <h3>Choose up to two sides</h3>
+        <rsvp-menu v-for="food in side" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu>
 
+        <h3>Choose one dessert</h3>
+        <rsvp-menu v-for="food in dessert" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu>
 
-
-
-        <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group">
-             
-            <h3>Please pick one of the following</h3>
-                <label class="btn btn-secondary btn-lg btn-block" type="radio" v-for="food in menu" v-bind:key="food.foodId">
-                <input name ="radio-food" type="radio" value="true">
-                    <h4>{{food.foodName}}</h4>
-                    <h5 v-if="food.glutenFree">Gluten Free </h5>
-                    <h5 v-if="food.nutFree">Nut Free </h5>
-                    <h5 v-if="food.vegetarian">Vegetarian </h5>  
-                    <h5 v-if="food.vegan">Vegan </h5>    
-                    <p>{{food.description}}</p>
-                </label>
-
-           
+        <h3>Beverage options at the party</h3>
+        <ul>
+            <li v-for="drink in beverage" v-bind:key="drink.foodId">{{drink.foodName}} {{drink.description}}</li>
+        </ul>
         </div>
+
         
         <div class = "form-group col-md-8">
-
             <button type="submit" class="btn btn-secondary btn-lg">Submit RSVP</button>
-
         </div>
 
     </form>
@@ -93,23 +106,35 @@
 
 <script>
 import auth from '../auth.js'
+import RsvpMenu from '../components/RsvpMenu.vue';
 export default {
     name: "rsvp",
+    components:{
+        RsvpMenu
+    },
     data(){
         return {
             rsvp: {
               eventId:'',
-              userId:'',
               attending: false,
               firstName:'',
               lastName:'',
               adultGuest:'',
-              childGuest:''
+              childGuest:'',
+              food: {
+                  entreeId: '',
+                  entreeQuantity: '',
+                  sideId: '',
+                  sideQuantity: '',
+                  dessertId: '',
+                  dessertQuantity: ''
+              }
             },
             menu: [],
             entree: [],
             side: [],
-            beverage: []
+            beverage: [],
+            dessert:[]
 
         }
 
