@@ -37,6 +37,8 @@ public class EventAttendees {
 	@NotNull(message="Child guest count must be specified")
 	@Min(value=0, message="Child guest count cannot be a negative number")
 	private Integer childGuests;
+	
+	private boolean hasRsvped;
 
 	public long getEventId() {
 		return eventId;
@@ -100,6 +102,14 @@ public class EventAttendees {
 
 	public void setChildGuests(int childGuests) {
 		this.childGuests = childGuests;
+	}
+
+	public boolean isHasRsvped() {
+		return hasRsvped;
+	}
+
+	public void setHasRsvped(boolean hasRsvped) {
+		this.hasRsvped = hasRsvped;
 	}
 
 }

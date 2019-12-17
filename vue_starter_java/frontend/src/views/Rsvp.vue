@@ -5,13 +5,22 @@
         <br>
         <div class = "attending-btn container-fluid">
             <h3>Will you be attending?</h3>
-        <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
+        <div class="form-group btn-group btn-group-toggle">
         
             <label class="btn btn-secondary">
-            <input name = "radio-attending" type="radio" value="true">Yes
+            <input 
+            name = "attending" 
+            type="radio" 
+            v-model="rsvp.attending"
+            value="true"/>Yes
             </label>
+
             <label class="btn btn-secondary">
-            <input name = "radio-attending" type="radio" value="false">No
+            <input 
+            name = "attending" 
+            type="radio"
+            v-model="rsvp.attending" 
+            value="false" />No
             </label>
         
         
@@ -19,7 +28,7 @@
         </div>
         <div class = "form-group">
         <h3>How many adult guests will you bring?</h3>
-        <select type="number"  class="btn btn-secondary col-md-1 dropdown-toggle" data-toggle="dropdown">
+        <select type="number"  class="btn btn-secondary col-md-1" v-model="rsvp.adultGuest">
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -35,7 +44,7 @@
         </div>
         <div class = "form-group">
         <h3>How many children will you bring?</h3>
-        <select type="number" class="btn btn-secondary col-md-1">
+        <select type="number" class="btn btn-secondary col-md-1" v-model="rsvp.childGuest">
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -55,24 +64,17 @@
 
 
 
-        <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" data-toggle="buttons">
+        <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group">
              
             <h3>Please pick one of the following</h3>
-              
-            
-                <label class="btn btn-secondary btn-lg" type="radio">
-                <input  name ="radio-food" type="radio"  value="true">
-                    <h4>Food item title</h4>
-                    <p>Food item description that goes on and on and on about how great the food is and how it's made</p>
-                </label>
-                
-            
-          
-            
-                <label class="btn btn-secondary btn-lg btn-block" type="radio">
+                <label class="btn btn-secondary btn-lg btn-block" type="radio" v-for="food in menu" v-bind:key="food.foodId">
                 <input name ="radio-food" type="radio" value="true">
-                    <h4>Food item title</h4>
-                    <p>Food item description</p>
+                    <h4>{{food.foodName}}</h4>
+                    <h5 v-if="food.glutenFree">Gluten Free </h5>
+                    <h5 v-if="food.nutFree">Nut Free </h5>
+                    <h5 v-if="food.vegetarian">Vegetarian </h5>  
+                    <h5 v-if="food.vegan">Vegan </h5>    
+                    <p>{{food.description}}</p>
                 </label>
 
            
@@ -90,6 +92,7 @@
 </template>
 
 <script>
+import auth from '../auth.js'
 export default {
     name: "rsvp",
     data(){
@@ -97,14 +100,58 @@ export default {
             rsvp: {
               eventId:'',
               userId:'',
-              attending:'',
+              attending: false,
               firstName:'',
               lastName:'',
               adultGuest:'',
               childGuest:''
-            }
+            },
+            menu: [],
+            entree: [],
+            side: [],
+            beverage: []
+
         }
 
+    },
+    methods: {
+        fetchEventMenu(){
+            fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${this.$route.params.eventId}/menu`, {
+                method : "GET",
+                headers: { 
+                    "Authorization": "Bearer "+ auth.getToken(),
+                    "Content-Type" : "application/json",
+                    "Accepts" : "application/json"
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                this.menu = data.object
+                this.filterMenu();
+            
+            })
+        },
+        fetchAttendeeInfo(){
+
+        },
+        filterMenu(){
+            this.entree = this.menu.filter((current)=>{
+                return current.foodCategory === "Entree"
+            })
+             this.side = this.menu.filter((current)=>{
+                return current.foodCategory === "Side"
+            })
+             this.dessert = this.menu.filter((current)=>{
+                return current.foodCategory === "Dessert"
+            })
+             this.beverage = this.menu.filter((current)=>{
+                return current.foodCategory === "Beverage"
+            })
+        }
+        },
+        
+        created(){
+            this.fetchEventMenu();
     }
 }
 </script>
@@ -122,9 +169,9 @@ export default {
 }
 
 .btn {
-    background-color: var(--gxgreen) !important;
-    border-color: var(--gxgreendark) !important;
-    color: var(--gxwhite)!important;
+    background-color: var(--gxgreen) ;
+    border-color: var(--gxgreendark) ;
+    color: var(--gxwhite);
     word-wrap: break-word;
     white-space: normal;
     text-align: left;
@@ -135,16 +182,19 @@ export default {
     text-align: center;
 }
 .btn.active {
-  color: var(--gxwhite) !important; 
-  background-color: var(--gxgreendark) !important; 
-  border-color: var(--gxgreendark) !important;
+  color: var(--gxwhite) ; 
+  background-color: var(--gxgreendark) ; 
+  border-color: var(--gxgreendark) ;
   
 }
 h3 {
     color: var(--gxpink);
 }
 .card {
-    background-color: var(--gxwhite) !important;
+    background-color: var(--gxwhite) ;
+}
+.selected {
+    background-color: var(--gxgreendark) ;
 }
 
 

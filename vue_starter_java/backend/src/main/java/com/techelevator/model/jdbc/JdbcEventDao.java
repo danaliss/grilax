@@ -30,20 +30,37 @@ public class JdbcEventDao implements EventDao {
 		this.jdbc = new JdbcTemplate(dataSource);
 	}
 
+	
+	private static final String EVENT_FOR_USERS_COLUMNS = "SELECT event.event_id, event.event_name, event.event_date, event.event_time, event.description, event.deadline, event.address_id, event_attendees.is_host, event_attendees.is_attending, users.user_id, users.email ";
+	
 	@Override
 	public List<Event> getEventsForUser(long userId) {
-		String sqlQuery = EVENT_COLUMNS
-						+ "FROM event "
-						+ "JOIN event_attendees USING(event_id) "
-						+ "LEFT JOIN invitees USING(event_id) "
-						+ "LEFT JOIN users USING(email, user_id) "
-						+ "WHERE user_id = ?";
+		String sqlQuery = 
+				EVENT_FOR_USERS_COLUMNS
+				+"FROM event_attendees "
+				+"JOIN event USING(event_id) "
+				+"JOIN users USING(user_id) "
+				+"WHERE user_id = ?";
 		
 		SqlRowSet eventResults = jdbc.queryForRowSet(sqlQuery, userId);
 		
 		List<Event> eventListForUser = new ArrayList<Event>();
 		
 		while(eventResults.next()) {
+			Event event = mapRowToEvent(eventResults);
+			eventListForUser.add(event);
+		}
+
+		// get invitations
+		sqlQuery = "SELECT event_id, event_name, event_date, event_time, description, deadline, address_id, email, false as is_host, null as is_attending, user_id "
+						+ "FROM invitees "
+						+ "JOIN users USING(email) "
+						+ "JOIN event USING(event_id) "
+						+ "WHERE user_id = ?";
+		
+		eventResults = jdbc.queryForRowSet(sqlQuery, userId);
+		
+		while( eventResults.next()) {
 			Event event = mapRowToEvent(eventResults);
 			eventListForUser.add(event);
 		}
@@ -201,15 +218,25 @@ public class JdbcEventDao implements EventDao {
 
 	@Override
 	public Event getEventDetails(long eventID, long userID) {
-		// only allow event details if they're part of the event (must be in event_attendees)
+		// only allow event details if they're part of the event (attendees or invite)
+		List<Event> events = this.getEventsForUser(userID);
+		boolean found = false;
+		for( Event event : events ) {
+			if( event.getEventId() == eventID ) {
+				found = true;
+				break;
+			}
+		}
+		if( !found ) return null;
+		
 		String sqlString = EVENT_COLUMNS
 						 + "FROM event "
 						 + "JOIN event_attendees USING(event_id) "
 						 + "LEFT JOIN invitees USING(event_id) "
 						 + "LEFT JOIN users USING(email) "
-						 + "WHERE event_id = ? AND user_id = ?";
+						 + "WHERE event_id = ?";
 
-		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID, userID);
+		SqlRowSet results = jdbc.queryForRowSet(sqlString, eventID);
 		
 		Event event = null;
 		
@@ -280,6 +307,9 @@ public class JdbcEventDao implements EventDao {
 		eventAttendees.setUserId(row.getLong("user_id"));
 		eventAttendees.setHost(row.getBoolean("is_host"));
 		eventAttendees.setAttending(row.getBoolean("is_attending"));
+		// If the is_attending column was null, the user has not RSVP'd
+		// if it is NOT null they have already RSVPed
+		eventAttendees.setHasRsvped(!row.wasNull());
 		eventAttendees.setFirstName(row.getString("first_name"));
 		eventAttendees.setLastName(row.getString("last_name"));
 		eventAttendees.setAdultGuests(row.getInt("adult_guests"));
