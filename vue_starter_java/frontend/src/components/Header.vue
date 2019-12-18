@@ -1,22 +1,15 @@
 <template>
 
-
       <nav class="navbar navbar-expand-sm" role="navigation" aria-label="main navigation">
         <div class="navbar-nav">
             <a class="nav-item nav-link">GRILLAX LOGO
             <img src="" width="112" height="28">
             </a>
-            <p class ="nav-item nav-link" @click="logout()">Logoff</p>
-            <router-link class ="nav-item nav-link" to="/">Home</router-link>
-            <router-link class ="nav-item nav-link" to="/newevent">Create New Event</router-link>
+                <p v-if="isLoggedIn" class ="nav-item nav-link" @click="logout()">Logoff</p>
+                <router-link v-if="isLoggedIn" class ="nav-item nav-link" to="/">Home</router-link>
+                <router-link v-if="isLoggedIn" class ="nav-item nav-link" to="/newevent">Create New Event</router-link>
         </div>
       </nav>
-
-
-
-
-
-
 
 </template>
 
@@ -27,14 +20,20 @@ export default {
     name: "nav-header",
     data() {
         return {
-            auth
+            isLoggedIn: auth.getUser()!==null
         }
     },
     methods: {
         logout() {
             auth.logout();
             this.$router.push({ name: 'login' }).catch((err)=> {});
+        },
+        isLoggedInFunc() {
+            this.isLoggedIn = auth.getUser()!==null;
         }
+    },
+    created() {
+        setInterval(this.isLoggedInFunc, 100);
     }
 }
 </script>

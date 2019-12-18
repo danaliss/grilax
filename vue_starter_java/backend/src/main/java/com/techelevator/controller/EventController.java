@@ -118,14 +118,12 @@ public class EventController {
     	try {
     	Address tempAddress = event.getAddress();
     	tempAddress.setUserId(user.getId());
-    	System.out.println("set user id for address");
+ 
     	event.setAddress(addressDao.createAddress(tempAddress));
     	event.setAddressId(event.getAddress().getAddressId());
-    	System.out.println(event.getAddressId());
-    	
-    	System.out.println("address id set and put on event");
+ 
     	Event newEvent = eventDao.createEvent(event, user.getId());
-    	System.out.println("event made");
+
     	
 		response.setStatus(HttpServletResponse.SC_CREATED);
 
