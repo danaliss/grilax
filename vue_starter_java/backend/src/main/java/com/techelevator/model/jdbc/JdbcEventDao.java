@@ -16,7 +16,9 @@ import com.techelevator.model.dao.EventDao;
 import com.techelevator.model.pojo.Address;
 import com.techelevator.model.pojo.Event;
 import com.techelevator.model.pojo.EventAttendees;
+import com.techelevator.model.pojo.Food;
 import com.techelevator.model.pojo.Invitee;
+import com.techelevator.model.pojo.Order;
 
 @Component
 public class JdbcEventDao implements EventDao {
@@ -165,6 +167,19 @@ public class JdbcEventDao implements EventDao {
 		
 		while(attendeeResults.next()) {
 			EventAttendees attendee = mapRowToEventAttendees(attendeeResults);
+			
+			// get the food items
+			sqlString = "SELECT * FROM orders "
+					  + "JOIN food USING(food_id) "
+					  + "WHERE user_id = ?";
+			
+			SqlRowSet foodResults = jdbc.queryForRowSet(sqlString, attendee.getUserId());
+			while( foodResults.next() ) {
+				Order order = mapRowToOrder(foodResults);
+				order.setFood(mapRowToFood(foodResults));
+				attendee.addOrder(order);
+			}
+			
 			listOfAttendees.add(attendee);
 		}
 		
@@ -319,4 +334,33 @@ public class JdbcEventDao implements EventDao {
 		return eventAttendees;
 	}
 
+	private Food mapRowToFood(SqlRowSet row) {
+		Food food = new Food();
+		
+		food.setFoodId(row.getLong("food_id"));
+		food.setFoodName(row.getString("food_name"));
+		food.setVegetarian(row.getBoolean("vegetarian"));
+		food.setVegan(row.getBoolean("vegan"));
+		food.setGlutenFree(row.getBoolean("gluten_free"));
+		food.setNutFree(row.getBoolean("nut_free"));
+		food.setDescription(row.getString("description"));
+		food.setFoodCategory(row.getString("food_category"));
+		food.setEventId(row.getLong("event_id"));
+
+		
+		return food;
+	}
+	
+	private Order mapRowToOrder(SqlRowSet row) {
+		Order order = new Order();
+		
+		order.setOrderId(row.getLong("order_id"));
+		order.setEventId(row.getLong("event_id"));
+		order.setUserId(row.getLong("user_id"));
+		order.setFoodId(row.getLong("food_id"));
+		order.setStatus(row.getString("status"));
+		order.setQuantity(row.getInt("quantity"));
+		
+		return order;
+	}
 }

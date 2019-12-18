@@ -197,9 +197,6 @@ export default {
                         if( this.entree.length && current.entreeId == undefined ) {
                             this.errors.push("Please complete the entree order for "+this.personLabel(index));
                         }
-                        if( current.sideIds.length < this.side.length ) {
-                            this.errors.push("Please complete the side order for "+this.personLabel(index));
-                        }
                         if( this.dessert.length && current.dessertId == undefined ) {
                             this.errors.push("Please complete the dessert order for "+this.personLabel(index));
                         }
@@ -256,7 +253,9 @@ export default {
                             acc.push({ foodId: cur.dessertId, quantity: 1 });
                         }
                         for( let side of cur.sideIds ) {
-                            acc.push({ foodId: side, quantity: 1 });
+                            if( side != null ) {
+                                acc.push({ foodId: side, quantity: 1 });
+                            }
                         }
 
                         return acc;
