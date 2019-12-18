@@ -23,10 +23,12 @@
         <ul>
         <li v-for = "guest in notAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
         </ul>
+        <!--
         <h5 class="noRsvp">Awaiting RSVP:</h5>
         <ul>
         <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
         </ul>
+        -->
     </section>
 
     <section class="rsvp" v-if="event.invited">
