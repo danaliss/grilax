@@ -48,11 +48,11 @@
 
                 <div class = "form-group">
                     <h3>How many adult guests will you bring?</h3>
-                    <input type="number" v-model="rsvp.adultGuests" min="0" max="10" class="btn btn-secondary col-md-1" @blur="correctPeople()" />
+                    <input type="number" v-model="rsvp.adultGuests" min="0" max="10" class="btn btn-secondary col-md-1" @blur="correctAdultPeople()" />
                 </div>
                 <div class = "form-group">
                     <h3>How many children will you bring?</h3>
-                    <input type="number" v-model="rsvp.childGuests" min="0" max="10" class="btn btn-secondary col-md-1" @blur="correctPeople()" />
+                    <input type="number" v-model="rsvp.childGuests" min="0" max="10" class="btn btn-secondary col-md-1" @blur="correctChildPeople()" />
                 </div>
 
                 <div class="rsvp-menu" v-for="(personNumber,index) in totalNumberOfPeople" v-bind:key="index">
@@ -303,17 +303,26 @@ export default {
                 }
             }
         },
-        correctPeople: function() {
-            let oldVal = this.rsvp.food.length-1-this.rsvp.childGuests;
-            this.adultGuestsChange(0, oldVal);
+        correctAdultPeople: function() {
             if( this.rsvp.adultGuests === '' ) {
-                this.rsvp.adultGuests = 0;
+                this.rsvp.adultGuests = '0';
+                let childCount = parseInt(this.rsvp.childGuests);
+                // check the count
+                let oldVal = this.rsvp.food.length - childCount - 1;
+                if( oldVal > 0 ) {
+                    this.adultGuestsChange(0, oldVal);
+                }
             }
-            
-            oldVal = this.rsvp.food.length-1-this.rsvp.adultGuests;
-            this.childGuestsChange(0, oldVal);
+        },
+        correctChildPeople: function() {
             if( this.rsvp.childGuests === '' ) {
-                this.rsvp.childGuests = 0;
+                this.rsvp.childGuests = '0';
+                let adultCount = parseInt(this.rsvp.adultGuests);
+                // check the count
+                let oldVal = this.rsvp.food.length - adultCount - 1;
+                if( oldVal > 0 ) {
+                    this.childGuestsChange(0, oldVal);
+                }
             }
         },
         hasSide: function(checkId) {

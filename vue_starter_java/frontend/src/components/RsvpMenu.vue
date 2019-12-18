@@ -1,15 +1,15 @@
 <template>
- <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group">
-    <label class="btn btn-secondary btn-lg btn-block" type="radio">
-    <input name ="radio-food" type="radio" value="true">
-        <h4>{{foodItem.foodName}}</h4>
-        <h5 v-if="foodItem.glutenFree">Gluten Free </h5>
-        <h5 v-if="foodItem.nutFree">Nut Free </h5>
-        <h5 v-if="foodItem.vegetarian">Vegetarian </h5>  
-        <h5 v-if="foodItem.vegan">Vegan </h5>    
-        <p>{{foodItem.description}}</p>
-    </label>
-</div>
+    <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group">
+        <label class="btn btn-secondary btn-lg btn-block" type="radio">
+        <input name ="radio-food" type="radio" value="true">
+            <h4>{{foodItem.foodName}}</h4>
+            <h5 v-if="foodItem.glutenFree">Gluten Free </h5>
+            <h5 v-if="foodItem.nutFree">Nut Free </h5>
+            <h5 v-if="foodItem.vegetarian">Vegetarian </h5>  
+            <h5 v-if="foodItem.vegan">Vegan </h5>    
+            <p>{{foodItem.description}}</p>
+        </label>
+    </div>
 </template>
 
 <script>
