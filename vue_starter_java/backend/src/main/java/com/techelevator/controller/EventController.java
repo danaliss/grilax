@@ -5,7 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.xml.ws.BindingType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -329,27 +328,30 @@ public class EventController {
     	} catch (DataIntegrityViolationException e) {
 			return new Response<>(ValidationError.createList(e));
 		}
-    	
-    
-    	
     }
     
     @PostMapping(path="/event/{eventid}/rsvp/decline")
     public Response<?> rsvpDecline(@PathVariable long eventid,
+							    		@Valid @RequestBody EventAttendees decliningAttendees,
+										BindingResult result,
     									HttpServletRequest request, 
     									HttpServletResponse response){
     	User user = getUser(request);
     	if( user == null ) {
     		return badUser(response);
     	}
-		
-    	EventAttendees decliningAttendees = new EventAttendees();
-
+    	if( result.hasErrors() ) {
+    		return badValidation(result, response);
+    	}
+    	// ensure false
     	decliningAttendees.setAttending(false);
+    	// if declining, make sure guest count is 0
+    	decliningAttendees.setAdultGuests(0);
+    	decliningAttendees.setChildGuests(0);
     	
+		decliningAttendees.setUserId(user.getId());
+		decliningAttendees.setEventId(eventid);
     	try {
-    		decliningAttendees.setUserId(user.getId());
-    		decliningAttendees.setEventId(eventid);
     		EventAttendees eventAttendees = eventDao.addEventAttendee(eventid, user.getId(), decliningAttendees);
     		if(eventAttendees == null) {
     			return badEvent(response);
@@ -358,8 +360,6 @@ public class EventController {
     	} catch (DataIntegrityViolationException e) {
 			return new Response<>(ValidationError.createList(e));
 		}
-    	
-
     }
     
 //    @DeleteMapping(path="/event/{eventid}/attendees/{userid}")

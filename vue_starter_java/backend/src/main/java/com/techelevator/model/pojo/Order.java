@@ -11,6 +11,8 @@ public class Order {
 	private long foodId;
 	private int quantity;
 	private String status;
+	
+	private Food food;
 
 	public long getOrderId() {
 		return orderId;
@@ -60,4 +62,10 @@ public class Order {
 		this.quantity = quantity;
 	}
 
+	public Food getFood() {
+		return this.food;
+	}
+	public void setFood(Food food) {
+		this.food = food;
+	}
 }

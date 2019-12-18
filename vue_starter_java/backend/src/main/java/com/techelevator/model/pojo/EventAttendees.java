@@ -1,5 +1,7 @@
 package com.techelevator.model.pojo;
 
+import java.util.ArrayList;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -38,6 +40,8 @@ public class EventAttendees {
 	private Integer childGuests;
 	
 	private boolean hasRsvped;
+	
+	private java.util.List<Order> orders = new ArrayList<>();
 
 	public long getEventId() {
 		return eventId;
@@ -111,4 +115,10 @@ public class EventAttendees {
 		this.hasRsvped = hasRsvped;
 	}
 
+	public void addOrder(Order order) {
+		this.orders.add(order);
+	}
+	public java.util.List<Order> getOrders() {
+		return this.orders;
+	}
 }

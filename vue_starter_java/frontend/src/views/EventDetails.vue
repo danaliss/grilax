@@ -8,25 +8,42 @@
         <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
         <p>{{event.description}}</p>
 
-        <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
-
+        <div v-if="menu.length === 0">
+            <router-link tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
+        </div>
+        
+        <div>
+            <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+        </div>
+        
         <section class="guest-list">
             <h5>Guest List:</h5>
+            <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
             <ul>
-                <li v-for = "guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
+                <li v-for="guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}
+                    <ul v-if="event.hosting">
+                        <li v-for="(order,index) in guest.orders" v-bind:key="guest.userId+'-order-'+index">
+                            {{order.food.foodName}} x{{order.quantity}}
+                        </li>
+                    </ul>
+                  </li>
             </ul>
         </section>
     </section>
     
     <section class="not-attending" v-if="event.hosting">
-        <h5 class="no">Declined Invitation:</h5>
+        <h5 class="no" v-if="notAttending.length">Declined Invitation:</h5>
         <ul>
-        <li v-for = "guest in notAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
+        <li v-for = "guest in notAttending" v-bind:key="guest.userId">
+            {{guest.firstName}} {{guest.lastName}}
+        </li>
         </ul>
+        <!--
         <h5 class="noRsvp">Awaiting RSVP:</h5>
         <ul>
         <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
         </ul>
+        -->
     </section>
 
     <section class="rsvp" v-if="event.invited">
@@ -52,7 +69,8 @@ export default {
             attendees: [],
             yesAttending: [],
             notAttending: [],
-            notRsvp: []
+            notRsvp: [],
+            menu: []
         
         }
     },
@@ -73,7 +91,8 @@ export default {
                 //setting the promises returned by the defined fetsches
                 const promises = [
                     this.fetchAddress(tempEvent.addressId),
-                   this.fetchAttendees(tempEvent.eventId)
+                    this.fetchAttendees(tempEvent.eventId),
+                    this.fetchMenu(tempEvent.eventId)
                 ];
                 //mega promise over an iterible set
                 Promise.all(promises)
@@ -111,6 +130,20 @@ export default {
                 .then((data) => {
                     this.attendees = data.object
                     this.generateGuestList();
+                });
+        },
+        fetchMenu(eventId){
+            return fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${eventId}/menu`,{
+                 method : "GET",
+                    headers: {
+                    "Authorization": "Bearer "+ auth.getToken(),
+                    "Content-Type" : "application/json",
+                    "Accepts" : "application/json"
+                    }
+                })
+                .then((response)=> response.json())
+                .then((data) => {
+                    this.menu = data.object
                 });
         },
         generateGuestList(){
