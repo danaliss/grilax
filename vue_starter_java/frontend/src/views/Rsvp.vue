@@ -26,7 +26,7 @@
                 </label>
             </div>
 
-            <div v-if="rsvp.attending==='true'">
+            <div v-if="rsvp.attending!==''">
                 <div class="form-group">
                     <h3>Your First Name</h3>
                     <label for="firstName">
@@ -45,7 +45,8 @@
                     >
                     </label>
                 </div>
-
+            </div>
+            <div v-if="rsvp.attending==='true'">
                 <div class = "form-group">
                     <h3>How many adult guests will you bring?</h3>
                     <input type="number" v-model="rsvp.adultGuests" min="0" max="10" class="btn btn-secondary col-md-1" @blur="correctAdultPeople()" />
@@ -183,7 +184,7 @@ export default {
             this.errors = [];
             if( this.rsvp.attending === '' ) {
                 this.errors.push("Please say if you're attending");
-            } else if( this.rsvp.attending === 'true' ) {
+            } else {
                 // check more form
                 if( this.rsvp.firstName.trim() === '' ) {
                     this.errors.push("Please tell us your first name");
@@ -191,21 +192,24 @@ export default {
                 if( this.rsvp.lastName.trim() === '' ) {
                     this.errors.push("Please tell us your last name");
                 }
-                this.rsvp.food.forEach((current,index)=>{
-                    if( this.entree.length && current.entreeId == undefined ) {
-                        this.errors.push("Please complete the entree order for "+this.personLabel(index));
-                    }
-                    if( current.sideIds.length < this.side.length ) {
-                        this.errors.push("Please complete the side order for "+this.personLabel(index));
-                    }
-                    if( this.dessert.length && current.dessertId == undefined ) {
-                        this.errors.push("Please complete the dessert order for "+this.personLabel(index));
-                    }
-                })
+                if( this.rsvp.attending === 'true' ) {
+                    this.rsvp.food.forEach((current,index)=>{
+                        if( this.entree.length && current.entreeId == undefined ) {
+                            this.errors.push("Please complete the entree order for "+this.personLabel(index));
+                        }
+                        if( this.dessert.length && current.dessertId == undefined ) {
+                            this.errors.push("Please complete the dessert order for "+this.personLabel(index));
+                        }
+                    })
+                }
             }
 
             if( this.errors.length === 0 ) {
-                let path = this.rsvp.attending === 'true' ? "accept" : "decline";
+                let path = "accept";
+                if( this.rsvp.attending === 'false' ) {
+                    this.rsvp.adultGuests = 0;
+                    this.rsvp.childGuests = 0;
+                }
                 let promises = [];
                 
                 promises.push(fetch(`${process.env.VUE_APP_REMOTE_API}/api/event/${this.$route.params.eventId}/rsvp/${path}`, {
@@ -249,7 +253,9 @@ export default {
                             acc.push({ foodId: cur.dessertId, quantity: 1 });
                         }
                         for( let side of cur.sideIds ) {
-                            acc.push({ foodId: side, quantity: 1 });
+                            if( side != null ) {
+                                acc.push({ foodId: side, quantity: 1 });
+                            }
                         }
 
                         return acc;
@@ -328,7 +334,7 @@ export default {
             }
         },
         hasSide: function(index, checkId) {
-            for( let side of this.food.sideIds ) {
+            for( let side of this.rsvp.food[index].sideIds ) {
                 if( side == checkId ) {
                     return true;
                 }

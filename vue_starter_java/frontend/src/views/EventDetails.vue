@@ -18,21 +18,32 @@
         
         <section class="guest-list">
             <h5>Guest List:</h5>
+            <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
             <ul>
-                <li v-for = "guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
+                <li v-for="guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}
+                    <ul v-if="event.hosting">
+                        <li v-for="(order,index) in guest.orders" v-bind:key="guest.userId+'-order-'+index">
+                            {{order.food.foodName}} x{{order.quantity}}
+                        </li>
+                    </ul>
+                  </li>
             </ul>
         </section>
     </section>
     
     <section class="not-attending" v-if="event.hosting">
-        <h5 class="no">Declined Invitation:</h5>
+        <h5 class="no" v-if="notAttending.length">Declined Invitation:</h5>
         <ul>
-        <li v-for = "guest in notAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
+        <li v-for = "guest in notAttending" v-bind:key="guest.userId">
+            {{guest.firstName}} {{guest.lastName}}
+        </li>
         </ul>
+        <!--
         <h5 class="noRsvp">Awaiting RSVP:</h5>
         <ul>
         <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
         </ul>
+        -->
     </section>
 
     <section class="rsvp" v-if="event.invited">
