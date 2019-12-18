@@ -8,7 +8,7 @@
         <h4>{{address.streetAddress}} {{address.city}} {{address.state}}</h4>
         <p>{{event.description}}</p>
 
-        <router-link tag="button" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+        <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
 
         <section class="guest-list">
             <h5>Guest List:</h5>
