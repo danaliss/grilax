@@ -56,13 +56,13 @@
                 </div>
 
                 <div class="rsvp-menu" v-for="(personNumber,index) in totalNumberOfPeople" v-bind:key="index">
-                    <h2>Order for {{personLabel(index)}}</h2>
-                    <h3>Please pick one of the following entrees</h3>
+                    <h2 v-if="entree.length || side.length || dessert.length">Order for {{personLabel(index)}}</h2>
+                    <h3 v-if="entree.length">Please pick one of the following entrees</h3>
 
                     <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" 
                                 v-for="food in entree" v-bind:key="food.foodId">
-                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: rsvp.food[index] != undefined && rsvp.food[index].foodId===food.foodId }">
-                        <input name ="radio-food" type="radio" v-bind:value="food.foodId" v-model="rsvp.food[index].foodId" />
+                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: rsvp.food[index] != undefined && rsvp.food[index].entreeId===food.foodId }">
+                        <input name ="radio-food" type="radio" v-bind:value="food.foodId" v-model="rsvp.food[index].entreeId" />
                             <h4>{{food.foodName}}</h4>
                             <h5 v-if="food.glutenFree">Gluten Free </h5>
                             <h5 v-if="food.nutFree">Nut Free </h5>
@@ -73,13 +73,37 @@
                     </div>
                     <!--rsvp-menu v-for="food in entree" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu-->
                     
-                    <h3>Choose up to two sides</h3>
-                    <rsvp-menu v-for="food in side" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu>
+                    <h3 v-if="side.length">Choose up to two sides</h3>
+                    <!--rsvp-menu v-for="food in side" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu-->
+                    <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" 
+                                v-for="food in side" v-bind:key="food.foodId">
+                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: hasSide(food.foodId) }">
+                        <input name ="radio-food" type="checkbox" v-bind:value="food.foodId" @change="sideChanged(food.foodId)" />
+                            <h4>{{food.foodName}}</h4>
+                            <h5 v-if="food.glutenFree">Gluten Free </h5>
+                            <h5 v-if="food.nutFree">Nut Free </h5>
+                            <h5 v-if="food.vegetarian">Vegetarian </h5>  
+                            <h5 v-if="food.vegan">Vegan </h5>    
+                            <p>{{food.description}}</p>
+                        </label>
+                    </div>
 
-                    <h3>Choose one dessert</h3>
-                    <rsvp-menu v-for="food in dessert" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu>
+                    <h3 v-if="dessert.length">Choose one dessert</h3>
+                    <!--rsvp-menu v-for="food in dessert" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu-->
+                    <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" 
+                                v-for="food in dessert" v-bind:key="food.foodId">
+                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: rsvp.food[index] != undefined && rsvp.food[index].dessertId===food.foodId }">
+                        <input name ="radio-food" type="radio" v-bind:value="food.foodId" v-model="rsvp.food[index].dessertId" />
+                            <h4>{{food.foodName}}</h4>
+                            <h5 v-if="food.glutenFree">Gluten Free </h5>
+                            <h5 v-if="food.nutFree">Nut Free </h5>
+                            <h5 v-if="food.vegetarian">Vegetarian </h5>  
+                            <h5 v-if="food.vegan">Vegan </h5>    
+                            <p>{{food.description}}</p>
+                        </label>
+                    </div>
 
-                    <h3>Beverage options at the party</h3>
+                    <h3 v-if="beverage.length">Beverage options at the party</h3>
                     <ul>
                         <li v-for="drink in beverage" v-bind:key="drink.foodId">{{drink.foodName}} {{drink.description}}</li>
                     </ul>
@@ -114,7 +138,7 @@ export default {
               adultGuests: 0,
               childGuests: 0,
               food: [
-                  { foodId: null }
+                  { entreeId: null, sideIds: [], dessertId: null }
               ]
             },
             menu: [],
@@ -166,8 +190,14 @@ export default {
                     this.errors.push("Please tell us your last name");
                 }
                 this.rsvp.food.forEach((current,index)=>{
-                    if( current.foodId == undefined ) {
-                        this.errors.push("Please complete the food order for "+this.personLabel(index));
+                    if( this.entree.length && current.entreeId == undefined ) {
+                        this.errors.push("Please complete the entree order for "+this.personLabel(index));
+                    }
+                    if( current.sideIds.length < this.side.length ) {
+                        this.errors.push("Please complete the side order for "+this.personLabel(index));
+                    }
+                    if( this.dessert.length && current.dessertId == undefined ) {
+                        this.errors.push("Please complete the dessert order for "+this.personLabel(index));
                     }
                 })
             }
@@ -193,16 +223,31 @@ export default {
                     //// pack it for quantity
                     let foodSend = this.rsvp.food.reduce((acc, cur)=>{
                         // see if food is currently there
-                        let found = false;
                         for( let food of acc ) {
-                            if( food.foodId === cur.foodId ) {
+                            if( food.foodId === cur.entreeId ) {
                                 food.quantity++;
-                                found = true;
-                                break;
+                                cur.entreeId = null;
+                            }
+                            if( food.foodId === cur.dessertId ) {
+                                food.quantity++;
+                                cur.dessertId = null;
+                            }
+                            for( let sideIdx in cur.sideIds ) {
+                                if( food.foodId === cur.sideIds[sideIdx] ) {
+                                    food.quantity++;
+                                    cur.sideIds[sideIdx] = null;
+                                }
                             }
                         }
-                        if( !found ) {
-                            acc.push({ foodId: cur.foodId, quantity: 1 });
+                        // check for nulls
+                        if( cur.entreeId != null ) {
+                            acc.push({ foodId: cur.entreeId, quantity: 1 });
+                        }
+                        if( cur.dessertId != null ) {
+                            acc.push({ foodId: cur.dessertId, quantity: 1 });
+                        }
+                        for( let side of cur.sideIds ) {
+                            acc.push({ foodId: side, quantity: 1 });
                         }
 
                         return acc;
@@ -245,7 +290,7 @@ export default {
                 if( newVal < oldVal ) {
                     this.rsvp.food.splice(oldVal-i, 1);
                 } else {
-                    this.rsvp.food.splice(1+oldVal, 0, { foodId: null });
+                    this.rsvp.food.splice(1+oldVal, 0, { entreeId: null, sideIds: [], dessertId: null });
                 }
             }
         },
@@ -254,7 +299,7 @@ export default {
                 if( newVal < oldVal ) {
                     this.rsvp.food.pop();
                 } else {
-                    this.rsvp.food.push({ foodId: null });
+                    this.rsvp.food.push({ entreeId: null, sideIds: [], dessertId: null });
                 }
             }
         },
@@ -270,6 +315,12 @@ export default {
             if( this.rsvp.childGuests === '' ) {
                 this.rsvp.childGuests = 0;
             }
+        },
+        hasSide: function(checkId) {
+
+        },
+        sideChanged: function(changedId) {
+
         }
     },
     watch: {
