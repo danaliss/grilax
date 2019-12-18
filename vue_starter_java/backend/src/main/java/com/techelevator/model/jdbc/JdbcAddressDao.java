@@ -62,16 +62,15 @@ public class JdbcAddressDao implements AddressDao {
 	public Address createAddress(Address address) {
 		String sqlQuery = "INSERT INTO address (street_address, city, state, zip, user_id) "
 				 + "VALUES (?, ?, ?, ?, ?) RETURNING address_id";
-		System.out.println(address.getCity() + address.getZip());
+
 		long addressId = jdbc.queryForObject(sqlQuery, Long.class,
 							address.getStreetAddress(),
 							address.getCity(),
 							address.getState(),
 							address.getZip(),
 							address.getUserId());
-		System.out.println("query made");
+		
 		address.setAddressId(addressId);
-		System.out.println(addressId);
 		
 		return address;
 	}
