@@ -71,7 +71,7 @@
       <div class = "col">
     <label for="inputAddress">Address</label>
     <input type="text" 
-    v-model="event.address.streetAdress"
+    v-model="event.address.streetAddress"
     class="form-control" 
     id="inputAddress" 
     placeholder="1234 Main St">
