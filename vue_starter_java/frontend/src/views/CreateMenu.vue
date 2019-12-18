@@ -25,7 +25,7 @@
 
         <br /><br />
 
-        <button type="submit" class = "btn btn-secondary">Create Menu</button>
+        <button type="submit" class = "btn btn-secondary" :disabled="formSubmitting">Create Menu</button>
         
         <br>
  
@@ -50,6 +50,7 @@ export default {
 },
     data() {
         return {
+            formSubmitting: false,
             entrees: [{
                 foodName: '',
                 vegetarian: false,
@@ -149,6 +150,7 @@ export default {
             });
         },
         createMenu() {
+            this.formSubmitting = true;
             let promises = [];
 
             for( let entree of this.entrees ) {
@@ -177,7 +179,7 @@ export default {
             }
 
             Promise.all(promises).then(response=>{
-                if (response.ok) {
+                if (response[0].ok) {
                     this.$router.push({ path: `/${this.$route.params.eventId}/eventdetails`, query: { createEventStatus: 'success' } });
                 } else {
                     this.registrationErrors = true;
