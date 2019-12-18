@@ -328,7 +328,7 @@ export default {
             }
         },
         hasSide: function(index, checkId) {
-            for( let side of this.food.sideIds ) {
+            for( let side of this.rsvp.food[index].sideIds ) {
                 if( side == checkId ) {
                     return true;
                 }
