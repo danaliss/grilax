@@ -5,7 +5,7 @@
     <section class="details">
         <h2>{{event.time}} {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}} {{event.date.year}}</h2>
         <h2>{{event.date.daysAway}} days away!</h2>
-        <h4>{{address.streetAddress}} {{address.city}} {{address.state}}</h4>
+        <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
         <p>{{event.description}}</p>
 
         <router-link tag="button" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
