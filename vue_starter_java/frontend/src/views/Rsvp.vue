@@ -73,12 +73,12 @@
                     </div>
                     <!--rsvp-menu v-for="food in entree" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu-->
                     
-                    <h3 v-if="side.length">Choose up to two sides</h3>
+                    <h3 v-if="side.length">Choose up to {{ maxSidesText }} side{{ isPlural(maxSides) }}</h3>
                     <!--rsvp-menu v-for="food in side" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu-->
                     <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" 
                                 v-for="food in side" v-bind:key="food.foodId">
-                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: hasSide(food.foodId) }">
-                        <input name ="radio-food" type="checkbox" v-bind:value="food.foodId" @change="sideChanged(food.foodId)" />
+                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: hasSide(index, food.foodId) }">
+                        <input name ="radio-food" type="checkbox" v-bind:value="food.foodId" @change="sideChanged(index, food.foodId)" />
                             <h4>{{food.foodName}}</h4>
                             <h5 v-if="food.glutenFree">Gluten Free </h5>
                             <h5 v-if="food.nutFree">Nut Free </h5>
@@ -130,6 +130,8 @@ export default {
     },
     data(){
         return {
+            maxSides: 2,
+            maxSidesText: "two",
             rsvp: {
               eventId:'',
               attending: '',
@@ -325,11 +327,27 @@ export default {
                 }
             }
         },
-        hasSide: function(checkId) {
-
+        hasSide: function(index, checkId) {
+            for( let side of this.food.sideIds ) {
+                if( side == checkId ) {
+                    return true;
+                }
+            }
+            return false;
         },
-        sideChanged: function(changedId) {
-
+        sideChanged: function(index, changedId) {
+            // see if changedId is present
+            let exists = this.rsvp.food[index].sideIds.findIndex((element)=>element==changedId);
+            if( exists === -1 ) {
+                if( this.rsvp.food[index].sideIds.unshift(changedId) > this.maxSides ) {
+                    this.rsvp.food[index].sideIds.pop();
+                }
+            } else {
+                this.rsvp.food[index].sideIds.splice(exists, 1);
+            }
+        },
+        isPlural(num) {
+            return num==1?"":"s";
         }
     },
     watch: {
