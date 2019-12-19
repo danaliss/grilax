@@ -4,7 +4,7 @@
         <form class = "offset-md-3 col-md-6" @submit.prevent="sendInvite">
             <br>
             <h4>Invite Others to This Event</h4>
-            <div class = "form-group">
+            <!--div class = "form-group">
             <label for = "invitee-role"></label>
             <select id = "invitee-role" v-model="invitee.role" class="custom-select form-control">
 
@@ -12,7 +12,7 @@
                 <option value="chef">Chef</option>
 
             </select>
-            </div>
+            </div-->
             <div class="form-group">
             <label for="email-area">Invitee Emails</label>
             <input v-model="invitee.email" class="form-control" id="email-area" type="email"  placeholder="attendee@example.com" />
@@ -33,7 +33,7 @@ export default {
         return {
             invitee: {
                 email: '',
-                role: '',
+                role: 'attendee',
                 eventId : 0,
                 inviteId : 0,
 

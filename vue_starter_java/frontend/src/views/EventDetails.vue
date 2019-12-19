@@ -7,16 +7,18 @@
         </div>
         <section class="details">
             <h2>{{event.time}} on {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}}, {{event.date.year}}</h2>
-            <h2>{{event.date.daysAway}} days away!</h2>
+            <h2>{{event.date.daysAway}} day{{isPlural(event.date.daysAway)}} away!</h2>
             <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
             <p>{{event.description}}</p>
 
-            <div v-if="menu.length === 0">
-                <router-link tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
-            </div>
-            
-            <div>
-                <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+            <div class="buttons">
+                <div v-if="menu.length === 0">
+                    <router-link tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
+                </div>
+                
+                <div>
+                    <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+                </div>
             </div>
             
             <section class="guest-list">
@@ -32,29 +34,28 @@
                     </li>
                 </ul>
             </section>
+             <section class="not-attending" v-if="event.hosting && notAttending.length">
+                <h5 class="no" v-if="notAttending.length">Declined Invitation:</h5>
+                <ul>
+                <li v-for = "guest in notAttending" v-bind:key="guest.userId">
+                    {{guest.firstName}} {{guest.lastName}}
+                </li>
+                </ul>
+                <!--
+                <h5 class="noRsvp">Awaiting RSVP:</h5>
+                <ul>
+                <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
+                </ul>
+                -->
+            </section>
+        </section>
+        <section class="rsvp" v-if="event.invited && event.deadline.daysAway >= 0">
+            You have {{event.deadline.daysAway}} day{{isPlural(event.deadline.daysAway)}} left to RSVP!
+            <router-link tag="h1" v-bind:to="{ name:'rsvp', params:{eventId:event.eventId}}">
+                <button class="btn">Send RSVP</button>
+            </router-link>
         </section>
     </div>
-    
-    <section class="not-attending" v-if="event.hosting">
-        <h5 class="no" v-if="notAttending.length">Declined Invitation:</h5>
-        <ul>
-        <li v-for = "guest in notAttending" v-bind:key="guest.userId">
-            {{guest.firstName}} {{guest.lastName}}
-        </li>
-        </ul>
-        <!--
-        <h5 class="noRsvp">Awaiting RSVP:</h5>
-        <ul>
-        <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
-        </ul>
-        -->
-    </section>
-
-    <section class="rsvp" v-if="event.invited">
-        <router-link tag="h1" v-bind:to="{ name:'rsvp', params:{eventId:event.eventId}}">
-            <button class="btn">RSVP</button>
-        </router-link>
-    </section>
     <div v-if="event === null">
         <h1>Loading event...please stand by</h1>
     </div>
@@ -161,7 +162,9 @@ export default {
                 return !current.hasRsvped && current.host ===false;
             })
         },
-    
+        isPlural(val) {
+            return val==1?"":"s";
+        }
     },
     computed: {
         fullAddress() {
@@ -179,17 +182,21 @@ export default {
 }
 </script>
 <style scoped>
-.details {
+section {
     background: rgba(255,255,255,0.95);
     color: #63bd55;
     text-align: center;
     border-radius: 17px;
+    padding: 15px;
 }
 .not-attending {
     background: rgb(128,128,128);
 }
-.guest-list {
+.guest-list, .not-attending {
     text-align: left;
+}
+.not-attending {
+    display: inline-block;
 }
 .no {
     color: #FF0033;
@@ -197,11 +204,16 @@ export default {
 .noRsvp {
     color: #FFCC33;
 }
+.buttons {
+    display: flex;
+    justify-content: space-around;
+}
 #content {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
     margin: 25px;
     grid-gap: 10px;
+    align-items: start;
 }
 iframe {
     border:0;
@@ -211,5 +223,10 @@ iframe {
 }
 button {
     cursor: pointer;
+    border-radius: 17px;
+    padding: 20px;
+}
+button:hover {
+    background-color: #7fdb70 !important;
 }
 </style>
