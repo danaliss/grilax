@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav-header />
+    <nav-header v-if="$router.currentRoute.name!='login'" />
     <router-view />
   </div>
 </template>
@@ -23,14 +23,24 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css?family=Titan+One&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap');
+
+html{
+  height: 100%;
+}
 body {
+  height: 100%;
   background:#ff7d49;
-  background: radial-gradient(circle,#ffdb2b 90%, #ff7d49 100%);
+  background: linear-gradient(to right, #ff7f68, #ffdb2b, #ffdb2b,#ffdb2b,#ffdb2b,#ffdb2b, #ff7f68);
+
+  
+ 
   font-family: 'Baloo Bhai', cursive;
 }
+
 #app {
-  
+height: 100%;
 }
+
 h1 {
   text-align:center;
   color:#ef2871;
