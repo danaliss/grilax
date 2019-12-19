@@ -76,6 +76,7 @@ export default {
 </script>
 
 <style scoped>
+
   .home {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -83,6 +84,7 @@ export default {
     align-items: start;
     justify-items: stretch;
     text-align: center;
+    padding-top: 2rem;
   }
   .home > * {
     padding: 10px;
