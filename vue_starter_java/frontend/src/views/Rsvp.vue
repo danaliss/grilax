@@ -48,7 +48,7 @@
             </div>
             <div v-if="rsvp.attending==='true'">
                 <div class = "form-group">
-                    <h3>How many adult guests will you bring?</h3>
+                    <h3>How many adult guests will you bring (excluding you)?</h3>
                     <input type="number" v-model="rsvp.adultGuests" min="0" max="10" class="btn btn-secondary col-md-1" @blur="correctAdultPeople()" />
                 </div>
                 <div class = "form-group">
@@ -60,48 +60,45 @@
                     <h2 v-if="entree.length || side.length || dessert.length">Order for {{personLabel(index)}}</h2>
                     <h3 v-if="entree.length">Please pick one of the following entrees</h3>
 
-                    <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" 
-                                v-for="food in entree" v-bind:key="food.foodId">
-                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: rsvp.food[index] != undefined && rsvp.food[index].entreeId===food.foodId }">
-                        <input name ="radio-food" type="radio" v-bind:value="food.foodId" v-model="rsvp.food[index].entreeId" />
-                            <h4>{{food.foodName}}</h4>
-                            <h5 v-if="food.glutenFree">Gluten Free </h5>
-                            <h5 v-if="food.nutFree">Nut Free </h5>
-                            <h5 v-if="food.vegetarian">Vegetarian </h5>  
-                            <h5 v-if="food.vegan">Vegan </h5>    
-                            <p>{{food.description}}</p>
-                        </label>
+                    <div class="menu-items">
+                        <div class = "food-btn btn-group-horizontal btn-group-toggle form-group" 
+                                    v-for="food in entree" v-bind:key="food.foodId">
+                            <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: rsvp.food[index] != undefined && rsvp.food[index].entreeId===food.foodId }">
+                            <input name ="radio-food" type="radio" v-bind:value="food.foodId" v-model="rsvp.food[index].entreeId" />
+                                <h4>{{food.foodName}}</h4>  
+                                <p>{{food.description}}</p>
+                                <h5 v-if="getFoodAttributes(food).length">{{getFoodAttributes(food)}}</h5>
+                            </label>
+                        </div>
                     </div>
                     <!--rsvp-menu v-for="food in entree" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu-->
                     
                     <h3 v-if="side.length">Choose up to {{ maxSidesText }} side{{ isPlural(maxSides) }}</h3>
                     <!--rsvp-menu v-for="food in side" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu-->
-                    <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" 
-                                v-for="food in side" v-bind:key="food.foodId">
-                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: hasSide(index, food.foodId) }">
-                        <input name ="radio-food" type="checkbox" v-bind:value="food.foodId" @change="sideChanged(index, food.foodId)" />
-                            <h4>{{food.foodName}}</h4>
-                            <h5 v-if="food.glutenFree">Gluten Free </h5>
-                            <h5 v-if="food.nutFree">Nut Free </h5>
-                            <h5 v-if="food.vegetarian">Vegetarian </h5>  
-                            <h5 v-if="food.vegan">Vegan </h5>    
-                            <p>{{food.description}}</p>
-                        </label>
+                    <div class="menu-items">
+                        <div class = "food-btn btn-group-vertical btn-group-toggle form-group" 
+                                    v-for="food in side" v-bind:key="food.foodId">
+                            <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: hasSide(index, food.foodId) }">
+                            <input name ="radio-food" type="checkbox" v-bind:value="food.foodId" @change="sideChanged(index, food.foodId)" />
+                                <h4>{{food.foodName}}</h4>  
+                                <p>{{food.description}}</p>
+                                <h5 v-if="getFoodAttributes(food).length">{{getFoodAttributes(food)}}</h5>
+                            </label>
+                        </div>
                     </div>
 
                     <h3 v-if="dessert.length">Choose one dessert</h3>
                     <!--rsvp-menu v-for="food in dessert" v-bind:foodItem="food" v-bind:key="food.foodId"></rsvp-menu-->
-                    <div class = "food-btn container-fluid btn-group-vertical btn-group-toggle col-md-8 form-group" 
-                                v-for="food in dessert" v-bind:key="food.foodId">
-                        <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: rsvp.food[index] != undefined && rsvp.food[index].dessertId===food.foodId }">
-                        <input name ="radio-food" type="radio" v-bind:value="food.foodId" v-model="rsvp.food[index].dessertId" />
-                            <h4>{{food.foodName}}</h4>
-                            <h5 v-if="food.glutenFree">Gluten Free </h5>
-                            <h5 v-if="food.nutFree">Nut Free </h5>
-                            <h5 v-if="food.vegetarian">Vegetarian </h5>  
-                            <h5 v-if="food.vegan">Vegan </h5>    
-                            <p>{{food.description}}</p>
-                        </label>
+                    <div class="menu-items">
+                        <div class = "food-btn btn-group-vertical btn-group-toggle form-group" 
+                                    v-for="food in dessert" v-bind:key="food.foodId">
+                            <label class="btn btn-secondary btn-lg btn-block" type="radio" v-bind:class="{ active: rsvp.food[index] != undefined && rsvp.food[index].dessertId===food.foodId }">
+                            <input name ="radio-food" type="radio" v-bind:value="food.foodId" v-model="rsvp.food[index].dessertId" />
+                                <h4>{{food.foodName}}</h4>  
+                                <p>{{food.description}}</p>
+                                <h5 v-if="getFoodAttributes(food).length">{{getFoodAttributes(food)}}</h5>
+                            </label>
+                        </div>
                     </div>
 
                     <h3 v-if="beverage.length">Beverage options at the party</h3>
@@ -352,6 +349,22 @@ export default {
                 this.rsvp.food[index].sideIds.splice(exists, 1);
             }
         },
+        getFoodAttributes: function(food) {
+            let attributes = [];
+            if( food.glutenFree ) {
+                attributes.push("Gluten Free");
+            }
+            if( food.nutFree ) {
+                attributes.push("Nut Free");
+            }
+            if( food.vegan ) {
+                attributes.push("Vegan");
+            }
+            if( food.vegetarian ) {
+                attributes.push("Vegetarian");
+            }
+            return attributes.join(", ");
+        },
         isPlural(num) {
             return num==1?"":"s";
         }
@@ -451,5 +464,11 @@ h3 {
 .rsvp-menu h2 {
     margin-left: -50px;
 }
-
+.menu-items  {
+    display: flex;
+    flex-wrap: wrap;
+}
+button {
+    cursor: pointer;
+}
 </style>
