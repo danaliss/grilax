@@ -4,7 +4,7 @@
         <br><br>
         
         <h4>Entrees</h4>
-        <entree-input v-for="(entree,index) in entrees" :key="index+'-entree'" v-model="entrees[index]" />
+        <entree-input v-for="(entree,index) in entrees" :key="index+'-entree'" v-model="entrees[index]" :index="index" />
         <button @click.prevent="addEntree()">Add Another Entree</button>
         
         <br><br>
