@@ -179,7 +179,7 @@ export default {
             }
 
             Promise.all(promises).then(response=>{
-                if (response[0].ok) {
+                if (response.length == 0 || response[0].ok) {
                     this.$router.push({ path: `/${this.$route.params.eventId}/eventdetails`, query: { createEventStatus: 'success' } });
                 } else {
                     this.registrationErrors = true;
@@ -190,5 +190,7 @@ export default {
 }
 </script>
 <style scoped>
-
+button {
+    cursor: pointer;
+}
 </style>

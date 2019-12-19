@@ -6,7 +6,7 @@
 <form @submit.prevent="createEvent">
       <h3 class="text-center">New Event</h3>
       <div class="alert alert-danger" role="alert" v-if="newEventError">
-        There were problems creating this event (all fields are required)
+        There were problems creating this event
       </div>
   
 <div class="form-group form-row" >
@@ -18,6 +18,7 @@
     id="inputAddress" 
     v-model="event.name" 
     required placeholder="Exciting event name!!!"/>
+      <div class="error" v-if="errors.name">{{errors.name}}</div>
   </div>
   </div>
   <div class="form-group form-row" >
@@ -30,6 +31,7 @@
     rows="3" 
     v-model="event.description"
     placeholder="Details about the event here"/>
+      <div class="error" v-if="errors.description">{{errors.description}}</div>
   </div>
   </div>
 
@@ -42,6 +44,7 @@
       class="form-control" 
       id="event-date"
       v-model="event.date">
+      <div class="error" v-if="errors.date">{{errors.date}}</div>
     </div>
     <div class="col">
       <label for="event-date">Event Time</label>
@@ -51,6 +54,7 @@
       id="event-date" 
       v-model="event.time"
       placeholder="Event Time Here">
+      <div class="error" v-if="errors.time">{{errors.time}}</div>
     </div>
     <div class="col">
       <label for="event-rsvp-deadline">RSVP Deadline</label>
@@ -59,6 +63,7 @@
       class="form-control" 
       id="event-rsvp-deadline"
       v-model="event.deadline">
+      <div class="error" v-if="errors.deadline">{{errors.deadline}}</div>
     </div>
   </div>
   
@@ -189,6 +194,7 @@ export default {
     },
     data() {
       return {
+        errors: {},
         event: {
           name : '',
           date : '',
@@ -228,6 +234,37 @@ export default {
             this.$router.push({ path: `/`, query: { createEventStatus: 'success' } });
           } else {
             this.newEventError = true;
+            return response.json();
+          }
+        })
+        .then(json=>{
+          this.errors = {};
+          if( this.newEventError && json.errors ) {
+            json.errors.forEach((current)=>{
+              switch(current.field) {
+                case "rsvpInFuture":
+                  this.errors.deadline = current.error;
+                  break;
+                case "rsvpBeforeDate":
+                  this.errors.deadline = current.error;
+                  break;
+                case "deadline":
+                  this.errors.deadline = current.error;
+                  break;
+                case "dateInFuture":
+                  this.errors.date = current.error;
+                  break;
+                case "date":
+                  this.errors.date = current.error;
+                  break;
+                case "time":
+                  this.errors.time = current.error;
+                  break;
+                case "description":
+                  this.errors.description = current.error;
+                  break;
+              }
+            })
           }
         })
 
@@ -253,6 +290,11 @@ export default {
 
 input, textarea, select {
   background-color: var(--gxwhite) !important;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
 }
 
 </style>
