@@ -1,6 +1,6 @@
 <template>
-  <div class="home" id="home">
-      
+  <div class="home">
+    
       <div class="hosting container">
         <h1>Hosting</h1>
         <div class="nothing" v-if="hosting.length===0">Nothing here!</div>
@@ -20,7 +20,6 @@
         <div class="nothing" v-if="invites.length===0">Nothing here!</div>
         <event-preview v-for="event in invites" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
-        
       </div>
   </div>
 </template>
@@ -28,10 +27,12 @@
 <script>
 import EventPreview from '../components/EventPreview.vue';
 import auth from '../auth.js'
+import BackgroundPic from '../components/BackgroundPic.vue';
 export default {
   name: 'home', 
   components: {
-    EventPreview
+    EventPreview,
+    BackgroundPic
   },
   data() {
     return {
@@ -108,23 +109,18 @@ export default {
   .nothing:hover {
     background: rgba(255,255,255,0.8) !important;
   }
-  
-body::after {
-  background: url(../homeBackground.jpeg) no-repeat center center fixed ;
+ /* 
+#picture {
+  background: url(/img/homeBackground.jpeg) no-repeat center center fixed ;
   content: "";
   background-size: 100%;
-opacity: 0.3;
-top: 0;
-left: 0;
-bottom: 0;
-right: 0;
-position: fixed;
-z-index: -1;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  z-index: -1;
 }
-/* #home {
-  height: 100%;
-  background-color:  var(--gxyellow);  For browsers that do not support gradients 
-  background-image: url(../homeBackground.jpeg);
-  
-} */
+*/
 </style>

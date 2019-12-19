@@ -103,11 +103,11 @@ export default {
 
 <style>
 
-/* #grad {
+ #grad {
   height: 100%;
-  background-color:  var(--gxyellow); For browsers that do not support gradients 
-  background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink)); /* Standard syntax (must be last) 
-} */
+  background-color:  var(--gxyellow);  
+  background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink));
+}
 
 button {
   background-color: var(--gxgreen) !important;
