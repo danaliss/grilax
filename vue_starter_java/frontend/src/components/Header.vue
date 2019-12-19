@@ -2,12 +2,15 @@
 
       <nav class="navbar navbar-expand-sm" role="navigation" aria-label="main navigation">
         <div class="navbar-nav">
-            <a class="nav-item nav-link">GRILLAX LOGO
-            <img src="" width="112" height="28">
-            </a>
-                <p v-if="isLoggedIn" class ="nav-item nav-link" @click="logout()">Logoff</p>
-                <router-link v-if="isLoggedIn" class ="nav-item nav-link" to="/">Home</router-link>
-                <router-link v-if="isLoggedIn" class ="nav-item nav-link" to="/newevent">Create New Event</router-link>
+            <div class="left-links">
+                <a class="nav-item nav-link">GRILLAX
+                <img src="" width="112" height="28">
+                </a>
+                    
+                    <router-link v-if="isLoggedIn" class ="nav-item nav-link" to="/">Home</router-link>
+                    <router-link v-if="isLoggedIn" class ="nav-item nav-link" to="/newevent">Create New Event</router-link>
+            </div>
+                <p v-if="isLoggedIn" class ="nav-item nav-link logonoff" @click="logout()">Logoff</p>
         </div>
       </nav>
 
@@ -51,6 +54,27 @@ export default {
 nav {
     background-color: var(--gxgreentransparent);
     
+}
+.left-links {
+    display: flex;
+}
+
+.navbar-nav {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 1.5rem;
+}
+.navbar {
+    height: 5rem;
+}
+
+.logonoff {
+    align-items: right;
+}
+
+.nav-link {
+    margin: 0;
 }
 
 </style>
