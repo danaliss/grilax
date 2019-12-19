@@ -25,7 +25,7 @@
             <h5>Guest List:</h5>
             <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
             <ul>
-                <li v-for="guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}
+                <li v-for="guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}} + {{guest.adultGuests}} Adults, {{guest.childGuests}} Children
                     <ul v-if="event.hosting">
                         <li v-for="(order,index) in guest.orders" v-bind:key="guest.userId+'-order-'+index">
                             {{order.food.foodName}} x{{order.quantity}}
