@@ -1,4 +1,5 @@
 <template>
+<div id="grad">
   <div id="register" class="text-center">
     <div class = "container col-3 container-fluid">
     <form class="form-register" @submit.prevent="register">
@@ -67,11 +68,18 @@
     </form>
     </div>
   </div>
+  <logo></logo>
+</div>
 </template>
 
 <script>
+import Logo from '../components/Logo.vue';
+  
 export default {
   name: 'register',
+  components: {
+    Logo
+  },
   data() {
     return {
       user: {
@@ -108,5 +116,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+#grad {
+  height: 100%;
+  background-color:  var(--gxyellow); /* For browsers that do not support gradients */
+  background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink)); /* Standard syntax (must be last) */
+}
 </style>

@@ -1,5 +1,7 @@
 <template>
+<div id="grad">
   <div id="login" class="text-center">
+  <logo></logo>
     <div class="container col-3 container-fluid">
     <form class="form-signin" @submit.prevent="login">
       <br>
@@ -44,15 +46,18 @@
     </form>
     </div>
   </div>
+</div>
   
 </template>
 
 <script>
 import auth from '../auth';
-
+import Logo from '../components/Logo.vue';
 export default {
   name: 'login',
-  components: {},
+  components: {
+    Logo
+  },
   data() {
     return {
       user: {
@@ -98,6 +103,11 @@ export default {
 
 <style>
 
+#grad {
+  height: 100%;
+  background-color:  var(--gxyellow); /* For browsers that do not support gradients */
+  background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink)); /* Standard syntax (must be last) */
+}
 
 button {
   background-color: var(--gxgreen) !important;
@@ -113,5 +123,17 @@ nav {
 .nav-link{
   color: var(--gxpink) !important;
 }
+.btn-primary {
+  color: #fff;
+  background-color: var(--gxpink) !important;
+  border-color: var(--gxpink) !important;
+}
+
+a {
+    color:var(--gxpink) !important;
+    text-decoration: none;
+    background-color: transparent;
+}
+
 
 </style>

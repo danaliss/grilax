@@ -76,6 +76,7 @@ export default {
 </script>
 
 <style scoped>
+
   .home {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
