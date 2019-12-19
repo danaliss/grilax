@@ -3,7 +3,7 @@
       <nav class="navbar navbar-expand-sm" role="navigation" aria-label="main navigation">
         <div class="navbar-nav">
             <div class="left-links">
-                <a class="nav-item nav-link">GRILLAX
+                <a class="nav-item nav-link">GRILAX
                 <img src="" width="112" height="28">
                 </a>
                     
