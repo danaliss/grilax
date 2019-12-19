@@ -16,6 +16,7 @@
             <div class="form-group">
             <label for="email-area">Invitee Emails</label>
             <input v-model="invitee.email" class="form-control" id="email-area" type="email"  placeholder="attendee@example.com" />
+            <div class="error" v-if="errors.email">{{errors.email}}</div>
             </div>
             <button type="submit"  class="form control btn btn-secondary" :disabled="formSending">Send Invite</button>
 
@@ -31,6 +32,7 @@ export default {
     name: "send-invite",
     data() {
         return {
+            errors: {},
             invitee: {
                 email: '',
                 role: 'attendee',
@@ -58,8 +60,19 @@ export default {
           if(response.ok){
               //this.$router.push({ path: `/${this.$route.params.eventId}/sendinvite`, query: {invitation: 'success'}});
               this.$router.push({ name: "eventDetails", params: { eventId: this.$route.params.eventId }, query: { rsvpSuccess: true } });
-          } else{
+          } else {
               this.invitationErrors = true;
+              return response.json();
+          }
+      }).then((json)=>{
+          if( this.invitationErrors && json.errors ) {
+              this.errors = {};
+              json.errors.forEach((current)=>{
+                  switch( current.field ) {
+                      case "email":
+                          this.errors.email = current.error;
+                  }
+              })
           }
       })
         }
@@ -82,5 +95,10 @@ export default {
 
 .form-control {
     background-color: var(--gxwhite) !important;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
 }
 </style>

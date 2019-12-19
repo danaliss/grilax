@@ -2,11 +2,15 @@ package com.techelevator.model.pojo;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
 public class Invitee {
 
 	private long inviteId;
 	
-	@NotNull(message="Email must be provided")
+	@NotBlank(message="Email must be provided")
+	@Email(message="Email must be valid")
 	private String email;
 	
 	private long eventId;
