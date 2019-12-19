@@ -1,9 +1,10 @@
 <template>
 <div id="wrapper" v-if="event">
+
     <h1>{{event.name}}</h1>
     <div id="content">
         <div>
-            <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen></iframe>
+            <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen v-if="fullAddress!=''" ></iframe>
         </div>
         <section class="details">
             <h2>{{event.time}} on {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}}, {{event.date.year}}</h2>
@@ -168,7 +169,7 @@ export default {
     },
     computed: {
         fullAddress() {
-            return `${this.address.streetAddress} ${this.address.city} ${this.address.state} ${this.address.zip}`;
+            return `${this.address.streetAddress} ${this.address.city} ${this.address.state} ${this.address.zip}`.trim();
         },
         mapsurl() {
             return `https://www.google.com/maps/embed/v1/search?q=${this.fullAddress}&key=${this.mapsapikey}`;
