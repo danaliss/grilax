@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav-header v-if="$router.currentRoute.name!='login'" />
+    <nav-header v-if="$router.currentRoute.name!='login' && $router.currentRoute.name!='register'"" />
     <router-view />
   </div>
 </template>
