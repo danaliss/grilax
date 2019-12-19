@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" id="home">
       
       <div class="hosting container">
         <h1>Hosting</h1>
@@ -108,4 +108,23 @@ export default {
   .nothing:hover {
     background: rgba(255,255,255,0.8) !important;
   }
+  
+body::after {
+  background: url(../homeBackground.jpeg) no-repeat center center fixed ;
+  content: "";
+  background-size: 100%;
+opacity: 0.3;
+top: 0;
+left: 0;
+bottom: 0;
+right: 0;
+position: fixed;
+z-index: -1;
+}
+/* #home {
+  height: 100%;
+  background-color:  var(--gxyellow);  For browsers that do not support gradients 
+  background-image: url(../homeBackground.jpeg);
+  
+} */
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav-header v-if="$router.currentRoute.name!='login' && $router.currentRoute.name!='register'"" />
+    <nav-header v-if="$router.currentRoute.name!='login' && $router.currentRoute.name!='register'" />
     <router-view />
   </div>
 </template>
@@ -33,9 +33,21 @@ body {
   background: linear-gradient(to right, #ff7f68, #ffdb2b, #ffdb2b,#ffdb2b,#ffdb2b,#ffdb2b, #ff7f68);
 
   
- 
+  
   font-family: 'Baloo Bhai', cursive;
 }
+/* body::after {
+  background: url(homeBackground.jpeg) no-repeat center center fixed;
+  content: "";
+  background-size: 100%;
+opacity: 0.3;
+top: 0;
+left: 0;
+bottom: 0;
+right: 0;
+position: fixed;
+z-index: -1;
+} */
 
 #app {
 height: 100%;
