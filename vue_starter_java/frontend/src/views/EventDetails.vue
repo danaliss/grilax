@@ -2,6 +2,11 @@
 <div>
     <div v-if="event">
     <h1>{{event.name}}</h1>
+
+    <div style="float: left; width:300px;">
+        <iframe width="600" height="450" frameborder="0" style="border:0; float: left; width: 100%; height:300px;" :src="mapsurl" allowfullscreen></iframe>
+    </div>
+
     <section class="details">
         <h2>{{event.time}} {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}} {{event.date.year}}</h2>
         <h2>{{event.date.daysAway}} days away!</h2>
@@ -60,18 +65,19 @@
 
 <script>
 import auth from '../auth.js'
+
 export default {
     data(){
         return{
-            
             event: null,
             address: Object,
             attendees: [],
             yesAttending: [],
             notAttending: [],
             notRsvp: [],
-            menu: []
+            menu: [],
         
+            mapsapikey: "AIzaSyC-fS5k_yLVqWldx2d0Pdz995Nuc7EuL8Y"
         }
     },
     methods:{
@@ -159,9 +165,17 @@ export default {
         },
     
     },
-    created(){
-    this.fetchDescription();
-  }
+    computed: {
+        fullAddress() {
+            return `${this.address.streetAddress} ${this.address.city} ${this.address.state} ${this.address.zip}`;
+        },
+        mapsurl() {
+            return `https://www.google.com/maps/embed/v1/search?q=${this.fullAddress}&key=${this.mapsapikey}`;
+        }
+    },
+    created() {
+        this.fetchDescription();
+    }
 
   
 }

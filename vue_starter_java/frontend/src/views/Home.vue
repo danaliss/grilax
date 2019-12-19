@@ -1,20 +1,23 @@
 <template>
   <div class="home">
       
-      <div class="hosting container col-8">
+      <div class="hosting container">
         <h1>Hosting</h1>
+        <div class="nothing" v-if="hosting.length===0">Nothing here!</div>
         <event-preview v-for="event in hosting" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
       </div>
 
-      <div class="attending container col-8">
+      <div class="attending container">
         <h1>Attending</h1>
+        <div class="nothing" v-if="attending.length===0">Nothing here!</div>
         <event-preview v-for="event in attending" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
       </div>
 
-      <div class="invites container col-8">
+      <div class="invites container">
         <h1>Invites</h1>
+        <div class="nothing" v-if="invites.length===0">Nothing here!</div>
         <event-preview v-for="event in invites" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
         
@@ -72,6 +75,35 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .home {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    align-items: start;
+    justify-items: stretch;
+    text-align: center;
+  }
+  .home > * {
+    padding: 10px;
+    margin: 0;
+  }
+  .home > * > div {
+    margin: 20px auto;
+    color: #2ea71b;
+    background: rgba(255,255,255,0.8);
+    border-radius: 10px;
+    border: rgba(0,127,0,0.5) 3px solid;
+    cursor: pointer;
+  }
+  .home > * > div:hover {
+    background: rgba(255,255,255,0.9);
+  }
+  .nothing {
+    font-size: 24px;
+    cursor: default !important;
+  }
+  .nothing:hover {
+    background: rgba(255,255,255,0.8) !important;
+  }
 </style>
