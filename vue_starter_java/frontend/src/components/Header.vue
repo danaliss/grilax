@@ -3,10 +3,8 @@
       <nav class="navbar navbar-expand-sm" role="navigation" aria-label="main navigation">
         <div class="navbar-nav">
             <div class="left-links">
-                <a class="nav-item nav-link">GRILLAX
-                <img src="" width="112" height="28">
-                </a>
-                    
+                
+    
                     <router-link v-if="isLoggedIn" class ="nav-item nav-link" to="/">Home</router-link>
                     <router-link v-if="isLoggedIn" class ="nav-item nav-link" to="/newevent">Create New Event</router-link>
             </div>
