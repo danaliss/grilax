@@ -1,40 +1,39 @@
 <template>
-<div>
-    <div v-if="event">
+<div id="wrapper" v-if="event">
     <h1>{{event.name}}</h1>
-
-    <div style="float: left; width:300px;">
-        <iframe width="600" height="450" frameborder="0" style="border:0; float: left; width: 100%; height:300px;" :src="mapsurl" allowfullscreen></iframe>
-    </div>
-
-    <section class="details">
-        <h2>{{event.time}} {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}} {{event.date.year}}</h2>
-        <h2>{{event.date.daysAway}} days away!</h2>
-        <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
-        <p>{{event.description}}</p>
-
-        <div v-if="menu.length === 0">
-            <router-link tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
-        </div>
-        
+    <div id="content">
         <div>
-            <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+            <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen></iframe>
         </div>
-        
-        <section class="guest-list">
-            <h5>Guest List:</h5>
-            <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
-            <ul>
-                <li v-for="guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}
-                    <ul v-if="event.hosting">
-                        <li v-for="(order,index) in guest.orders" v-bind:key="guest.userId+'-order-'+index">
-                            {{order.food.foodName}} x{{order.quantity}}
-                        </li>
-                    </ul>
-                  </li>
-            </ul>
+        <section class="details">
+            <h2>{{event.time}} on {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}}, {{event.date.year}}</h2>
+            <h2>{{event.date.daysAway}} days away!</h2>
+            <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
+            <p>{{event.description}}</p>
+
+            <div v-if="menu.length === 0">
+                <router-link tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
+            </div>
+            
+            <div>
+                <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+            </div>
+            
+            <section class="guest-list">
+                <h5>Guest List:</h5>
+                <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
+                <ul>
+                    <li v-for="guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}
+                        <ul v-if="event.hosting">
+                            <li v-for="(order,index) in guest.orders" v-bind:key="guest.userId+'-order-'+index">
+                                {{order.food.foodName}} x{{order.quantity}}
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
         </section>
-    </section>
+    </div>
     
     <section class="not-attending" v-if="event.hosting">
         <h5 class="no" v-if="notAttending.length">Declined Invitation:</h5>
@@ -56,7 +55,6 @@
             <button class="btn">RSVP</button>
         </router-link>
     </section>
-    </div>
     <div v-if="event === null">
         <h1>Loading event...please stand by</h1>
     </div>
@@ -182,11 +180,16 @@ export default {
 </script>
 <style scoped>
 .details {
-    background: #effffb;
+    background: rgba(255,255,255,0.95);
     color: #63bd55;
+    text-align: center;
+    border-radius: 17px;
 }
 .not-attending {
     background: rgb(128,128,128);
+}
+.guest-list {
+    text-align: left;
 }
 .no {
     color: #FF0033;
@@ -194,5 +197,19 @@ export default {
 .noRsvp {
     color: #FFCC33;
 }
-
+#content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    margin: 25px;
+    grid-gap: 10px;
+}
+iframe {
+    border:0;
+    width: 300px;
+    height:300px;
+    border-radius: 17px;
+}
+button {
+    cursor: pointer;
+}
 </style>
