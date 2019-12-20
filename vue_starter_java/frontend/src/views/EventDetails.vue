@@ -197,11 +197,16 @@ section {
 
 ul {
     list-style: none;
+    text-align: center;
     
 }
+.not-attending {
+    color: #FF0033;
 
+}
 .no {
     color: #FF0033;
+    text-align: center;
 }
 .noRsvp {
     color: #FFCC33;
