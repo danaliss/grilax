@@ -7,6 +7,7 @@
             <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen v-if="fullAddress!=''" ></iframe>
         </div>
         <section class="details">
+            
             <h2>{{event.time}} on {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}}, {{event.date.year}}</h2>
             <h2>{{event.date.daysAway}} day{{isPlural(event.date.daysAway)}} away!</h2>
             <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
@@ -23,6 +24,7 @@
             </div>
             
             <section class="guest-list">
+                <section class="attending">
                 <h5>Guest List:</h5>
                 <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
                 <ul>
@@ -34,8 +36,9 @@
                         </ul>
                     </li>
                 </ul>
-            </section>
-             <section class="not-attending" v-if="event.hosting && notAttending.length">
+                </section>
+
+                <section class="not-attending" v-if="event.hosting && notAttending.length">
                 <h5 class="no" v-if="notAttending.length">Declined Invitation:</h5>
                 <ul>
                 <li v-for = "guest in notAttending" v-bind:key="guest.userId">
@@ -48,7 +51,9 @@
                 <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
                 </ul>
                 -->
+                </section>
             </section>
+
         </section>
         <section class="rsvp" v-if="event.invited && event.deadline.daysAway >= 0">
             You have {{event.deadline.daysAway}} day{{isPlural(event.deadline.daysAway)}} left to RSVP!

@@ -1,6 +1,5 @@
 <template>
-  <div class="home">
-    
+  <div class="home" id="picture">
       <div class="hosting container">
         <h1>Hosting</h1>
         <div class="nothing" v-if="hosting.length===0">Nothing here!</div>
@@ -86,6 +85,7 @@ export default {
     justify-items: stretch;
     text-align: center;
     padding-top: 2rem;
+    
   }
   .home > * {
     padding: 10px;
@@ -109,7 +109,7 @@ export default {
   .nothing:hover {
     background: rgba(255,255,255,0.8) !important;
   }
- /* 
+/*
 #picture {
   background: url(/img/homeBackground.jpeg) no-repeat center center fixed ;
   content: "";
@@ -123,4 +123,5 @@ export default {
   z-index: -1;
 }
 */
+
 </style>

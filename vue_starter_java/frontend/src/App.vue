@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-bind:class="{ picture:$router.currentRoute.name =='home' }">
     <nav-header v-if="$router.currentRoute.name!='login' && $router.currentRoute.name!='register'" />
     <router-view />
   </div>
@@ -31,23 +31,21 @@ body {
   height: 100%;
   background:#ff7d49;
   background: linear-gradient(to right, #ff7f68, #ffdb2b, #ffdb2b,#ffdb2b,#ffdb2b,#ffdb2b, #ff7f68);
-
-  
-  
   font-family: 'Baloo Bhai', cursive;
 }
-/* body::after {
-  background: url(homeBackground.jpeg) no-repeat center center fixed;
+.picture::after {
+  background: url(/img/homeBackground.jpeg) ;
   content: "";
   background-size: 100%;
-opacity: 0.3;
-top: 0;
-left: 0;
-bottom: 0;
-right: 0;
-position: fixed;
-z-index: -1;
-} */
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  z-index: -1;
+  height: 100%;
+}
 
 #app {
 height: 100%;
@@ -56,6 +54,7 @@ height: 100%;
 h1 {
   text-align:center;
   color:#ef2871;
+  text-shadow: 0 0 4px white;
   text-transform: uppercase;
   font-family: 'Titan One', cursive;
   

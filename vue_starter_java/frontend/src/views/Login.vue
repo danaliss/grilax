@@ -105,7 +105,7 @@ export default {
 
  #grad {
   height: 100%;
-  background-color:  var(--gxyellow);  
+  background-color:  var(--gxyellow); 
   background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink));
 }
 
