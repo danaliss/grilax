@@ -3,39 +3,41 @@
 
     <h1>{{event.name}}</h1>
     <div id="content">
-        <div>
-            <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen v-if="fullAddress!=''" ></iframe>
-        </div>
+       
+        <section class="whole-card">
+             <div>
+                <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen v-if="fullAddress!=''" ></iframe>
+            </div>
         <section class="details">
-            
             <h2>{{event.time}} on {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}}, {{event.date.year}}</h2>
             <h2>{{event.date.daysAway}} day{{isPlural(event.date.daysAway)}} away!</h2>
             <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
             <p>{{event.description}}</p>
+        </section>
 
-            <div class="buttons">
-                <div v-if="menu.length === 0">
-                    <router-link tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
-                </div>
-                
-                <div>
-                    <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
-                </div>
+        <section class="buttons">
+            <div v-if="menu.length === 0">
+                <router-link tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
             </div>
-            
-            <section class="guest-list">
+                
+            <div>
+                <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+            </div>
+        </section>
+
+             <section class="guest-list">
                 <section class="attending">
-                <h5>Guest List:</h5>
-                <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
-                <ul>
-                    <li v-for="guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}} + {{guest.adultGuests}} Adults, {{guest.childGuests}} Children
+                    <h5>Guest List:</h5>
+                    <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
+                    <ul>
+                     <li v-for="guest in yesAttending" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}} + {{guest.adultGuests}} Adults, {{guest.childGuests}} Children
                         <ul v-if="event.hosting">
                             <li v-for="(order,index) in guest.orders" v-bind:key="guest.userId+'-order-'+index">
                                 {{order.food.foodName}} x{{order.quantity}}
                             </li>
                         </ul>
-                    </li>
-                </ul>
+                     </li>
+                     </ul>
                 </section>
 
                 <section class="not-attending" v-if="event.hosting && notAttending.length">
@@ -45,22 +47,19 @@
                     {{guest.firstName}} {{guest.lastName}}
                 </li>
                 </ul>
-                <!--
-                <h5 class="noRsvp">Awaiting RSVP:</h5>
-                <ul>
-                <li v-for = "guest in notRsvp" v-bind:key="guest.userId"> {{guest.firstName}} {{guest.lastName}}</li>
-                </ul>
-                -->
                 </section>
             </section>
+            
+            <section class="rsvp" v-if="event.invited && event.deadline.daysAway >= 0">
+                You have {{event.deadline.daysAway}} day{{isPlural(event.deadline.daysAway)}} left to RSVP!
+                <router-link tag="h1" v-bind:to="{ name:'rsvp', params:{eventId:event.eventId}}">
+                <button class="btn">Send RSVP</button>
+                 </router-link>
+            </section>
+
 
         </section>
-        <section class="rsvp" v-if="event.invited && event.deadline.daysAway >= 0">
-            You have {{event.deadline.daysAway}} day{{isPlural(event.deadline.daysAway)}} left to RSVP!
-            <router-link tag="h1" v-bind:to="{ name:'rsvp', params:{eventId:event.eventId}}">
-                <button class="btn">Send RSVP</button>
-            </router-link>
-        </section>
+
     </div>
     <div v-if="event === null">
         <h1>Loading event...please stand by</h1>
@@ -195,15 +194,12 @@ section {
     border-radius: 17px;
     padding: 15px;
 }
-.not-attending {
-    background: rgb(128,128,128);
+
+ul {
+    list-style: none;
+    
 }
-.guest-list, .not-attending {
-    text-align: left;
-}
-.not-attending {
-    display: inline-block;
-}
+
 .no {
     color: #FF0033;
 }
@@ -215,8 +211,8 @@ section {
     justify-content: space-around;
 }
 #content {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
+    justify-content: center;
     margin: 25px;
     grid-gap: 10px;
     align-items: start;
@@ -235,4 +231,5 @@ button {
 button:hover {
     background-color: #7fdb70 !important;
 }
+
 </style>
