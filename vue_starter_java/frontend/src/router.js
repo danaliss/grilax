@@ -9,7 +9,7 @@ import EventDetails from './views/EventDetails.vue'
 import NewEvent from './views/NewEvent.vue'
 import SendInvite from './views/SendInvite.vue'
 import CreateMenu from './views/CreateMenu.vue'
-import { RSA_SSLV23_PADDING } from 'constants';
+//import { RSA_SSLV23_PADDING } from 'constants';
 
 Vue.use(Router)
 

@@ -1,23 +1,23 @@
 <template>
   <div class="home" id="home">
-      
+      <div :style="{ backgroundImage: 'url(/img/'+currentBackground+')' }" id="backgroundImage"></div>
       <div class="hosting container">
         <h1>Hosting</h1>
-        <div class="nothing" v-if="hosting.length===0">Nothing here!</div>
+        <router-link :to="{ name: 'newevent' }" tag="div" class="nothing link" v-if="hosting.length==0">Get Started!<br />Create an Event!</router-link>
         <event-preview v-for="event in hosting" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
       </div>
 
       <div class="attending container">
         <h1>Attending</h1>
-        <div class="nothing" v-if="attending.length===0">Nothing here!</div>
+        <div class="nothing" v-if="attending.length===0">Not attending any events</div>
         <event-preview v-for="event in attending" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
       </div>
 
       <div class="invites container">
         <h1>Invites</h1>
-        <div class="nothing" v-if="invites.length===0">Nothing here!</div>
+        <div class="nothing" v-if="invites.length===0">No pending invitations</div>
         <event-preview v-for="event in invites" v-bind:list="event" v-bind:key="event.eventId">
         </event-preview>
         
@@ -38,8 +38,13 @@ export default {
       events: [],
       hosting: [],
       attending: [],
-      invites: []
-
+      invites: [],
+      currentBackground: '',
+      backgrounds: [
+        'homeBackground.jpeg',
+        'homeBackgroundOrange.jpeg',
+        'homeBackgroundPepper.jpeg'
+      ],
     }
   },
   methods : {
@@ -47,7 +52,6 @@ export default {
       fetch(`${process.env.VUE_APP_REMOTE_API}/api/events`, {
                 method : "GET",
                 headers: { //this header will insert the user ID into the called upon methods
-                    
                     "Authorization": "Bearer "+auth.getToken(),
                     "Content-Type" : "application/json",
                     "Accepts" : "application/json"
@@ -71,12 +75,12 @@ export default {
   },
   created(){
     this.fetchEvents();
+    this.currentBackground = this.backgrounds[Math.floor(Math.random()*this.backgrounds.length)];
   }
 }
 </script>
 
 <style scoped>
-
   .home {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -105,21 +109,24 @@ export default {
     font-size: 24px;
     cursor: default !important;
   }
-  .nothing:hover {
+  .nothing.link {
+    cursor: pointer !important;
+  }
+  .nothing:not(.link):hover {
     background: rgba(255,255,255,0.8) !important;
   }
   
-body::after {
-  background: url(../homeBackground.jpeg) no-repeat center center fixed ;
+#backgroundImage {
+  background: url(/image/homeBackground.jpeg) no-repeat center center fixed ;
   content: "";
   background-size: 100%;
-opacity: 0.3;
-top: 0;
-left: 0;
-bottom: 0;
-right: 0;
-position: fixed;
-z-index: -1;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  z-index: -1;
 }
 /* #home {
   height: 100%;

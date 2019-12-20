@@ -101,7 +101,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 /* #grad {
   height: 100%;
@@ -109,31 +109,12 @@ export default {
   background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink)); /* Standard syntax (must be last) 
 } */
 
-button {
-  background-color: var(--gxgreen) !important;
-  border-color: var(--gxgreen) !important;
-  color: var(--gxwhite) !important;
-}
-  h1 {
-    color: var(--gxpink) !important;
-  }
-nav {
-  color: var(--gxpink) !important;
-}
-.nav-link{
-  color: var(--gxpink) !important;
-}
-.btn-primary {
-  color: #fff;
-  background-color: var(--gxpink) !important;
-  border-color: var(--gxpink) !important;
+.col-3 {
+  max-width: 250px;
 }
 
-a {
-    color:var(--gxpink) !important;
-    text-decoration: none;
-    background-color: transparent;
+img {
+  margin: -20px;
 }
-
 
 </style>

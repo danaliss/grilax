@@ -7,7 +7,7 @@
 
 <script>
 import NavHeader from './components/Header.vue';
-import auth from './auth.js'
+
 export default {
   components: {
     NavHeader
@@ -31,23 +31,8 @@ body {
   height: 100%;
   background:#ff7d49;
   background: linear-gradient(to right, #ff7f68, #ffdb2b, #ffdb2b,#ffdb2b,#ffdb2b,#ffdb2b, #ff7f68);
-
-  
-  
   font-family: 'Baloo Bhai', cursive;
 }
-/* body::after {
-  background: url(homeBackground.jpeg) no-repeat center center fixed;
-  content: "";
-  background-size: 100%;
-opacity: 0.3;
-top: 0;
-left: 0;
-bottom: 0;
-right: 0;
-position: fixed;
-z-index: -1;
-} */
 
 #app {
 height: 100%;
@@ -58,7 +43,34 @@ h1 {
   color:#ef2871;
   text-transform: uppercase;
   font-family: 'Titan One', cursive;
-  
+  text-shadow: 0 0 4px white;
+}
+
+
+button {
+  background-color: var(--gxgreen) !important;
+  border-color: var(--gxgreen) !important;
+  color: var(--gxwhite) !important;
+}
+h1 {
+  color: var(--gxpink) !important;
+}
+nav {
+  color: var(--gxpink) !important;
+}
+.nav-link{
+  color: var(--gxpink) !important;
+}
+.btn-primary {
+  color: #fff;
+  background-color: var(--gxpink) !important;
+  border-color: var(--gxpink) !important;
+}
+
+a {
+    color:var(--gxpink) !important;
+    text-decoration: none;
+    background-color: transparent;
 }
 
 </style>
