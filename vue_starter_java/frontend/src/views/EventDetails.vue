@@ -3,29 +3,20 @@
 
     <h1>{{event.name}}</h1>
     <div id="content">
-       
+      <div>
+        <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen v-if="fullAddress!=''" ></iframe>
+     </div>   
         <section class="whole-card">
-             <div>
-                <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen v-if="fullAddress!=''" ></iframe>
-            </div>
-        <section class="details">
-            <h2>{{event.time}} on {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}}, {{event.date.year}}</h2>
-            <h2>{{event.date.daysAway}} day{{isPlural(event.date.daysAway)}} away!</h2>
-            <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
-            <p>{{event.description}}</p>
-        </section>
-
-        <section class="buttons">
-            <div v-if="menu.length === 0">
-                <router-link tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
-            </div>
+           
+        <section class="this-group">   
+            <section class="details">
+                <h2>{{event.time}} on {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}}, {{event.date.year}}</h2>
+                <h2>{{event.date.daysAway}} day{{isPlural(event.date.daysAway)}} away!</h2>
+                <h4>{{address.streetAddress}} {{address.city}} {{address.state}} {{address.zip}}</h4>
+                <p>{{event.description}}</p>
+             </section>
                 
-            <div>
-                <router-link tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
-            </div>
-        </section>
-
-             <section class="guest-list">
+                <section class="guest-list">
                 <section class="attending">
                     <h5>Guest List:</h5>
                     <em v-if="yesAttending.length===0">No guests have RSVPd yet</em>
@@ -39,7 +30,7 @@
                      </li>
                      </ul>
                 </section>
-
+        </section>
                 <section class="not-attending" v-if="event.hosting && notAttending.length">
                 <h5 class="no" v-if="notAttending.length">Declined Invitation:</h5>
                 <ul>
@@ -56,6 +47,17 @@
                 <button class="btn">Send RSVP</button>
                  </router-link>
             </section>
+        <section class="buttons">
+            <div v-if="menu.length === 0" class="button">
+                <router-link  tag="button" v-if="event.hosting" :to="{ name: 'createmenu', params: { eventId: this.$route.params.eventId } }">Create Menu</router-link>
+            </div>
+                
+            <div class="button">
+                <router-link  tag="button" v-if="event.hosting" :to="{ name: 'sendinvite', params: { eventId: this.$route.params.eventId } }">Send Invitation</router-link>
+            </div>
+        </section>
+
+            
 
 
         </section>
@@ -202,7 +204,8 @@ ul {
 }
 .not-attending {
     color: #FF0033;
-
+    text-align: center;
+    
 }
 .no {
     color: #FF0033;
@@ -213,7 +216,11 @@ ul {
 }
 .buttons {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    
+
 }
 #content {
     display: flex;
@@ -232,9 +239,15 @@ button {
     cursor: pointer;
     border-radius: 17px;
     padding: 20px;
+    margin: 20px;
+    
 }
 button:hover {
     background-color: #7fdb70 !important;
+    
 }
-
+.whole-card {
+    margin-left: 25px;
+    display: flex;
+}
 </style>
