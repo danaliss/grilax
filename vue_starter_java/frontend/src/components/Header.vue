@@ -85,6 +85,6 @@ nav {
     border-style: none;
     height: 25%;
     width: 25%;
-    margin: 10px;
+    margin: 40px;
 }
 </style>
