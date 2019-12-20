@@ -4,23 +4,23 @@
         <br><br>
         
         <h4>Entrees</h4>
-        <entree-input v-for="(entree,index) in entrees" :key="index+'-entree'" v-model="entrees[index]" />
+        <entree-input v-for="(entree,index) in entrees" :key="index+'-entree'" v-model="entrees[index]" :index="index" />
         <button @click.prevent="addEntree()">Add Another Entree</button>
         
         <br><br>
         <h4>Sides</h4>
-        <side-input v-for="(side,index) in sides" :key="index+'-side'" v-model="sides[index]"/>
+        <side-input v-for="(side,index) in sides" :key="index+'-side'" v-model="sides[index]" :index="index"/>
         <button @click.prevent="addSide()">Add Another Side</button>
 
         <br><br>
 
         <h4>Beverages</h4>
-        <beverage-input v-for="(beverage,index) in beverages" :key="index+'-beverage'" v-model="beverages[index]"/>
+        <beverage-input v-for="(beverage,index) in beverages" :key="index+'-beverage'" v-model="beverages[index]" :index="index"/>
         <button @click.prevent="addBeverage()">Add Another Beverage</button>
         
         <br><br>
         <h4>Desserts</h4>
-        <dessert-input v-for="(dessert,index) in desserts" :key="index+'-dessert'" v-model="desserts[index]"/>
+        <dessert-input v-for="(dessert,index) in desserts" :key="index+'-dessert'" v-model="desserts[index]" :index="index"/>
         <button @click.prevent="addDessert()">Add Another Dessert</button>
 
         <br /><br />

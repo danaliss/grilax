@@ -1,9 +1,9 @@
 <template>
 <div id="wrapper" v-if="event">
-    <h1>{{event.name}}</h1>
+    <h1 :class="{ padLeft: fullAddress!='', padRight: event.invited && event.deadline.daysAway >= 0 }">{{event.name}}</h1>
     <div id="content">
         <div>
-            <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen v-if="fullAddress!=''"></iframe>
+            <iframe width="600" height="450" frameborder="0" :src="mapsurl" allowfullscreen v-if="fullAddress!=''" ></iframe>
         </div>
         <section class="details">
             <h2>{{event.time}} on {{event.date.dayOfWeek}} {{event.date.month}} {{event.date.day}}, {{event.date.year}}</h2>
@@ -189,15 +189,12 @@ section {
     border-radius: 17px;
     padding: 15px;
 }
-.not-attending {
-    background: rgb(128,128,128);
-}
 .guest-list, .not-attending {
     text-align: left;
 }
 .not-attending {
-    display: inline-block;
-}
+    color: #ff0033;
+}  
 .no {
     color: #FF0033;
 }
@@ -210,15 +207,15 @@ section {
 }
 #content {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 25% 1fr auto;
     margin: 25px;
     grid-gap: 10px;
     align-items: start;
 }
 iframe {
     border:0;
-    width: 300px;
-    height:300px;
+    width:100%;
+    height: 300px;
     border-radius: 17px;
 }
 button {
@@ -228,5 +225,14 @@ button {
 }
 button:hover {
     background-color: #7fdb70 !important;
+}
+.padLeft {
+    margin-left: 300px;
+}
+.padRight {
+    margin-right: 200px;
+}
+ul {
+    list-style: none;
 }
 </style>

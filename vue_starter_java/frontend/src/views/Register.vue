@@ -1,5 +1,8 @@
 <template>
-<div id="grad">
+<div>
+  <div id="grad">
+    <logo></logo>
+  </div>
   <div id="register" class="text-center">
     <div class = "container col-3 container-fluid">
     <form class="form-register" @submit.prevent="register">
@@ -71,7 +74,6 @@
     </form>
     </div>
   </div>
-  <logo></logo>
 </div>
 </template>
 
@@ -133,7 +135,7 @@ export default {
             })
           }
         })
-        .then((err) => console.error());
+        .then(() => console.error());
     },
   },
 };
@@ -146,7 +148,15 @@ export default {
   }
 #grad {
   height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
   background-color:  var(--gxyellow); /* For browsers that do not support gradients */
   background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink)); /* Standard syntax (must be last) */
+}
+#grad img {
+  position: absolute;
+  bottom: 0;
 }
 </style>

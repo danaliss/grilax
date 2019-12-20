@@ -101,39 +101,20 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
-#grad {
+/* #grad {
   height: 100%;
-  background-color:  var(--gxyellow); /* For browsers that do not support gradients */
-  background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink)); /* Standard syntax (must be last) */
+  background-color:  var(--gxyellow); For browsers that do not support gradients 
+  background-image: linear-gradient(to right, var(--gxpink), var(--gxorange), var(--gxyellow), var(--gxyellow), var(--gxyellow), var(--gxorange), var(--gxpink)); /* Standard syntax (must be last) 
+} */
+
+.col-3 {
+  max-width: 250px;
 }
 
-button {
-  background-color: var(--gxgreen) !important;
-  border-color: var(--gxgreen) !important;
-  color: var(--gxwhite) !important;
+img {
+  margin: -20px;
 }
-  h1 {
-    color: var(--gxpink) !important;
-  }
-nav {
-  color: var(--gxpink) !important;
-}
-.nav-link{
-  color: var(--gxpink) !important;
-}
-.btn-primary {
-  color: #fff;
-  background-color: var(--gxpink) !important;
-  border-color: var(--gxpink) !important;
-}
-
-a {
-    color:var(--gxpink) !important;
-    text-decoration: none;
-    background-color: transparent;
-}
-
 
 </style>

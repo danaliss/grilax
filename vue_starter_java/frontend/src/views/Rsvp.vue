@@ -120,11 +120,10 @@
 
 <script>
 import auth from '../auth.js'
-import RsvpMenu from '../components/RsvpMenu.vue';
 export default {
     name: "rsvp",
     components:{
-        RsvpMenu
+        
     },
     data(){
         return {
@@ -218,7 +217,7 @@ export default {
                     },
                     body: JSON.stringify(this.rsvp)
                 }).then((data)=>data.json())
-                .then((response)=>{
+                .then(()=>{
                 }));
 
                 if( this.rsvp.attending === 'true' ) {
@@ -270,12 +269,12 @@ export default {
                             },
                             body: JSON.stringify(current)
                         }).then((data)=>data.json())
-                        .then((response)=>{
+                        .then(()=>{
                         }) );
                     });
                 }
 
-                Promise.all(promises).then((values)=>{
+                Promise.all(promises).then(()=>{
                     this.$router.push({ name: "eventDetails", params: { eventId: this.$route.params.eventId }, query: { rsvpSuccess: true } });
                 })
             } else {
@@ -286,10 +285,15 @@ export default {
 
         },
         adultGuestsChange(newVal, oldVal) {
+            console.log("newVal: "+newVal+", oldVal: "+oldVal);
             if( newVal === '' ) {
                 return;
             }
-            oldVal = parseInt(oldVal);
+            if( oldVal !== '' ) {
+                oldVal = parseInt(oldVal);
+            } else {
+                oldVal = 0;
+            }
 
             for( let i=0; i < Math.abs(newVal - oldVal); i++ ) {
                 if( newVal < oldVal ) {
@@ -300,6 +304,11 @@ export default {
             }
         },
         childGuestsChange(newVal, oldVal) {
+            if( oldVal !== '' ) {
+                oldVal = parseInt(oldVal);
+            } else {
+                oldVal = 0;
+            }
             for( let i=0; i < Math.abs(newVal - oldVal); i++ ) {
                 if( newVal < oldVal ) {
                     this.rsvp.food.pop();
